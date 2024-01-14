@@ -1,5 +1,5 @@
 ## What's this
-Singular Dockerfile `Caddy.Dockerfile` that spins up xCaddy, builds modules listed in a file and then runs on a rootless user inside the container. It makes use of Alpine Linux as it's base, allowing you to reap all advantages of file size and performance you're used to! Unrelated but I have no idea about this software license thing but I've been using `MIT` for a while so eh, may as well? Let me know if it's wrong though as I'm not well versed in this.
+Singular Dockerfile `Caddy.Dockerfile` that spins up xCaddy, builds modules listed in a file and then runs on a rootless user inside the container. It makes use of Alpine Linux as it's base, allowing you to reap all advantages of file size and performance you're used to! 
 
 > [!NOTE] 
 > This is both data and resource heavy during building process, if you want only Caddy and nothing else, it is recommended to build `vanillaCaddy.Dockerfile` instead which will be up soon on this repository
@@ -94,4 +94,11 @@ If you want to customize anything about the image after building it ex. your own
 `/app/testCaddyfile`, `/app/localCaddyfile`, `/app/prodCaddyfile` - for Caddyfiles, do not mount entire `/app`!
 
 `/srv` - To serve static webpages/sites from container
+
+---
+
+## Unrelated
+
+I have no idea about this software license thing but I've been using `MIT` for a while so eh, may as well? Let me know if it's wrong though as I'm not well versed in this.
+
 
