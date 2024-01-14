@@ -42,17 +42,17 @@ if [[ $CADDY_ENVIRONMENT = "TEST" ]]
     then
         echo "Environment is set to Testing/Development, starting in background and actively listening to config changes"
         echo "Docker interactive session is supported. Map a volume to /var/www/site to publish a site instantly on specified host and port"
-        /app/caddy run --config /app/testCaddyfile --adapter caddyfile --watch
+        /app/caddy run --config /app/configs/Caddyfile --adapter caddyfile --watch
 elif [[ $CADDY_ENVIRONMENT = "LOCAL" ]]
     then
         echo "Environment is set to Local/Localhost, starting in daemon mode"
         echo "Docker interactive session is not supported. Map a volume to /srv or different Caddyfile to /app/configs and restart container"
-        /app/caddy run --config /app/localCaddyfile --adapter caddyfile
+        /app/caddy run --config /app/configs/Caddyfile --adapter caddyfile
 elif [[ $CADDY_ENVIRONMENT = "PROD" ]]
     then
         echo "Environment is set to Production/Live, starting in daemon mode"
         echo "Docker interactive session is not supported. Map a volume to /srv or different Caddyfile to /app/configs and restart container"
-        /app/caddy run --config /app/prodCaddyfile --adapter caddyfile
+        /app/caddy run --config /app/configs/Caddyfile --adapter caddyfile
 else
     echo "If you're seeing this, your CADDY_ENVIRONMENT variable is invalid"
     echo "In order to launch this container, you need to assign it a valid value between TEST, LOCAL and PROD"
