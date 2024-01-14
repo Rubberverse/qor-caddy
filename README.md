@@ -2,7 +2,7 @@
 Singular Dockerfile `Caddy.Dockerfile` that spins up xCaddy, builds modules listed in a file and then runs on a rootless user inside the container. It makes use of Alpine Linux as it's base, allowing you to reap all advantages of file size and performance you're used to! (I have no idea about this license thing but I've been using `MIT` for a while so eh, may as well? Let me know if it's wrong though)
 
 > [!NOTE] 
-> This is both data and resource heavy during building process, if you want only Caddy and nothing else, it is recommended to build `vanillaCaddy.Dockerfile` instead
+> This is both data and resource heavy during building process, if you want only Caddy and nothing else, it is recommended to build `vanillaCaddy.Dockerfile` instead which will be up soon on this repository
 
 ## Features
 This Dockerfile uses some unconventional, cursed and potentially unwanted modifications in order to achieve my primary goals with this image but that said, not all of them are that bad. 
