@@ -40,6 +40,20 @@ RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/co
 COPY --chmod=0755 scripts/array-helper.sh /app/scripts/array-helper.sh
 COPY scripts/template.MODULES /app/scripts/.MODULES
 
+RUN addgroup \
+    --gid $GID \
+    --system \
+    "$GROUP"
+
+RUN adduser \
+    --home "/app" \
+    --shell "$SHELL" \
+    --ingroup "$GROUP" \
+    --uid "$UID" \
+    --no-create-home \
+    --disabled-password \
+    "$USER"
+
 COPY templates/template.bashrc /app/.bashrc
 RUN envsubst "$CADDY_VERSION" > /app/.bashrc \
     && envsubst "$UID" > /app/.bashrc \
