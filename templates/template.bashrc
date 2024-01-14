@@ -9,4 +9,4 @@ HOME=$HOME
 SHELL=$SHELL
 GOPATH=$GOPATH
 GOBIN=$GOBIN
-PATH=/usr/local/bin:/usr/bin:/bin/:/var/lib/home/caddy/.local/bin
+PATH=/usr/local/bin:/usr/bin:/bin/:/app
