@@ -1,0 +1,11 @@
+{
+    admin off
+    http_port 80
+    https_port 443
+}
+
+my.domain-example.com {
+    tls internal
+    root * /srv/
+    file_server
+}
