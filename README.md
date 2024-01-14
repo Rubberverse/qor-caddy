@@ -91,7 +91,7 @@ $: podman image prune -f --filter label=stage=alpine-builder
 
 If you want to customize anything about the image after building it ex. your own Caddyfile mounted to the container, you can do so by using following directories
 
-`/app/testCaddyfile`, `/app/localCaddyfile`, `/app/prodCaddyfile` - for Caddyfiles, do not mount entire `/app`!
+`/app/configs/Caddyfile` - Mount your own Caddyfile into the container (recommended)
 
 `/srv` - To serve static webpages/sites from container
 
