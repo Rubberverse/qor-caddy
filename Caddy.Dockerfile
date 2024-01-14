@@ -40,20 +40,6 @@ RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/co
 COPY --chmod=0755 scripts/array-helper.sh /app/scripts/array-helper.sh
 COPY scripts/template.MODULES /app/scripts/.MODULES
 
-RUN addgroup \
-    --gid $GID \
-    --system \
-    "$GROUP"
-
-RUN adduser \
-    --home "/app" \
-    --shell "$SHELL" \
-    --ingroup "$GROUP" \
-    --uid "$UID" \
-    --no-create-home \
-    --disabled-password \
-    "$USER"
-
 COPY templates/template.bashrc /app/.bashrc
 RUN envsubst "$CADDY_VERSION" > /app/.bashrc \
     && envsubst "$UID" > /app/.bashrc \
@@ -66,6 +52,20 @@ RUN envsubst "$CADDY_VERSION" > /app/.bashrc \
     && envsubst "$GOBIN" > /app/.bashrc
 
 RUN ["/bin/bash", "-c", "/app/scripts/array-helper.sh"]
+
+RUN addgroup \
+    --gid "$GID" \
+    --system \
+    "$GROUP"
+
+RUN adduser \
+    --home "/app" \
+    --shell "$SHELL" \
+    --ingroup "$GROUP" \
+    --uid "$UID" \
+    --no-create-home \
+    --disabled-password \
+    "$USER"
 
 RUN mv /etc/passwd /etc/passwd2 \
     && tail -n +2 /etc/passwd2 > /etc/passwd \
@@ -96,7 +96,7 @@ RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/co
     ca-certificates
 
 RUN addgroup \
-    --gid $GID \
+    --gid "$GID" \
     --system \
     "$GROUP"
 
@@ -120,11 +120,7 @@ COPY --from=alpine-builder --chown=1001:1001 /app/.bashrc /app/.bashrc
 COPY --from=alpine-builder /etc/passwd /app/passwd
 
 # Caddyfiles
-COPY configs/testing.Caddyfile /app/testCaddyfile
-COPY configs/local.Caddyfile /app/localCaddyFile
-COPY configs/prod.Caddyfile /app/prodCaddyFile
-
-WORKDIR /app/scripts
+COPY configs/Caddyfile /app/configs/Caddyfile
 
 # ================================
 # Caddy-Test Build
