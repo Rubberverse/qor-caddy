@@ -2,7 +2,7 @@
 source /app/.bashrc
 
 mapfile -t lines < /app/helper/.MODULES
-cmd_array=( xcaddy build v${CADDY_VERSION} )
+cmd_array=( xcaddy build ${CADDY_VERSION} )
 
 for module in "${lines[@]}"; do
     cmd_array+=( --with "$module" )
