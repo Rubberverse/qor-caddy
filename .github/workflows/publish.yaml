@@ -1,5 +1,7 @@
 name: Deploy Images to GHCR
 
+concurrency: production
+
 on:
   push:
     branches:
@@ -11,10 +13,6 @@ jobs:
     name: Build, Push and Deploy the Image
     runs-on: ubuntu-latest
     environment: production
-    env:
-      ALPINE_LINUX: ${{ vars.ALPINE_LINUX }}
-      CADDY_VERSION: ${{ vars.CADDY_VERSION }}
-      BUILD_VERSION: ${{ vars.BUILD_VERSION }}
 
     defaults:
       run:
@@ -34,9 +32,9 @@ jobs:
           registry: ghcr.io
           enableBuildKit: true
           githubOrg: rubberverse
-          tags: build-${{ env.RELEASE_VERSION }}, latest-${{ env.BUILD_VERSION }}
+          tags: build-${{ vars.RELEASE_VERSION }}, latest-${{ vars.BUILD_VERSION }}
           dockerfile: Caddy.Dockerfile
-          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
+          buildArgs: ALPINE_VERSION=${{ vars.ALPINE_VERSION }}, CADDY_VERSION=${{ vars.CADDY_VERSION }}, BUILD_VERSION=${{ vars.BUILD_VERSION }}
           multiPlatform: true
           platform: linux/amd64,linux/arm64
           username: ${{ github.actor }}
