@@ -1,44 +1,49 @@
 name: Deploy Images to GHCR
 
-concurrency: production
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+env:
+  ALPINE_VERSION: ${{vars.ALPINE_VERSION}}
+  CADDY_VERSION: ${{vars.CADDY_VERSION}}
+  BUILD_VERSION: ${{vars.BUILD_VERSION}}
 
 jobs:
-  build:
-    name: Build, Push and Deploy the Image
-    runs-on: ubuntu-latest
-    environment: production
+      push-store-image:
+        runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: '.'
+        steps:
+          - name: 'Checkout GitHub Action'
+            uses: actions/checkout@main
+        
+          - name: Set env
+            run: echo "RELEASE_VERSION=${GITHUB_REF#refs/heads/main}" >> $GITHUB_ENV
 
-    defaults:
-      run:
-        shell: bash
+          - name: 'Login to GitHub Container Registry'
+            uses: docker/login-action@v1
+            with:
+              registry: ghcr.io
+              username: ${{github.actor}}
+              password: ${{secrets.GITHUB_TOKEN}}
 
-    steps:
-      - name: 'Checkout Code'
-        uses: actions/checkout@main
-    
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/heads/main}" >> $GITHUB_ENV \
-            && echo "ALPINE_VERSION=${{ vars.ALPINE_VERSION }}" >> $GITHUB_ENV \
-            && echo "CADDY_VERSION=${{ vars.CADDY_VERSION }}" >> $GITHUB_ENV \
-            && echo "BUILD_VERSION=${{ vars.BUILD_VERSION }}" >> $GITHUB_ENV
+          - name: Set up QEMU
+            uses: docker/setup-qemu-action@v3
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v3
 
-      - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build & push Docker image to ghcr.io
-        with:
-          image: rubberverse/qor-caddy
-          registry: ghcr.io
-          enableBuildKit: true
-          githubOrg: rubberverse
-          tags: build-${{ env.RELEASE_VERSION }}, latest-${{ env.BUILD_VERSION }}
-          dockerfile: Caddy.Dockerfile
-          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
-          multiPlatform: true
-          platform: linux/amd64,linux/arm64
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          - name: Build and push
+            uses: docker/build-push-action@v2.7.0
+            with:
+              context: ./
+              file: ./Caddy.Dockerfile
+              platforms: linux/arm64, linux/amd64, linux/riscv64, linux/mips64le, linux/arm/v7, linux/s390x, linux/386
+              push: true
+              cache-from: type=gha .
+              build-args: BUILDKIT_MULTIPLATFORM=1,ALPINE_VERSION=${{env.ALPINE_VERSION}},CADDY_VERSION=${{env.CADDY_VERSION}},BUILD_VERSION=${{env.BUILD_VERSION}}
+              tags: |
+                ghcr.io/${{github.repository}}:build-${{env.BUILD_VERSION}}-commit-${{env.RELEASE_VERSION}}
+                ghcr.io/${{github.repository}}:latest
