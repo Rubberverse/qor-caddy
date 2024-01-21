@@ -58,6 +58,8 @@ You can pass the following arguments to `podman build`/`docker build ` in order 
 
 `GITWORKTREE` -> Place where Git will store it's work tree. Defaults to `/app/tree`
 
+---
+
 ## Super not-tidy-way-to-convey-usage
 
 > [!WARNING] 
