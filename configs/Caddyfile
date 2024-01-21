@@ -1,0 +1,11 @@
+{
+    admin localhost:2019
+    http_port 8080
+    https_port 8443
+}
+
+my.domain-example.com {
+    tls internal
+    root * /srv/
+    file_server
+}
