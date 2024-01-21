@@ -1,4 +1,4 @@
-> [!WARNING 
+> [!WARNING]
 > This shouldn't be used in production yet as I had no chance to test it throughoughly. Though if you want to test it, feel free to do so, it's probably fine to use.
 
 ## What's this
