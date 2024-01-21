@@ -10,25 +10,20 @@ env:
   CADDY_VERSION: ${{vars.CADDY_VERSION}}
   BUILD_VERSION: ${{vars.BUILD_VERSION}}
 
-
 jobs:
-      push-store-image:
-        runs-on: ubuntu-latest
-        defaults:
-          run:
-            working-directory: '.'
-        steps:
-          - name: 'Checkout GitHub Action'
-            uses: actions/checkout@main
-
-          - name: 'Login to GitHub Container Registry'
-            uses: docker/login-action@v1
-            with:
-              registry: ghcr.io
-              username: ${{github.actor}}
-              password: ${{secrets.GITHUB_TOKEN}}
-
-          - name: 'Build the image'
-            run: |
-              docker build . --tag ghcr.io/rubberverse/qor-caddy:latest --build-arg alpine_version=${{env.ALPINE_VERSION}} --build-arg caddy_version=${{env.CADDY_VERSION}} --build-arg build_version=${{env.BUILD_VERSION}}
-              docker push ghcr.io/rubberverse/qor-caddy:latest
+  build:
+    name: Build, Push and Deploy the Image
+    runs-on: ubuntu-latest
+      
+    steps:
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build & push Docker image to ghcr.io
+        with:
+          image: qor-caddy
+          tags: ${{env.BUILD_VERSION}}-${{env.CADDY_VERSION}}, caddy-${{env.CADDY_VERSION}}-alpine-${{env.ALPINE_VERSION}}-build-${{env.BUILD_VERSION}}
+          buildArgs: ALPINE_VERSION=${{env.ALPINE_VERSION}} CADDY_VERSION=${{env.CADDY_VERSION}} BUILD_VERSION=${{env.BUILD_VERSION}}
+          registry: ghcr.io
+          multiPlatform: true
+          platform: linux/amd64,linux/arm64
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
