@@ -1,13 +1,5 @@
 name: Deploy Images to GHCR
 
-env:
-  ALPINE_VERSION: ${{alpine_version}}
-  CADDY_VERSION: ${{caddy_version}}
-  BUILD_VERSION: ${{build_version}}
-  CADDY_ENVIRONMENT: local
-  ADAPTER_CONFIG: caddyfile
-
-
 on:
   push:
     branches:
@@ -31,7 +23,7 @@ jobs:
               username: ${{github.actor}}
               password: ${{secrets.GITHUB_TOKEN}}
 
-          - name: 'Image building'
+          - name: 'Build the image'
             run: |
-              docker build . --tag ghcr.io/Rubberverse/qor-caddy:${{build_version}} --build-args ALPINE_VERSION=$alpine_version --build-args CADDY_VERSION=$caddy_version --build-args BUILD_VERSION=$build_version
-              docker push ghcr.io/Rubberverse/qor-caddy:${{build_version}}
+              docker build . --tag ghcr.io/Rubberverse/qor-caddy:${{ vars.BUILD_VERSION }}
+              docker push ghcr.io/Rubberverse/qor-caddy:${{ vars. BUILD_VERSION }} --build-args alpine_version=${{ vars.ALPINE_VERSION }} --build-args caddy_version=${{ vars.CADDY_VERSION}} --build-args build_version=${{ vars.BUILD_VERSION }}
