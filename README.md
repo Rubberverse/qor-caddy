@@ -19,8 +19,6 @@ Ah, it's hard to answer this but I'll try my best.
 
 Everything on container side is already set-up and ready for you to build your own customized Caddy instance.
 
----
-
 ## Features
 This Dockerfile may use some unconventional methods to achieve it's goals. You've been warned!
 
@@ -28,6 +26,8 @@ This Dockerfile may use some unconventional methods to achieve it's goals. You'v
 - Version agnostic, you can use any specific version of `Caddy` and `Alpine Linux` image
 - Easily build Caddy with any plugin you would ever want just by putting repository links in `templates/template.MODULE`
 - Makes use of new and well, probably undocumented `Dockerfile` trickery/workarounds
+
+---
 
 ## Build Arguments
 You can pass the following arguments to `podman build`/`docker build ` in order to customize your image further.
