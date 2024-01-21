@@ -1,0 +1,37 @@
+name: Deploy Images to GHCR
+
+env:
+  ALPINE_VERSION: ${{alpine_version}}
+  CADDY_VERSION: ${{caddy_version}}
+  BUILD_VERSION: ${{build_version}}
+  CADDY_ENVIRONMENT: local
+  ADAPTER_CONFIG: caddyfile
+
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+      push-store-image:
+        runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: '.'
+        steps:
+          - name: 'Checkout GitHub Action'
+            uses: actions/checkout@main
+
+          - name: 'Login to GitHub Container Registry'
+            uses: docker/login-action@v1
+            with:
+              registry: ghcr.io
+              username: ${{github.actor}}
+              password: ${{secrets.GITHUB_TOKEN}}
+
+          - name: 'Image building'
+            run: |
+              docker build . --tag ghcr.io/Rubberverse/qor-caddy:${{build_version}} --build-args ALPINE_VERSION=$alpine_version --build-args CADDY_VERSION=$caddy_version --build-args BUILD_VERSION=$build_version
+              docker push ghcr.io/Rubberverse/qor-caddy:${{build_version}}
