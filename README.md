@@ -7,7 +7,7 @@ Singular Dockerfile `Caddy.Dockerfile` that spins up [xcaddy](https://github.com
 
 ## Built images (using Github Actions)
 
-These images include most commonly wanted DNS plugins for following services: Cloudflare, Route53, DuckDNS, AliDNS, GoDaddy, Porkbun, Google Domains, Namecheap, Netlify, Azure, AcmeDNS, Vercel, Namesilo, DDNSS, MailInABox and some popular/useful plugins such as Vulcain, Mercure, ProxyProtocol, CorazaWAF, Layer4 support, Replace Response, Brotli, FrankenPHP, Teapot Module, DynamicDNS and Caddy-Security. 
+These images include most commonly wanted DNS plugins for following services: Cloudflare, Route53, DuckDNS, AliDNS, GoDaddy, Porkbun, Google Domains, Namecheap, Netlify, Azure, AcmeDNS, Vercel, Namesilo, DDNSS, MailInABox and some popular/useful plugins such as Vulcain, Mercure, ProxyProtocol, CorazaWAF, Layer4 support, Replace Response, Brotli, Teapot Module, DynamicDNS and Caddy-Security. 
 
 Due to this, the size of the final image might be a lot more than you're prepared for, although it shouldn't be too bad. The nature of this repository is so you can do `git pull` and locally build yourself a image with anything you want, it's simple and everything is outlined in How-To's.
 
