@@ -37,7 +37,7 @@ RUN echo "Installing dependencies"  \
         xcaddy                      \
         ca-certificates             \
     && envsubst < /app/temp.bashrc > /app/.bashrc   \
-    && /bin/bash -c /app/helper/array-helper.sh
+    && /bin/bash -c /app/helper/array-helper.sh \
     && rm -rf /app /tmp
     # -d: recursive directories, -x deletes everything including ignored files, -f forces it
 
