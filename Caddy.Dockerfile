@@ -2,7 +2,7 @@
 # 1. ALPINE BUILDER STAGE
 # =============================================================================
 
-ARG ALPINE_VERSION=3.19.0
+ARG ALPINE_VERSION=latest
 
 FROM docker.io/library/alpine:${ALPINE_VERSION} AS alpine-builder
 WORKDIR /app
