@@ -10,9 +10,9 @@ WORKDIR /app
 # For clean-up, each stage is labeled
 LABEL stage=alpine-builder
 
-ARG ALPINE_VERSION=3.19.0   \
-    CADDY_VERSION=2.7.6     \
-    BUILD_VERSION=0.10      \
+ARG ALPINE_VERSION=latest   \
+    CADDY_VERSION=latest    \
+    BUILD_VERSION=0.1.0     \
     SHELL=/bin/bash         \
     GOPATH=/app/go          \
     USER=caddy              \
@@ -50,9 +50,9 @@ WORKDIR /app
 
 LABEL stage=qor-caddy
 
-ARG ALPINE_VERSION=3.19.0   \
-    CADDY_VERSION=2.7.6     \
-    BUILD_VERSION=0.10      \
+ARG ALPINE_VERSION=latest   \
+    CADDY_VERSION=latest    \
+    BUILD_VERSION=0.1.0     \
     SHELL=/bin/bash         \
     GOPATH=/app/go          \
     USER=caddy              \
