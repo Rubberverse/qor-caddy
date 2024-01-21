@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+env:
+  ALPINE_VERSION: ${{vars.ALPINE_VERSION}}
+  CADDY_VERSION: ${{vars.CADDY_VERSION}}
+  BUILD_VERSION: ${{vars.BUILD_VERSION}}
+
 
 jobs:
       push-store-image:
@@ -22,12 +27,6 @@ jobs:
               registry: ghcr.io
               username: ${{github.actor}}
               password: ${{secrets.GITHUB_TOKEN}}
-
-          - name: 'Set Environmental Variables'
-            run: |
-              echo "ALPINE_VERSION=${ALPINE_VERSION}" >> $GITHUB_ENV
-              echo "CADDY_VERSION=${CADDY_VERSION}" >> $GITHUB_ENV
-              echo "BUILD_VERSION=${BUILD_VERSION}" >> $GITHUB_ENV 
 
           - name: 'Build the image'
             run: |
