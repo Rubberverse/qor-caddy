@@ -45,5 +45,5 @@ jobs:
               cache-from: type=gha .
               build-args: BUILDKIT_MULTIPLATFORM=1,ALPINE_VERSION=${{env.ALPINE_VERSION}},CADDY_VERSION=${{env.CADDY_VERSION}},BUILD_VERSION=${{env.BUILD_VERSION}}
               tags: |
-                ghcr.io/rubberverse/qor-caddy:build-${{env.BUILD_VERSION}}-commit-${{env.RELEASE_VERSION}}
+                ghcr.io/rubberverse/qor-caddy:build-${BUILD_VERSION}-commit-${RELEASE_VERSION}
                 ghcr.io/rubberverse/qor-caddy:latest
