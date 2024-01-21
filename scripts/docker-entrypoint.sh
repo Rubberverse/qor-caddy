@@ -1,61 +1,75 @@
 #!/bin/bash
-echo "Verifying what user is running the image"
+source /app/.bashrc
 
-if [[ $(whoami) != "root" ]];
+case ${CADDY_ENVIRONMENT} in
+    TEST|LOCAL|PROD) echo "Your CADDY_ENVIRONMENT is VALID" ;;
+    *) echo "Your CADDY_ENVIRONMENT is INVALID, please fix it and relaunch the container!" \
+        && exit -3 ;;
+esac
+
+if [[ $(whoami) == root && $CADDY_ENVIRONMENT != "TEST" ]]
     then
-        source /app/.bashrc
-        echo "You're running this image as $(whoami):$UID that's apart of group $GID"
-        echo "This is a internal user that about doesn't have access to much by default"
+        echo "==============================================================================="
+        echo "Init - Starting Caddy as root then instantly stopping it to grab certificates  "
+        echo "==============================================================================="
+        /app/caddy start --config /app/configs/Caddyfile --adapter caddyfile \
+            && echo "Ordering Caddy to install certificates into root store..." \
+            && /app/caddy trust
+        
+        echo "Stopping caddy..."
+        /app/caddy stop
+        
+        EXITCODE=$?
+
+        if [[ $EXITCODE = 0 ]]
+            then
+                echo "Caddy exited properly! Fixing up folder permissions..."
+                chown -R ${CONT_USER}:${CONT_GROUP} /app
+            else
+                echo "Caddy failed to stop properly (exit_code didn't match 0)"
+            exit -5
+        fi
+
+        echo "==============================================================================="
+        echo "Init - Switching users                                                         "
+        echo "==============================================================================="
+        echo "DEBUG: Variable Dump"
+        cat /app/.bashrc
         echo ""
+        su -s /bin/bash -c /app/scripts/docker-entrypoint.sh ${CONT_USER}
+        exit 99 || true
     else
-        echo "[WARNING] It is not recommended to run Web Server software as root, even inside a container"
-        echo "You can discard this message if you're on a TESTING Environment"
-        source /app/.bashrc
-        echo ""
-        echo "You're running this image as $(whoami)"
-        echo "In order to run as $USER, you will need to re-deploy the container with LOCAL or PROD Environment"
-        echo ""
+        echo "Your CADDY_ENVIRONMENT is ${CADDY_ENVIRONMENT}, skipping Init."
 fi
 
-echo "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+="
-echo "  ________  ________  ________         "
-echo " |\   __  \|\   __  \|\   __  \        "
-echo " \ \  \|\  \ \  \|\  \ \  \|\  \       "
-echo "  \ \  \\\  \ \  \\\  \ \   _  _\      "
-echo "   \ \  \\\  \ \  \\\  \ \  \\  \|     "
-echo "    \ \_____  \ \_______\ \__\\ _\     "
-echo "     \|___| \__\|_______|\|__|\|__|    "
-echo "           \|__|                       "
-echo "                                       "
-echo "                  by Mr. Rubber Ducky  "
-echo "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+="
-echo "USER: $(whoami):$GROUP, UID and GUID: $UID:$GID"
+echo "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+";
+echo " ________   ________   ________     ";
+echo "|\   __  \ |\   __  \ |\   __  \    ";
+echo "\ \  \|\  \\ \  \|\  \\ \  \|\  \   ";
+echo " \ \  \\\  \\ \  \\\  \\ \   _  _\  ";
+echo "  \ \  \\\  \\ \  \\\  \\ \  \\  \| ";
+echo "   \ \_____  \\ \_______\\ \__\\ _\ ";
+echo "    \|___| \__\\|_______| \|__|\|__|";
+echo "          \|__|                     ";
+echo "                                    ";
+echo "                                    ";
+echo "                    by MrRubberDucky";
+echo "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+";
+echo "USER: $(whoami), GROUP: ${CONT_GROUP} | UID: ${CONT_UID}, GID ${CONT_GID}"
 echo ""
-echo "Documentation - https://github.com/MrRubberDucky/rubberverse-dockerfiles/Caddy/README.md"
+echo "Documentation - https://github.com/Rubberverse/qor-caddy/README.md"
 echo "Cursed & Overkill Solutions, at your doorstep!"
-echo "Built from caddy:${CADDY_VERSION}-alpine"
-
+echo "Built from alpine:${ALPINE_VERSION}, Build ${BUILD_VERSION}"
 echo ""
 
-# I wonder if there's a better way to do this. Works though so not that big of a issue.
-if [[ $CADDY_ENVIRONMENT = "TEST" ]]
+
+if [[ $CADDY_ENVIRONMENT != "TEST" && $(whoami) != "root" ]]
     then
-        echo "Environment is set to Testing/Development, starting in background and actively listening to config changes"
-        echo "Docker interactive session is supported. Map a volume to /var/www/site to publish a site instantly on specified host and port"
-        /app/caddy run --config /app/configs/Caddyfile --adapter caddyfile --watch
-elif [[ $CADDY_ENVIRONMENT = "LOCAL" ]]
-    then
-        echo "Environment is set to Local/Localhost, starting in daemon mode"
-        echo "Docker interactive session is not supported. Map a volume to /srv or different Caddyfile to /app/configs and restart container"
-        /app/caddy run --config /app/configs/Caddyfile --adapter caddyfile
-elif [[ $CADDY_ENVIRONMENT = "PROD" ]]
-    then
-        echo "Environment is set to Production/Live, starting in daemon mode"
-        echo "Docker interactive session is not supported. Map a volume to /srv or different Caddyfile to /app/configs and restart container"
-        /app/caddy run --config /app/configs/Caddyfile --adapter caddyfile
-else
-    echo "If you're seeing this, your CADDY_ENVIRONMENT variable is invalid"
-    echo "In order to launch this container, you need to assign it a valid value between TEST, LOCAL and PROD"
-    echo "Current value of CADDY_ENVIRONMENT -> ${CADDY_ENVIRONEMNT}, expected: TEST, LOCAL or PROD"
-    exit -1
+        echo "Launching Caddy, your current Environment reflects in-prod/prod setup   "
+        echo "Config watching is disabled for local/prod builds                       "
+        /app/caddy run --config /app/configs/Caddyfile --adapter ${ADAPTER_TYPE}
+    else
+        echo "Caddy is launching in TESTING Environment.                              "
+        echo "Config watching is enabled for debug/testing builds                     "
+        /app/caddy run --config /app/configs/Caddyfile --adapter ${ADAPTER_TYPE} --watch
 fi
