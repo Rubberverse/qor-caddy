@@ -19,6 +19,8 @@ Ah, it's hard to answer this but I'll try my best.
 
 Everything on container side is already set-up and ready for you to build your own customized Caddy instance.
 
+---
+
 ## Features
 This Dockerfile may use some unconventional methods to achieve it's goals. You've been warned!
 
