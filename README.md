@@ -6,6 +6,19 @@ It makes use of Alpine Linux as it's base, allowing you to reap all advantages o
 > [!NOTE] 
 > This is both data and resource heavy during building process, if you want only Caddy and nothing else, it is recommended to build `vanillaCaddy.Dockerfile` instead which will be up soon on this repository
 
+## Why was this created?
+Ah, it's hard to answer this but I'll try my best. 
+
+**First**, this was created because I gotten tired of Caddy containers that were just at best a singular extra plugin and nothing else with no real way to extend it aside from modifying their own Dockerfile. Which at that point you're better off throwing something up yourself with how much you would need to change.
+
+**Secondly**, I wanted something that I could use to spin up specifc Caddy instances with exact plugins that I would want during build time. 
+
+**Third-ly**, I wanted to learn Dockerfile format by throwing myself into deep water. Somewhat worked out, I think?
+
+**Thus**, QoR-Caddy was born, a project that aims to be version agnostic and make it as easy as just pasting links into a file and then building out the image from Dockerfile without having to modify **anything** about it.
+
+Everything on container side is already set-up and ready for you to build your own customized Caddy instance.
+
 ## Features
 This Dockerfile may use some unconventional methods to achieve it's goals. You've been warned!
 
@@ -17,57 +30,31 @@ This Dockerfile may use some unconventional methods to achieve it's goals. You'v
 ## Build Arguments
 You can pass the following arguments to `podman build`/`docker build ` in order to customize your image further.
 
-- `ALPINE_VERSION`
+`ALPINE_VERSION` -> Alpine container image version. Defaults to `3.19.0`
 
-Alpine container image version. Defaults to `3.19.0`
+`CADDY_VERSION` -> Caddy Web Server version, it will be built using `xcaddy`. Defaults to `2.7.0`
 
-- `CADDY_VERSION`
+`BUILD_VERSION` -> QoR-Caddy container version. Defaults to `0.10`
 
-Caddy Web Server version, it will be built using `xcaddy`. Defaults to `2.7.0`
+`SHELL` -> Shell environmental variable, this is so bash and other software doesn't get confused. Defaults to `/bin/bash`
 
-- `BUILD_VERSION`
+`USER` -> Container user that will be created. Defaults to `caddy`
 
-QoR-Caddy container version. Defaults to `0.10`
+`GROUP` -> Container user's group that will be created. It is created first then container user is joined towards it. Defaults to `web`
 
-- `SHELL`
+`HOME` -> Container user's Home directory. Defaults to `/app`
 
-Shell environmental variable, this is so bash and other software doesn't get confused. Defaults to `/bin/bash`
+`UID` -> Container's User ID. To avoid permission issues, map it to your host users UID. Defaults to `1001`
 
-- `USER`
+`GID` -> Container's Group ID. To avoid permission issues, map it to your hosts group ID. Defaults to `1001`
 
-Container user that will be created. Defaults to `caddy`
+`GOPATH` -> Place where Go will store most of it's stuff. Defaults to `/app/go`
 
-- `GROUP`
+`GOCACHE` -> Place where Go will store it's build/module cache. Defaults to `/app/cache`
 
-Container user's group that will be created. It is created first then container user is joined towards it. Defaults to `web`
+`GITDIR` -> Place where Git will store it's pulls and what not. Defaults to `/app/git`
 
-- `HOME`
-
-Container user's Home directory. Defaults to `/app`
-
-- `UID`
-
-Container's User ID. To avoid permission issues, map it to your host users UID. Defaults to `1001`
-
-- `GID`
-
-Container's Group ID. To avoid permission issues, map it to your hosts group ID. Defaults to `1001`
-
-- `GOPATH`
-
-Place where Go will store most of it's stuff. Defaults to `/app/go`
-
-- `GOCACHE`
-
-Place where Go will store it's build/module cache. Defaults to `/app/cache`
-
-- `GITDIR`
-
-Place where Git will store it's pulls and what not. Defaults to `/app/git`
-
-- `GITWORKTREE`
-
-Place where Git will store it's work tree. Defaults to `/app/tree`
+`GITWORKTREE` -> Place where Git will store it's work tree. Defaults to `/app/tree`
 
 ## Super not-tidy-way-to-convey-usage
 
