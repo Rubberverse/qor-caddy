@@ -22,9 +22,6 @@ jobs:
           - name: 'Checkout GitHub Action'
             uses: actions/checkout@main
 
-        # Set RELEASE_VERSION variable to latest commit
-          - name: Set env
-            run: echo "RELEASE_VERSION=${GITHUB_REF#refs/heads/main}" >> $GITHUB_ENV
           - name: Docker meta
             id: meta
             uses: docker/metadata-action@v5
