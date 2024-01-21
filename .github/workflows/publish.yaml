@@ -31,4 +31,4 @@ jobs:
           - name: 'Build the image'
             run: |
               docker build . --tag ghcr.io/rubberverse/qor-caddy:latest
-              docker push ghcr.io/rubberverse/qor-caddy:${{env.BUILD_VERSION}} --build-args alpine_version=${{env.ALPINE_VERSION}} --build-args caddy_version=${{env.CADDY_VERSION}} --build-args build_version=${{env.BUILD_VERSION}}
+              docker push ghcr.io/rubberverse/qor-caddy:${{env.BUILD_VERSION}} --build-arg alpine_version=${{env.ALPINE_VERSION}} --build-arg caddy_version=${{env.CADDY_VERSION}} --build-arg build_version=${{env.BUILD_VERSION}}
