@@ -23,6 +23,12 @@ jobs:
               username: ${{github.actor}}
               password: ${{secrets.GITHUB_TOKEN}}
 
+          - name: 'Set Environmental Variables'
+            run: |
+              echo "ALPINE_VERSION=${ALPINE_VERSION}" >> $GITHUB_ENV
+              echo "CADDY_VERSION=${CADDY_VERSION}" >> $GITHUB_ENV
+              echo "BUILD_VERSION=${BUILD_VERSION}" >> $GITHUB_ENV 
+
           - name: 'Build the image'
             run: |
               docker build . --tag ghcr.io/Rubberverse/qor-caddy:${BUILD_VERSION}
