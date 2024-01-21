@@ -38,8 +38,6 @@ RUN echo "Installing dependencies"  \
         ca-certificates             \
     && envsubst < /app/temp.bashrc > /app/.bashrc   \
     && /bin/bash -c /app/helper/array-helper.sh
-    #&& rm -rf /app /tmp
-    # -d: recursive directories, -x deletes everything including ignored files, -f forces it
 
 # =============================================================================
 # 2. ALPINE BASE STAGE
