@@ -65,10 +65,7 @@ You can pass the following arguments to `podman build`/`docker build ` in order 
 
 ## Super not-tidy-way-to-convey-usage
 
-> [!WARNING] 
-> This is work-in-progress, not recommended to use it on production as I haven't had chance to throughoughly test it yet
-
-Eventually I'll get around to updating it properly and then it should be fine.
+Refer to the notice from above but if you like danger then waddle on!
 
 ### Required files
 
