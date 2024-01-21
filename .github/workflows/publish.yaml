@@ -5,16 +5,16 @@ on:
     branches:
       - main
   workflow_dispatch:
-env:
-  ALPINE_VERSION: ${{ vars.ALPINE_VERSION }}
-  CADDY_VERSION: ${{ vars.CADDY_VERSION }}
-  BUILD_VERSION: ${{ vars.BUILD_VERSION }}
 
 jobs:
   build:
     name: Build, Push and Deploy the Image
     runs-on: ubuntu-latest
-      
+    
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - name: 'Checkout Code'
         uses: actions/checkout@main
@@ -29,10 +29,14 @@ jobs:
           registry: ghcr.io
           enableBuildKit: true
           githubOrg: rubberverse
-          tags: build-${{ env.BUILD_VERSION }}, ${{ env.RELEASE_VERSION }}-latest
+          tags: build-${{ env.RELEASE_VERSION }}, latest-${{ env.BUILD_VERSION }}
           dockerfile: .
           buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           multiPlatform: true
           platform: linux/amd64,linux/arm64
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          ALPINE_LINUX: ${{ vars.ALPINE_LINUX }}
+          CADDY_VERSION: ${{ vars.CADDY_VERSION }}
+          BUILD_VERSION: ${{ vars.BUILD_VERSION }}
