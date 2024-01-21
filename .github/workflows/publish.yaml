@@ -27,7 +27,7 @@ jobs:
           githubOrg: rubberverse
           tags: build-${BUILD_VERSION}, ${{ env.RELEASE_VERSION }}-latest
           dockerfile: .
-          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }} CADDY_VERSION=${{ env.CADDY_VERSION }} BUILD_VERSION=${{ env.BUILD_VERSION }}
+          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           multiPlatform: true
           platform: linux/amd64,linux/arm64
           username: ${{ github.actor }}
