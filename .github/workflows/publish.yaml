@@ -5,14 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
-env:
-  ALPINE_VERSION: ${{vars.ALPINE_VERSION}}
-  CADDY_VERSION: ${{vars.CADDY_VERSION}}
-  BUILD_VERSION: ${{vars.BUILD_VERSION}}
 
 jobs:
       push-store-image:
         runs-on: ubuntu-latest
+        environment: production
         defaults:
           run:
             working-directory: '.'
@@ -36,14 +33,14 @@ jobs:
             uses: docker/setup-buildx-action@v3
 
           - name: Build and push
-            uses: docker/build-push-action@v2.7.0
+            uses: docker/build-push-action@v5.1.0
             with:
               context: ./
-              file: ./Caddy.Dockerfile
-              platforms: linux/arm64, linux/amd64, linux/riscv64, linux/mips64le, linux/arm/v7, linux/s390x, linux/386
+              file: Caddy.Dockerfile
+              platforms: linux/arm64,linux/amd64,linux/riscv64,linux/mips64le,linux/arm/v7,linux/s390x,linux/386
               push: true
               cache-from: type=gha .
               build-args: BUILDKIT_MULTIPLATFORM=1,ALPINE_VERSION=${{env.ALPINE_VERSION}},CADDY_VERSION=${{env.CADDY_VERSION}},BUILD_VERSION=${{env.BUILD_VERSION}}
               tags: |
-                ghcr.io/${{github.repository}}:build-${{env.BUILD_VERSION}}-commit-${{env.RELEASE_VERSION}}
-                ghcr.io/${{github.repository}}:latest
+                ghcr.io/rubberverse/qor-caddy:build-${{env.BUILD_VERSION}}-commit-${{env.RELEASE_VERSION}}
+                ghcr.io/rubberverse/qor-caddy:latest
