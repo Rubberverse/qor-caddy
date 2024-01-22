@@ -13,9 +13,9 @@ on:
 
 jobs:
   build:
-    environment: production
     name: Build, push, and deploy
     runs-on: ubuntu-latest
+    environment: production
 
     defaults:
       run:
@@ -47,7 +47,6 @@ jobs:
         with:
           image: rubberverse/qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
-          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           registry: ghcr.io
           multiPlatform: true
           overrideDriver: true
@@ -60,7 +59,6 @@ jobs:
         with:
           image: mrrubberducky/qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
-          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           registry: docker.io
           multiPlatform: true
           overrideDriver: true
