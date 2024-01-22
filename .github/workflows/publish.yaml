@@ -46,7 +46,6 @@ jobs:
         name: Build & push Multi-Arch Docker Image
         with:
           image: rubberverse/qor-caddy
-          environment: production
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
           buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           registry: ghcr.io
@@ -60,7 +59,6 @@ jobs:
         name: Build & push Docker image to docker.io for ${{ matrix.db-type }}
         with:
           image: mrrubberducky/qor-caddy
-          environment: production
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
           buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           registry: docker.io
