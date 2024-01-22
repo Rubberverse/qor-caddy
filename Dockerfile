@@ -2,7 +2,7 @@
 # 1. ALPINE BUILDER STAGE
 # =============================================================================
 
-ARG ALPINE_VERSION=latest
+ARG ALPINE_VERSION=edge
 
 FROM docker.io/library/alpine:${ALPINE_VERSION} AS alpine-builder
 WORKDIR /app
@@ -11,9 +11,8 @@ WORKDIR /app
 LABEL stage=alpine-builder
 LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
 
-ARG ALPINE_VERSION=latest   \
+ARG ALPINE_VERSION=edge     \
     CADDY_VERSION=latest    \
-    BUILD_VERSION=0.10      \
     SHELL=/bin/bash         \
     GOPATH=/app/go          \
     USER=caddy              \
@@ -54,9 +53,8 @@ WORKDIR /app
 LABEL stage=qor-caddy
 LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
 
-ARG ALPINE_VERSION=3.19.0   \
-    CADDY_VERSION=2.7.6     \
-    BUILD_VERSION=0.10      \
+ARG ALPINE_VERSION=edge     \
+    CADDY_VERSION=latest    \
     SHELL=/bin/bash         \
     GOPATH=/app/go          \
     USER=caddy              \
