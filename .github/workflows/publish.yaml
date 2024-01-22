@@ -1,4 +1,4 @@
-name: Deploy Images to GHCR
+name: Deploy Images to GHCR and Docker Hub
 
 on:
   push:
@@ -13,9 +13,9 @@ on:
 
 jobs:
   build:
+    environment: production
     name: Build, push, and deploy
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - uses: actions/checkout@v3
@@ -42,23 +42,27 @@ jobs:
         with:
           image: rubberverse/qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
-          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env. BUILD_VERSION }}
+          buildArgs: ALPINE_VERSION=${{ args.ALPINE_VERSION }}, CADDY_VERSION=${{ args.CADDY_VERSION }}, BUILD_VERSION=${{ args.BUILD_VERSION }}
           registry: ghcr.io
+          dockerfile: Caddy.Dockerfile
           multiPlatform: true
           overrideDriver: true
           platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/386,linux/ppc64le,linux/riscv64,linux/s390x
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          environment: production
 
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build & push Docker image to docker.io for ${{ matrix.db-type }}
         with:
           image: mrrubberducky/qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
-          buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env. BUILD_VERSION }}
+          buildArgs: ALPINE_VERSION=${{ args.ALPINE_VERSION }}, CADDY_VERSION=${{ args.CADDY_VERSION }}, BUILD_VERSION=${{ args.BUILD_VERSION }}
           registry: docker.io
+          dockerfile: Caddy.Dockerfile
           multiPlatform: true
           overrideDriver: true
           platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/386,linux/ppc64le,linux/riscv64,linux/s390x
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          environment: production
