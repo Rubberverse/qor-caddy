@@ -17,6 +17,11 @@ jobs:
     name: Build, push, and deploy
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: .
+        shell: bash
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -45,7 +50,7 @@ jobs:
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
           buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           registry: ghcr.io
-          dockerfile: ./Caddy.Dockerfile
+          dockerfile: Caddy.Dockerfile
           multiPlatform: true
           overrideDriver: true
           platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/386,linux/ppc64le,linux/riscv64,linux/s390x
@@ -60,7 +65,7 @@ jobs:
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
           buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env.BUILD_VERSION }}
           registry: docker.io
-          dockerfile: ./Caddy.Dockerfile
+          dockerfile: Caddy.Dockerfile
           multiPlatform: true
           overrideDriver: true
           platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/386,linux/ppc64le,linux/riscv64,linux/s390x
