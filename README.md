@@ -1,26 +1,36 @@
 ## What's this repository about?
 
-Singular Dockerfile `Caddy.Dockerfile` that spins up [xcaddy](https://github.com/caddyserver/xcaddy), builds plugins from a list and then runs on a rootful/rootless user inside the container and all by using either (**WIP**) Debian-Slim or Alpine-Linux image as it's base.
+Singular Dockerfile `Caddy.Dockerfile` that spins up [xcaddy](https://github.com/caddyserver/xcaddy), builds plugins from a list and then runs on a rootful/rootless user inside the container and all by using Alpine-Linux image as it's base. 
+
+**BTW**, You need to pass `CADDY_ENVIRONMENT` and `ADAPTER_CONFIG` environmental variables to the container on launch otherwise it will fail. For more information about environmental variables, look at **How-To's** below.
 
 > [!WARNING]
 > This shouldn't be used in production yet as I had no chance to test it throughoughly. Though if you want to test it, feel free to do so, it's probably fine to use.
 
-## Built images (using Github Actions)
+## Who is this for
+- Lazy people (me, you're not lazy if you're here)
+- People (also known as humans)
+- People who don't have time (I sell clocks)
+- People who have time (I buy clocks)
+- Aliens (as a bribe)
+- Pigeon that's spying on you in your window (recommendation: buy some window privacy films)
 
-These images include most commonly wanted DNS plugins for following services: Cloudflare, Route53, DuckDNS, AliDNS, GoDaddy, Porkbun, Google Domains, Namecheap, Netlify, Azure, AcmeDNS, Vercel, Namesilo, DDNSS, MailInABox and some popular/useful plugins such as Vulcain, Mercure, ProxyProtocol, CorazaWAF, Layer4 support, Replace Response, Brotli, Teapot Module, DynamicDNS and Caddy-Security. 
-
-Due to this, the size of the final image might be a lot more than you're prepared for, although it shouldn't be too bad. The nature of this repository is so you can do `git pull` and locally build yourself a image with anything you want, it's simple and everything is outlined in How-To's.
-
-*psst*, in order to launch the container after pulling you need to specify two environmental variables - `CADDY_ENVIRONMENT` and `CONFIG_ADAPTER`. CADDY_ENVIRONMENT takes three values - TEST, LOCAL, PROD and CONFIG_ADAPTER takes caddyfile or json as arguments.
+In other words, it's just here to make somebody's life easier testing their own Caddy plugins or maybe make it easier to go into production by including essential (imo) plugins into the mix. Also I guess if you want something that should never become old unless Caddy falls into obscrunity itself, or maybe the whole trend of contenarization dies because a new thing dropped etc. *You get the point* so I will not blabber here much.
 
 ## Features
-This Dockerfile may use some unconventional methods to achieve it's goals. You've been warned!
 
-- Customizable and very easily modifiable to your own tastes, most things can be changed during build process with build arguments, the rest with environmental variables
-- Version agnostic, you can use any specific version of `Caddy` and `Alpine Linux` image, by default it will always be latest version
-- Easily build Caddy with any plugin you would ever want just by putting repository links in `templates/template.MODULE`
-- Makes use of new and well, probably undocumented `Dockerfile` trickery/workarounds
-- If using our built images, it will already have everything you would want, probably. :)
+**Image built by GitHub Actions**
+- Various plugins for certain DNS providers by default - Cloudflare, Route53, DuckDNS, AliDNS, Gandi, Porkbun, Namecheap, Google Domains, Netlify, AcmeDNS, Vercel, Namesilo, DDNNSS, MailInAbox
+- Useful plugins such as CorazaWAF, Caddy-DynamicDNS, Caddy2-ProxyProtocol, Caddy-Security, Caddy-Teapot-Module, Vulcain, Mercure, Replace Response and Caddy-Brotli
+- Multi-Architecture Image, supports amd64, i386, arm64v8, amrv7, armv6, ppc64le, riscv64 and s390x
+- Rootless user inside the container
+- Built against Alpine Linux `edge` and `latest` Caddy
+
+**Dockerfile itself**
+- Build your own Caddy binary with any plugin you want by adding repository links in `template.MODULES` (without `https://`)
+- Not bound to any version specifically, you can specify your own Alpine Linux image version and Caddy version using build arguments
+- Specify your own user, group, uid and gid inside the final image with build arguments
+- Makes use of Dockerfile trickery and workarounds to achieve lower image size - `alpine-builder` image is only 49MB big after building and `qor-caddy` is 92.7MB+ (due to Caddy binary being chonky post-build)
 
 ## How-To's
 
