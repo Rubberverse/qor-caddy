@@ -99,6 +99,6 @@ RUN echo "Installing dependencies, setting up users etc." \
     && chown -R "$USER":"$GROUP" /srv /app              \
     && envsubst < /app/template.bashrc > /app/.bashrc   \
     && rm /bin/ash /app/template.bashrc                 \
-    && apk del --rdepends envsubst                      \
+    && apk del --rdepends env_set
 
 ENTRYPOINT /app/scripts/docker-entrypoint.sh
