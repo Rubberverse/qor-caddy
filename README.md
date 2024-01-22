@@ -24,6 +24,6 @@ This Dockerfile may use some unconventional methods to achieve it's goals. You'v
 
 ## How-To's
 
-(**WIP**) Available build arguments and how to use them during build - [Build Arguments](github.com/Rubberverse/qor-caddy/main/BuildArguments.MD)
+Available build arguments and how to use them during build - [Build Arguments](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
 
 (**WIP**) List of environmental variables can be found [here](https://github.com/Rubberverse/qor-caddy/main/Environment.MD)
