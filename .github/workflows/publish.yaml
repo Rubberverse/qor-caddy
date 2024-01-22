@@ -45,7 +45,7 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build & push Multi-Arch Docker Image
         with:
-          image: rubberverse/qor-caddy
+          image: qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
           registry: ghcr.io
           multiPlatform: true
