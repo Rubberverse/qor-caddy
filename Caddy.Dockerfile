@@ -1,4 +1,4 @@
-MAINTAINER MrRubberDucky <contact@rubberverse.xyz>
+LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
 
 # =============================================================================
 # 1. ALPINE BUILDER STAGE
