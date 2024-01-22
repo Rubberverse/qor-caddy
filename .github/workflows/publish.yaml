@@ -1,4 +1,4 @@
-name: Deploy Images to GHCR and Docker Hub
+name: Deploy Images to GHCR
 
 on:
   push:
@@ -19,10 +19,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
 
-      - name: Gen Versioning Data
-        id: versioning
-        uses: Soumeh/Auto-Versioning@main
+      - name: Minor version for each merge
+        id: autotagger
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
 
       - uses: docker/setup-buildx-action@v3
         name: Customize Docker driver
@@ -36,7 +41,7 @@ jobs:
         name: Build & push Multi-Arch Docker Image
         with:
           image: rubberverse/qor-caddy
-          tags: compile-${{ steps.versioning.outputs.tag }}, latest
+          tags: ${{ steps.autotagger.outputs.new_tag }}, latest
           buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env. BUILD_VERSION }}
           registry: ghcr.io
           multiPlatform: true
@@ -49,7 +54,7 @@ jobs:
         name: Build & push Docker image to docker.io for ${{ matrix.db-type }}
         with:
           image: mrrubberducky/qor-caddy
-          tags: compile-${{ steps.versioning.outputs.tag }}, latest
+          tags: ${{ steps.autotagger.outputs.new_tag }}, latest
           buildArgs: ALPINE_VERSION=${{ env.ALPINE_VERSION }}, CADDY_VERSION=${{ env.CADDY_VERSION }}, BUILD_VERSION=${{ env. BUILD_VERSION }}
           registry: docker.io
           multiPlatform: true
