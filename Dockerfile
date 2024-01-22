@@ -4,7 +4,7 @@
 
 ARG ALPINE_VERSION=3.19.0
 
-FROM docker.io/library/${ARCH}/alpine:${ALPINE_VERSION} AS alpine-builder
+FROM docker.io/library/alpine:${ALPINE_VERSION} AS alpine-builder
 WORKDIR /app
 
 # For clean-up, each stage is labeled
