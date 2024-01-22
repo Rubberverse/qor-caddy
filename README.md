@@ -36,4 +36,10 @@ In other words, it's just here to make somebody's life easier testing their own 
 
 Available build arguments and how to use them during build - [Build Arguments](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
 
-(**WIP**) List of environmental variables can be found [here](https://github.com/Rubberverse/qor-caddy/main/Environment.MD)
+List of environmental variables can be found [here](https://github.com/Rubberverse/qor-caddy/blob/main/Environment.md)
+
+## Some planned Dockerfiles and what not
+
+- `qor-xcaddy`  - Simple interactive container that bundles `git`, `xcaddy` and `ca-certificates` for testing out plugins (~335MB image due to build deps for xcaddy)
+- `qor-builder` - Standalone alpine-builder image that can be referenced in your images. probably gonna be a thing idk
+- `qor-scaddy`   - As low as possible image size vanilla Caddy image
