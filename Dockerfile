@@ -1,5 +1,3 @@
-LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
-
 # =============================================================================
 # 1. ALPINE BUILDER STAGE
 # =============================================================================
@@ -11,6 +9,7 @@ WORKDIR /app
 
 # For clean-up, each stage is labeled
 LABEL stage=alpine-builder
+LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
 
 ARG ALPINE_VERSION=3.19.0   \
     CADDY_VERSION=2.7.6     \
@@ -53,6 +52,7 @@ FROM docker.io/library/alpine:${ALPINE_VERSION} AS qor-caddy
 WORKDIR /app
 
 LABEL stage=qor-caddy
+LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
 
 ARG ALPINE_VERSION=3.19.0   \
     CADDY_VERSION=2.7.6     \
