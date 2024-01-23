@@ -20,7 +20,9 @@ In other words, it's just here to make somebody's life easier testing their own 
 These are required to have the container launch as of v0.11.0
 
 `CONFIG_PATH` - This is in case you mounted the config somewhere else in the container or using different one than Caddy, by default the location should be `/app/configs/Caddyfile`
+
 `ADAPTER_TYPE` - Specify config adapter type for Caddy to use, should be one of these: `caddyfile`, `json`, `yaml`
+
 `CADDY_ENVIRONMENT` - In what type of environment you will be running this in, it can either be `PROD` or `TEST`. TEST environment will launch the web server as root with config watching.
 
 ## Features
