@@ -1,8 +1,6 @@
 ## What's this repository about?
 
-Singular Dockerfile `Caddy.Dockerfile` that spins up [xcaddy](https://github.com/caddyserver/xcaddy), builds plugins from a list and then runs on a rootful/rootless user inside the container and all by using Alpine-Linux image as it's base. 
-
-**BTW**, You need to pass `CADDY_ENVIRONMENT` and `ADAPTER_CONFIG` environmental variables to the container on launch otherwise it will fail. For more information about environmental variables, look at **How-To's** below.
+Singular Dockerfile `Caddy.Dockerfile` that spins up [xcaddy](https://github.com/caddyserver/xcaddy), builds plugins from a list and then runs on a rootful/rootless user inside the container and all by using Alpine-Linux image as it's base.
 
 > [!WARNING]
 > This shouldn't be used in production yet as I had no chance to test it throughoughly. Though if you want to test it, feel free to do so, it's probably fine to use.
@@ -16,6 +14,14 @@ Singular Dockerfile `Caddy.Dockerfile` that spins up [xcaddy](https://github.com
 - Pigeon that's spying on you in your window (recommendation: buy some window privacy films)
 
 In other words, it's just here to make somebody's life easier testing their own Caddy plugins or maybe make it easier to go into production by including essential (imo) plugins into the mix. Also I guess if you want something that should never become old unless Caddy falls into obscrunity itself, or maybe the whole trend of contenarization dies because a new thing dropped etc. *You get the point* so I will not blabber here much.
+
+## Environment Variables
+
+These are required to have the container launch as of v0.11.0
+
+`CONFIG_PATH` - This is in case you mounted the config somewhere else in the container or using different one than Caddy, by default the location should be `/app/configs/Caddyfile`
+`ADAPTER_TYPE` - Specify config adapter type for Caddy to use, should be one of these: `caddyfile`, `json`, `yaml`
+`CADDY_ENVIRONMENT` - In what type of environment you will be running this in, it can either be `PROD` or `TEST`. TEST environment will launch the web server as root with config watching.
 
 ## Features
 
