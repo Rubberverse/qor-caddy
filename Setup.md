@@ -57,3 +57,46 @@ docker build -f Dockerfile \
   --build-arg CONT_UID=1001 \
   --build-arg CONT_GID=1001
 ```
+
+## Using Environmental variables in Caddyfile
+
+You can pass any variable you want (ex. Cloudflare API Token for Cloudflare DNS) to the image using either `--e` flag with `docker run` or `environment:` on docker-compose.yaml. Caddy will see them and recognize them as long as they're in `{$brackets}` prefixed by a dollar sign.
+
+This is a example of how you can do it
+
+```caddyfile
+# Caddyfile /app/configs/Caddyfile
+{
+        # Global Caddy configuration
+        admin localhost:2019
+        http_port 8080
+        https_port 8443
+}
+
+dashboard.my-domain.com {
+        tls {
+                dns cloudflare {$CF_API_TOKEN}
+        }
+        reverse_proxy homepage:3000
+}
+```
+
+```yaml
+version: "3.8"
+services:
+  qor-caddy:
+    image: docker.io/mrrubberducky/qor-caddy:latest
+    # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest
+  volumes:
+    - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
+  environment:
+    - CADDY_ENVIRONMENT=PROD
+    - ADAPTER_TYPE=caddyfile
+    - CONFIG_PATH=/app/configs/Caddyfile
+    - CF_API_TOKEN=apitokenblabla
+  ports:
+    - "80:8080"
+    - "443:8443"
+  networks:
+    - qor-caddy
+```
