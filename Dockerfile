@@ -102,6 +102,7 @@ RUN echo "Installing dependencies" \
     && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         bash                \
         ca-certificates     \
+        openssl=3.1.4-r4    \
     && echo "Adding group"  \
     && addgroup \
         --gid "$CONT_GID"   \
