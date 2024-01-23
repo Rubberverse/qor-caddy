@@ -9,7 +9,6 @@ You can use following arguments during building phase of the image, they're more
 | `ALPINE_REPO_URL`      | Default: `https://cdn-dl.alpinelinux.org/alpine` - In case this repo becomes unavailable, you can repoint it to a mirror |
 | `ALPINE_REPO_VERSION`  | Default: `v3.19` - Used for repositories, useful if your ALPINE_IMAGE_VERSION is something else other than stable repository ex. edge |
 | `GO_XCADDY_VERSION`    | Default: `latest` - Pulls certain version of xcaddy source and builds it using `go install` |
-| `GO_ENVSUBST_VERSION`  | Default: `v1.4.2` - Pulls certain version of envsubst source and builds it using `go install`                                    |
 | `GO_CADDY_VERSION`     | Default: `latest`. Builds Caddy binary during xcaddy building process                                                            |
 | `CONT_SHELL`           | Default: `/bin/bash`. Controls what shell user and scripts will use                                                              |
 | `CONT_HOME`            | Default: `/app`. Sets ${HOME} environmental variable for container user                                                          |
