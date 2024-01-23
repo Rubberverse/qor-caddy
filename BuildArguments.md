@@ -18,4 +18,5 @@ You can use following arguments during building phase of the image, they're more
 | `CONT_GID`             | Default: `1001`. Used during group creation. Suggest to set this to whatever matches your host group to avoid permission issues. |
 | `GIT_DIR`              | Default: `/app/git`. Sets working directory for `git` to that location                                                           |
 | `GIT_WORKTREE`         | Default: `/app/git`. Sets work tree directory for `git` to that location                                                         |
-| `GO_CACHE_DIR`         | Default: `/app/go`. Sets module cache for `go` to that location                                                                  |
+| `GO_BIN_DIR`           | Default: `/app/go` Sets where Go will store it's binaries |
+| `GO_CACHE_DIR`         | Default: `/app/go/cache`. Sets module cache for `go` to that location                                                                  |
