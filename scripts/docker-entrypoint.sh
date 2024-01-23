@@ -10,17 +10,6 @@ C_SPRINGGREEN3="\033[38;5;41m"
 C_SLATEBLUE1="\033[38;5;99m"
 
 
-function isGracefulExit() {
-    if [[ $EXITCODE = 0 ]]; then
-        echo "Caddy successfully stopped"
-        echo "Fixing up permissions"
-        chown -R ${CONT_USER}:${CONT_GROUP} /app
-    else
-        echo "Caddy forcefully stopped with exit code ${EXITCODE}"
-        exit -5
-        fi
-}
-
 function isEnvironmentValid() {
     if ! [[ $CADDY_ENVIRONMENT =~ %(TEST|PROD|test|prod)$ && $ADAPTER_TYPE =~ %(caddyfile|json|yaml)$ ]]; then
         echo -e "[✨ ${C_MEDIUMPURPLE2}Startup${NO_FORMAT}] ✅ Your environmental variables are valid"
@@ -41,9 +30,9 @@ function environmentPreLaunch() {
         /app/caddy run --config ${CONFIG_PATH} --adapter ${ADAPTER_TYPE}
     elif [[ $CADDY_ENVIRONMENT == "TEST" && $(whoami) == "root" ]]; then
         echo "Starting Caddy, your current Environment reflects in-dev/testing setup"
-        echo "Caddy will watch over the config and will start in the background"
-        echo "It is recommended to make use of the interactive session"
-        /app/caddy start --config ${CONFIG_PATH} --adapter ${ADAPTER_TYPE}
+        echo "Caddy will watch over the config and will run in the background"
+        echo "It is recommended to make use of the interactive session. Nothing will be logged here starting from now on"
+        /app/caddy start --config ${CONFIG_PATH} --adapter ${ADAPTER_TYPE} --watch
         tail -f /dev/null
     else
         echo "Image error, tell maintainer to fix this"
@@ -53,27 +42,6 @@ function environmentPreLaunch() {
 
 echo -e "[✨ ${C_MEDIUMPURPLE2}Startup${NO_FORMAT}] Checking validity of environmental variables"
 isEnvironmentValid
-
-echo -e "[✨ ${C_MEDIUMPURPLE2}Startup${NO_FORMAT}] Proceeding with initialization"
-
-if [[ $(whoami) == "root" && $CADDY_ENVIRONMENT != "TEST" ]]; then
-    echo -e "[✨ ${C_MEDIUMPURPLE2}Init 1/3${NO_FORMAT}] Starting Caddy to generate certificates  "
-    /app/caddy start --config /app/configs/Caddyfile --adapter caddyfile        \
-        && echo "Ordering Caddy to install certificates into root store..."     \
-        && /app/caddy trust
-        
-    echo -e "[✨ ${C_MEDIUMPURPLE2}Init 2/3${NO_FORMAT}] Stopping Caddy..."
-    /app/caddy stop
-        
-    EXITCODE=$?
-    isGracefulExit
-
-    echo -e "[✨ ${C_MEDIUMPURPLE2}Init 3/3${NO_FORMAT}] Switching user and exiting script for root user"
-    su -s /bin/bash -c /app/scripts/docker-entrypoint.sh ${CONT_USER}
-    exit 99 || true
-else
-    echo -e "[✨ ${C_SPRINGGREEN3}Pre-Launch${NO_FORMAT}] User changed or different environment: ${CADDY_ENVIRONMENT}, skipping initialization"
-fi
 
 echo -e "${C_DARKORANGE}"
 echo -e "______        _     _                                              ";
@@ -89,4 +57,9 @@ echo "USER: $(whoami), GROUP: ${CONT_GROUP} | UID: ${CONT_UID}, GID ${CONT_GID} 
 echo "🗒️ Documentation - https://github.com/Rubberverse/qor-caddy/README.md"
 echo "Now actually a bit more reliable..."
 echo ""
+
+echo -e "${C_SPRINGGREEN3}"
+echo -e "If your container stops abruptly after pre-launch, please make sure you have skip_install_trust in your Caddyfile"
+echo -e "Without it, Caddy will attempt to install certificates to root store resulting in a exception due to a rootless user"
+echo -e "${NO_FORMAT}"
 environmentPreLaunch
