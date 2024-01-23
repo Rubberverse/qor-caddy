@@ -4,7 +4,7 @@
 
 ### With docker-compose
 
-1. Create following file below
+1. Create following file below, remember to add volume either like that or as a persistentvolume, otherwise container will renew certificates on every re-launch which will make Let's Encrypt angry
 2. Run docker-compose -f compose.yaml up -d
 
 ```yaml
@@ -15,6 +15,8 @@ services:
     # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest
   volumes:
     - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
+    - caddy-appdata:/app/.local/share/caddy
+    - caddy-config:/app/.config/caddy
   environment:
     - CADDY_ENVIRONMENT=PROD
     - ADAPTER_TYPE=caddyfile
@@ -25,8 +27,17 @@ services:
   networks:
     - qor-caddy
 
-network:
+networks:
   qor-caddy:
+
+# Certificate and config persistence
+volumes:
+  caddy-config:
+  caddy-data:
+    driver_opts:
+      type: none
+      device: /home/youruser/caddy-data
+      o: bind
 ```
 
 ### Manually
@@ -89,14 +100,27 @@ services:
     # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest
   volumes:
     - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
+    - caddy-appdata:/app/.local/share/caddy
+    - caddy-config:/app/.config/caddy
   environment:
     - CADDY_ENVIRONMENT=PROD
     - ADAPTER_TYPE=caddyfile
     - CONFIG_PATH=/app/configs/Caddyfile
-    - CF_API_TOKEN=apitokenblabla
   ports:
     - "80:8080"
     - "443:8443"
   networks:
     - qor-caddy
+
+networks:
+  qor-caddy:
+
+# Certificate and config persistence
+volumes:
+  caddy-config:
+  caddy-data:
+    driver_opts:
+      type: none
+      device: /home/youruser/caddy-data
+      o: bind
 ```
