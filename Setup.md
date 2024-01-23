@@ -2,10 +2,13 @@
 
 **NOTE** As of v0.11.0, riscv64 platform is not supported due to Alpine Linux stable image not supporting it itself. Once they start supporting it, builds will be back for this platform!
 
-### With docker-compose
+### With docker-compose (recommended)
 
 1. Create following file below, remember to add volume either like that or as a persistentvolume, otherwise container will renew certificates on every re-launch which will make Let's Encrypt angry
 2. Run docker-compose -f compose.yaml up -d
+
+>[!WARNING]
+> You will need to create the following directory caddy-data will bind to, otherwise it will fail with `special device <location> does not exist`
 
 ```yaml
 version: "3.8"
@@ -124,3 +127,30 @@ volumes:
       device: /home/youruser/caddy-data
       o: bind
 ```
+
+---
+
+#### Extras
+
+### Mapping your own directory with certificates into the container
+
+Let's say you have a ACME client running on your OPNsense or locally in your organization and your web server device gets certificates from it
+
+1. Add it as a volume to the container
+2. Run container and reference it in Caddyfile like so
+
+```yaml
+(...)
+volumes:
+(...)
+- ${HOME}/certificates/yourdomain.tld:/app/certificates
+```
+
+```caddyfile
+mydomain.tld {
+  tls /app/certificates/fullchain.pem /app/certificates/key.pem
+  reverse_proxy my_service:3000
+}
+```
+
+You can also make use of environmental variables in step above just to not have to repeat this everytime.
