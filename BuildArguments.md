@@ -5,7 +5,7 @@ You can use following arguments during building phase of the image, they're more
 | Argument         | Description                                                                                                                      |
 |------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | `IMAGE_REPOSITORY`     | Default: `docker.io/library` - Where to pull Alpine Linux image from, should be a valid repository link and optionally path |
-| `IMAGE_ALPINE_VERSION` | Default: `3.19.0` - Specify a version of Alpine Linux image to pull from the repositry |
+| `IMAGE_ALPINE_VERSION` | Default: `latest` - Specify a version of Alpine Linux image to pull from the repositry |
 | `ALPINE_REPO_URL`      | Default: `https://cdn-dl.alpinelinux.org/alpine` - In case this repo becomes unavailable, you can repoint it to a mirror |
 | `ALPINE_REPO_VERSION`  | Default: `v3.19` - Used for repositories, useful if your ALPINE_IMAGE_VERSION is something else other than stable repository ex. edge |
 | `GO_XCADDY_VERSION`    | Default: `latest` - Pulls certain version of xcaddy source and builds it using `go install` |
