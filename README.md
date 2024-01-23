@@ -30,7 +30,7 @@ They're also **multi-architecture** which for now supports following architectur
 
 Uh... right. It also includes common plugins you would've probably liked to have but didn't want to go through the trouble of manually building caddy from source.
 
-**Plugins included**: Cloudflare, Route53, DuckDNS, AliDNS, Gandi, Porkbun, Namecheap, Google Domains, Netlify, AcmeDNS, Vercel, Namesilo, DDNNSS, MailInAbox for extra DNS options and Coraza WAF, Caddy-DynamicDNS, Caddy-Security, Vulcain, Mercure, Replace Response, Caddy-Teapot-Module for extra features/security.
+**Plugins included**: Cloudflare, Route53, DuckDNS, AliDNS, Porkbun, Namecheap, Google Domains, Netlify, AcmeDNS, Vercel, Namesilo, DDNNSS, MailInAbox for extra DNS options and Coraza WAF, Caddy-DynamicDNS, Caddy-Security, Vulcain, Mercure, Replace Response, Caddy-Teapot-Module for extra features/security.
 
 ## Environment Variables
 
