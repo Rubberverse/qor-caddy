@@ -39,7 +39,7 @@ network:
 
 1. Pull this repository with git `git pull Rubberverse/qor-caddy:master`
 2. Edit `template.MODULES` to include plugins you want in your final Caddy binary
-3. Run the build with following command below, including all build arguments in case you want to customize with your own repository etc. For more info about them, look [here](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArgs.md)
+3. Run the build with following command below, including all build arguments in case you want to customize with your own repository etc. For more info about them, look [here](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
 4. Then just run the built image
 
 ```bash
