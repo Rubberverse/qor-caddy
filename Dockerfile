@@ -17,7 +17,6 @@ ARG IMAGE_REPOSITORY=docker.io/library                      \
     ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
     ALPINE_REPO_VERSION=v3.19                               \
     GO_XCADDY_VERSION=latest                                \
-    GO_ENVSUBST_VERSION=v1.4.2                              \
     GO_CADDY_VERSION=latest                                 \
     CONT_SHELL=/bin/bash                                    \
     CONT_HOME=/app                                          \
@@ -55,7 +54,7 @@ RUN echo "Installing dependencies" \
     && echo "Final clean up"                                                    \
     && apk del --rdepends                                                       \
         build_ess                                                               \
-    && rm -rf \
+    && rm -rf                                                                   \
         /app/go                                                                 \
         /app/git                                                                \
         /app/worktree
@@ -103,22 +102,35 @@ RUN echo "Installing dependencies" \
     && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         bash                \
         ca-certificates     \
+        openssl=3.1.4-r4    \
     && echo "Adding group"  \
     && addgroup \
         --gid "$CONT_GID"   \
-        --system            \
         "$CONT_GROUP"       \
     && echo "Adding user"   \
     && adduser \
-        --home "/app/home"  \
+        --home "/app/home"       \
         --shell "$CONT_SHELL"    \
         --ingroup "$CONT_GROUP"  \
         --uid "$CONT_UID"        \
-        --disabled-password \
+        --disabled-password      \
         "$CONT_USER"             \
     && echo "Fixing permissions"                        \
-    && chown -R "$CONT_USER":"$CONT_GROUP" /srv /app    \
-    && echo "Removing ash shell"                        \
-    && rm /bin/ash
+    && chown -R "$CONT_UID":"$CONT_GID" /srv /app       \
+    && tail -n +2 /etc/passwd > /app/passwd             \
+    && tail -n +2 /etc/shadow > /app/shadow             \
+    && echo "Removing things"                           \
+    && rm                                               \
+        /bin/ash                                        \
+        /etc/shadow                                     \
+        /etc/passwd                                     \
+    && echo "Removing root user (or well breaking it)"  \
+    && mv /app/passwd /etc/passwd                       \
+    && mv /app/shadow /etc/shadow                       \
+    && chmod 400                                        \
+        /etc/passwd                                     \
+        /etc/shadow
+
+USER ${CONT_UID}:${CONT_GID}
 
 ENTRYPOINT /app/scripts/docker-entrypoint.sh
