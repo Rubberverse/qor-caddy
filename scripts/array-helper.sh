@@ -1,8 +1,9 @@
 #!/bin/bash
-source /app/.bashrc
+source /root/.bashrc
 
+echo "Splitting .MODULES into Array, parsing it, building out the command then executing it"
 mapfile -t lines < /app/helper/.MODULES
-cmd_array=( xcaddy build ${CADDY_VERSION} )
+cmd_array=( /app/go/bin/xcaddy build ${GO_CADDY_VERSION} )
 
 for module in "${lines[@]}"; do
     cmd_array+=( --with "$module" )
