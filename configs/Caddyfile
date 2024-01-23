@@ -1,10 +1,21 @@
 {
-    admin localhost:2019
+    # Anything marked with [/!\] shouldn't be changed! (Issues may arise if so)
+
+    # [/!\] Disabled by default on v0.13.0
+    admin off
+
+    # [/!\] Rootless user can't map to ports below 1000 (they're privileged ports)
     http_port 8080
     https_port 8443
+    
+    # [/!\] We need to skip since rootless user can't install certificates to root store (it will fail and Caddy will terminate if removed)
+    skip_install_trust
+
+    # Required for Coraza WAF to work
+    order coraza_waf first
 }
 
-my.domain-example.com {
+my.domain.home {
     tls internal
     root * /srv/
     file_server
