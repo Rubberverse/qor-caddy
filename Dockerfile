@@ -2,101 +2,123 @@
 # 1. ALPINE BUILDER STAGE
 # =============================================================================
 
-ARG ALPINE_VERSION=edge
+ARG IMAGE_REPOSITORY=docker.io/library
+ARG IMAGE_ALPINE_VERSION=latest
 
-FROM docker.io/library/alpine:${ALPINE_VERSION} AS alpine-builder
+FROM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS alpine-builder
 WORKDIR /app
 
 # For clean-up, each stage is labeled
 LABEL stage=alpine-builder
 LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
 
-ARG ALPINE_VERSION=edge     \
-    CADDY_VERSION=latest    \
-    SHELL=/bin/bash         \
-    GOPATH=/app/go          \
-    USER=caddy              \
-    GROUP=web               \
-    HOME=/app               \
-    UID=1001                \
-    GID=1001                \
-    GITDIR=/app/git         \
-    GOCACHE=/app/cache      \
-    GITWORKTREE=/app/tree
+ARG IMAGE_REPOSITORY=docker.io/library                      \
+    IMAGE_ALPINE_VERSION=latest                             \
+    ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
+    ALPINE_REPO_VERSION=v3.19                               \
+    GO_XCADDY_VERSION=latest                                \
+    GO_ENVSUBST_VERSION=v1.4.2                              \
+    GO_CADDY_VERSION=latest                                 \
+    CONT_SHELL=/bin/bash                                    \
+    CONT_HOME=/app                                          \
+    CONT_USER=caddy                                         \
+    CONT_GROUP=web                                          \
+    CONT_UID=1001                                           \
+    CONT_GID=1001                                           \
+    GOPATH=/app/go                                          \
+    GOCACHE=/app/go/cache                                   \
+    GIT_DIR=/app/git                                        \
+    GIT_WORKTREE=/app/worktree
 
-COPY --chmod=0755 scripts/array-helper.sh /app/helper/array-helper.sh
-COPY templates/templatebuild.bashrc /app/temp.bashrc
-COPY templates/template.MODULES /app/helper/.MODULES
+COPY --chmod=0755 scripts/array-helper.sh   \ 
+    /app/helper/array-helper.sh
+
+COPY templates/template.bashrc         \ 
+    /app/template.bashrc
+
+COPY templates/template.MODULES             \ 
+    /app/helper/.MODULES
 
 RUN echo "Installing dependencies" \
-    && apk add --no-cache --virtual build_community --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-        bash            \
-        git             \
-        envsubst        \
-    && apk add --no-cache --virtual build_testing --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-        xcaddy          \
-        ca-certificates \
-    && envsubst < /app/temp.bashrc > /app/.bashrc   \
-    && /bin/bash -c /app/helper/array-helper.sh     \
-    && apk del --rdepends   \
-        build_community     \
-        build_testing       \
-    && rm -rf /app
+    && apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        gettext-envsubst    \
+        bash                \
+        git                 \
+        ca-certificates     \
+        go                  \
+    && echo "Building xcaddy from source"                                       \
+    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
+    && echo "Filling template with our environmental variables"                 \
+    && envsubst < /app/template.bashrc > /root/.bashrc                          \
+    && echo "Executing array-helper.sh"                                         \
+    && /bin/bash -c /app/helper/array-helper.sh                                 \
+    && echo "Final clean up"                                                    \
+    && apk del --rdepends                                                       \
+        build_ess                                                               \
+    && rm -rf \
+        /app/go                                                                 \
+        /app/git                                                                \
+        /app/worktree
 
 # =============================================================================
 # 2. ALPINE BASE STAGE
 # =============================================================================
 
-FROM docker.io/library/alpine:${ALPINE_VERSION} AS qor-caddy
+ARG IMAGE_REPOSITORY=docker.io/library                      \
+    IMAGE_ALPINE_VERSION=latest
+
+FROM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS qor-caddy
 WORKDIR /app
+
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
+    ALPINE_REPO_VERSION=v3.19                               \
+    CONT_SHELL=/bin/bash                                    \
+    CONT_HOME=/app                                          \
+    CONT_USER=caddy                                         \
+    CONT_GROUP=web                                          \
+    CONT_UID=1001                                           \
+    CONT_GID=1001
 
 LABEL stage=qor-caddy
 LABEL maintainer MrRubberDucky <contact@rubberverse.xyz>
 
-ARG ALPINE_VERSION=edge     \
-    CADDY_VERSION=latest    \
-    SHELL=/bin/bash         \
-    GOPATH=/app/go          \
-    USER=caddy              \
-    GROUP=web               \
-    HOME=/app               \
-    UID=1001                \
-    GID=1001
+COPY --from=alpine-builder  \
+    --chmod=755 /usr/bin/caddy /app/caddy
 
-COPY --from=alpine-builder --chmod=755 /usr/bin/caddy /app/caddy
-COPY --chmod=755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
-COPY templates/template.bashrc /app/template.bashrc
-COPY configs/Caddyfile /app/configs/Caddyfile
+COPY --from=alpine-builder  \                                           
+    --chown=${CONT_UID}:${CONT_GID} /root/.bashrc /app/.bashrc
+
+COPY configs/Caddyfile      \ 
+    /app/configs/Caddyfile
+
+COPY --chmod=755            \
+    scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 EXPOSE 80
 EXPOSE 443
 EXPOSE 443/udp
 EXPOSE 2019
 
-RUN echo "Installing dependencies, setting up users etc." \
-    && apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+RUN echo "Installing dependencies" \
+    && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         bash                \
-    && apk add --no-cache --virtual env_set --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-        envsubst            \
-    && apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
         ca-certificates     \
+    && echo "Adding group"  \
     && addgroup \
-        --gid "$GID"        \
+        --gid "$CONT_GID"   \
         --system            \
-        "$GROUP"            \
+        "$CONT_GROUP"       \
+    && echo "Adding user"   \
     && adduser \
         --home "/app/home"  \
-        --shell "$SHELL"    \
-        --ingroup "$GROUP"  \
-        --uid "$UID"        \
+        --shell "$CONT_SHELL"    \
+        --ingroup "$CONT_GROUP"  \
+        --uid "$CONT_UID"        \
         --disabled-password \
-        "$USER"             \
-    && adduser \
-        "$USER"             \
-        netdev              \
-    && chown -R "$USER":"$GROUP" /srv /app              \
-    && envsubst < /app/template.bashrc > /app/.bashrc   \
-    && rm /bin/ash /app/template.bashrc                 \
-    && apk del --rdepends env_set
+        "$CONT_USER"             \
+    && echo "Fixing permissions"                        \
+    && chown -R "$CONT_USER":"$CONT_GROUP" /srv /app    \
+    && echo "Removing ash shell"                        \
+    && rm /bin/ash
 
 ENTRYPOINT /app/scripts/docker-entrypoint.sh
