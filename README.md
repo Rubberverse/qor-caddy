@@ -44,7 +44,7 @@ These are required to have the container launch as of v0.11.0
 
 Available build arguments and how to use them during build - [Build Arguments](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
 
-List of environmental variables can be found [here](https://github.com/Rubberverse/qor-caddy/blob/main/Environment.md)
+List of environmental variables can be found [here](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md)
 
 ## Some planned Dockerfiles and what not
 
