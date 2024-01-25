@@ -11,7 +11,7 @@ TODO
 1. Create following docker-compose.yaml below
 
 >[!WARNING]
-> You will need to create the following directory caddy-data will bind to, otherwise it will fail with `special device <location> does not exist`
+> You will need to create the following directory caddy-appdata will bind to, otherwise it will fail with `special device <location> does not exist`
 
 ```yaml
 version: "3.8"
