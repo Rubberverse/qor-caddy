@@ -20,6 +20,7 @@ services:
       - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
       - caddy-appdata:/app/.local/share/caddy
       - caddy-config:/app/.config/caddy
+      - caddy-logs:/var/log/caddy
     environment:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
@@ -40,6 +41,11 @@ volumes:
     driver_opts:
       type: none
       device: /home/youruser/caddy-data
+      o: bind
+  caddy-logs:
+    driver_opts:
+      type: none
+      device: /home/youruser/caddy-logs
       o: bind
 ```
 
