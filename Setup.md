@@ -16,19 +16,19 @@ services:
   qor-caddy:
     image: docker.io/mrrubberducky/qor-caddy:latest
     # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest
-  volumes:
-    - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
-    - caddy-appdata:/app/.local/share/caddy
-    - caddy-config:/app/.config/caddy
-  environment:
-    - CADDY_ENVIRONMENT=PROD
-    - ADAPTER_TYPE=caddyfile
-    - CONFIG_PATH=/app/configs/Caddyfile
-  ports:
-    - "80:8080"
-    - "443:8443"
-  networks:
-    - qor-caddy
+    volumes:
+      - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
+      - caddy-appdata:/app/.local/share/caddy
+      - caddy-config:/app/.config/caddy
+    environment:
+      - CADDY_ENVIRONMENT=PROD
+      - ADAPTER_TYPE=caddyfile
+      - CONFIG_PATH=/app/configs/Caddyfile
+    ports:
+      - "80:8080"
+      - "443:8443"
+    networks:
+      - qor-caddy
 
 networks:
   qor-caddy:
