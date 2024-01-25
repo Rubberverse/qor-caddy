@@ -30,7 +30,7 @@ sudo apt install buildah
 ```
 
 3. Create following directory `mkdir -p .config/containers/systemd` (in your users' home folder) and `cd` into it
-4. In here we'll create 5 files - qor-appdata.volume, qor-config.volume, qor-logs.volume, quadlet-vps.network and finally, qor-caddy.container with following contents, in order
+4. In here we'll create 4 files - qor-appdata.volume, qor-config.volume, qor-logs.volume, quadlet-vps.network and finally, qor-caddy.container with following contents, in order
 
 ℹ️ You can name them however you want
 
@@ -50,12 +50,6 @@ Device=/home/youruser/AppData/qor-caddy/config
 Driver=local
 Options=bind,rw,type=ext4
 VolumeName=qor-config
-```
-
-```ini
-# qor-logs
-[Volume]
-VolumeName=qor-logs
 ```
 
 ```ini
@@ -87,7 +81,7 @@ User=caddy
 Volume=/home/youruser/AppData/qor-caddy/Caddyfile:/app/configs/Caddyfile
 Volume=qor-appdata.volume:/app/.local/share/caddy
 Volume=qor-config.volume:/app/.config/caddy
-Volume=qor-logs.volume:/app/logs
+Volume=qor-logs:/app/logs
 
 [Install]
 WantedBy=multi-user.target
