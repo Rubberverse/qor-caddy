@@ -32,7 +32,7 @@ services:
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
     # It is required to have this so rootless user can bind to ports below 1000 and solve cert challenges
-    security_opt:
+    sysctls:
       - net.ipv4.ip_unprivileged_port_start=80
     ports:
       - "80:80"
@@ -179,7 +179,7 @@ services:
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
     # It is required to have this so rootless user can bind to ports below 1000 and solve cert challenges
-    security_opt:
+    sysctls:
       - net.ipv4.ip_unprivileged_port_start=80
     ports:
       - "80:80"
