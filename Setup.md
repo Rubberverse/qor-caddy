@@ -4,7 +4,97 @@
 
 ### 🦕 With Podman 4.4+ (quadlet rootless deployment)
 
-TODO
+1. Make sure you have Podman 4.4+ as 4.3- don't have Quadlet support, you can check by typing `podman version`
+2. If you're on Debian, you can get up-to-date Podman in a following manner (please keep in mind that this is potentially dangerous, **make sure you're using overlay as your storage before upgrading** as vfs will more than likely wipe everything. You will have to recreate everything either way if your storage.conf is vfs...)
+
+```bash
+# From: https://podman.io/docs/installation#debian
+sudo mkdir -p /etc/apt/keyrings
+
+# Debian Testing/Bookworm
+curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/Release.key \
+  | gpg --dearmor \
+  | sudo tee /etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg > /dev/null
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg]\
+    https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/ /" \
+  | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list > /dev/null
+
+# Update repository and fetch latest package
+sudo apt-get update
+sudo apt upgrade
+
+# This is to solve buildah version being wrong
+sudo apt remove buildah
+sudo apt install buildah
+```
+
+3. Create following directory `mkdir -p .config/containers/systemd` (in your users' home folder) and `cd` into it
+4. In here we'll create 5 files - qor-appdata.volume, qor-config.volume, qor-logs.volume, quadlet-vps.network and finally, qor-caddy.container with following contents, in order
+
+ℹ️ You can name them however you want
+
+```ini
+# qor-appdata.volume
+[Volume]
+Device=/home/youruser/AppData/qor-caddy/app-data
+Driver=local
+Options=bind,rw,type=ext4
+VolumeName=qor-appdata
+```
+
+```ini
+# qor-config.volume
+[Volume]
+Device=/home/youruser/AppData/qor-caddy/config
+Driver=local
+Options=bind,rw,type=ext4
+VolumeName=qor-config
+```
+
+```ini
+# qor-logs
+[Volume]
+VolumeName=qor-logs
+```
+
+```ini
+# quadlet-vps.network
+[Network]
+Subnet=10.10.10.0/24
+Gateway=10.10.10.1
+Label=app=qor-caddy
+```
+
+```ini
+# qor-caddy.container
+[Unit]
+Description=Deploy QoR-Caddy Image
+
+[Container]
+Image=docker.io/mrrubberducky/qor-caddy:latest
+AutoUpdate=registry
+ContainerName=qor-caddy
+Network=quadlet-vps.network
+DNS=10.10.10.1
+EnvironmentFile=.qor-caddy
+PublishPort=80:80
+PublishPort=443:443
+IP=10.10.10.2
+Sysctl=net.ipv4.ip_unprivileged_port_start=0
+LogDriver=journald
+User=caddy
+Volume=/home/youruser/AppData/qor-caddy/Caddyfile:/app/configs/Caddyfile
+Volume=qor-appdata.volume:/app/.local/share/caddy
+Volume=qor-config.volume:/app/.config/caddy
+Volume=qor-logs.volume:/app/logs
+
+[Install]
+WantedBy=multi-user.target
+```
+
+5. Reload systemctl daemon with `systemctl --user daemon-reload`
+6. Run the container with `systemctl --user start qor-caddy.service`
 
 ### 🐳 With docker-compose (recommended)
 
