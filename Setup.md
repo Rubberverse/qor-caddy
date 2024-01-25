@@ -142,7 +142,6 @@ Let's say you have a ACME client running on your OPNsense or locally in your org
 ```yaml
 (...)
 volumes:
-(...)
 - ${HOME}/certificates/yourdomain.tld:/app/certificates
 ```
 
