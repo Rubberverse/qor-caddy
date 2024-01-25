@@ -1,11 +1,16 @@
 ## Using the already built multi-arch image
 
-**NOTE** As of v0.11.0, riscv64 platform is not supported due to Alpine Linux stable image not supporting it itself. Once they start supporting it, builds will be back for this platform!
+- Starting from version v0.16.0+, the container will run rootlessly
+- Starting from version v0.17.0+, container will have a dedicated logging directory the rootless user inside can log to
+
+### With Podman 4.4+ (quadlet deployment)
+
+TODO
 
 ### With docker-compose (recommended)
 
 1. Create following file below, remember to add volume either like that or as a persistentvolume, otherwise container will renew certificates on every re-launch which will make Let's Encrypt angry
-2. Run docker-compose -f compose.yaml up -d
+2. Run docker-compose -f compose.yaml up -d and yeah you're set. 
 
 >[!WARNING]
 > You will need to create the following directory caddy-data will bind to, otherwise it will fail with `special device <location> does not exist`
@@ -15,16 +20,19 @@ version: "3.8"
 services:
   qor-caddy:
     image: docker.io/mrrubberducky/qor-caddy:latest
+    user: 1001:1001
     # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest
     volumes:
       - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
       - caddy-appdata:/app/.local/share/caddy
       - caddy-config:/app/.config/caddy
-      - caddy-logs:/app/logs
+      # [NYI] - caddy-logs:/app/logs
     environment:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
+    security_opt:
+      - net.ipv4.ip_unprivileged_port_start=0
     ports:
       - "80:8080"
       - "443:8443"
@@ -42,20 +50,13 @@ volumes:
       type: none
       device: /home/youruser/caddy-data
       o: bind
-  caddy-logs:
-    driver_opts:
-      type: none
-      device: /home/youruser/caddy-logs
-      o: bind
 ```
 
-### Manually
+---
 
-1. Pull the image with `docker pull docker.io/mrrubberducky/qor-caddy:latest` or `docker pull ghcr.io/rubberverse/qor-caddy:latest`
-2. Run it with `docker run -d -e CADDY_ENVIRONMENT=PROD -e ADAPTER_TYPE=caddyfile -e CONFIG_PATH=/app/configs/Caddyfile mrrubberducky/qor-caddy`, replace mrrubberducky with rubberverse if using GitHub Container Registry image
-3. See if it runs with `docker ps -a`
+#### Building
 
-## Building your own customized image
+## Create your own image from the repository
 
 1. Pull this repository with git `git pull Rubberverse/qor-caddy:master`
 2. Edit `template.MODULES` to include plugins you want in your final Caddy binary
