@@ -66,17 +66,18 @@ volumes:
 2. Create volumes for storing certs and logs
 
 ```bash
+# You can specify any location you want, as long as you chown it so container user can write to it
 podman volume create \
   --driver local \
   --opt type=none \
-  --opt device=/home/ducky/qor-caddy/appdata \
+  --opt device=/home/youruser/qor-caddy/appdata \
   --opt o=bind,rw \
 qor-caddy-appdata
 
 podman volume create \
   --driver local \
   --opt type=ext4 \
-  --opt device=/home/ducky/qor-caddy/logs \
+  --opt device=/home/youruser/qor-caddy/logs \
   --opt o=bind,rw \
 qor-caddy-logs
 ```
