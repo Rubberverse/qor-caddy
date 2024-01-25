@@ -20,7 +20,7 @@ services:
       - ${HOME}/qor-caddy/Caddyfile:/app/configs/Caddyfile
       - caddy-appdata:/app/.local/share/caddy
       - caddy-config:/app/.config/caddy
-      - caddy-logs:/var/log/caddy
+      - caddy-logs:/app/logs
     environment:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
