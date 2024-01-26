@@ -94,7 +94,7 @@ RUN set -eux; \
 ARG IMAGE_REPOSITORY=docker.io/library                      \
     IMAGE_ALPINE_VERSION=latest
 
-FROM --platform=${BUILD_PLATFORM} ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS qor-caddy
+FROM --platform=$BUILDPLATFORM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
