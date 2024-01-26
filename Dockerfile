@@ -3,10 +3,9 @@
 # =============================================================================
 
 ARG IMAGE_REPOSITORY=docker.io/library  \
-    IMAGE_ALPINE_VERSION=latest         \
-    BUILDPLATFORM=linux/amd64
+    IMAGE_ALPINE_VERSION=latest
 
-FROM --platform=$BUILD_PLATFORM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS alpine-builder
+FROM --platform=linux/amd64 ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS alpine-builder
 WORKDIR /app
 
 ARG TARGETPLATFORM
@@ -37,7 +36,6 @@ ARG IMAGE_REPOSITORY=docker.io/library                      \
 ENV CGO_ENABLED=0 \
     XCADDY_SKIP_CLEANUP=1 \
     XCADDY_GO_BUILD_FLAGS="-ldflags '-w -s'"
-
 
 COPY --chmod=0755 scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
