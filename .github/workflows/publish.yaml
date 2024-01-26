@@ -44,6 +44,7 @@ jobs:
         with:
           image: qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
+          buildArgs: BUILDPLATFORM=linux/amd64
           registry: ghcr.io
           multiPlatform: true
           overrideDriver: true
@@ -56,6 +57,7 @@ jobs:
         with:
           image: mrrubberducky/qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest
+          buildArgs: BUILDPLATFORM=linux/amd64
           registry: docker.io
           multiPlatform: true
           overrideDriver: true
