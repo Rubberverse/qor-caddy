@@ -48,6 +48,7 @@ jobs:
           registry: ghcr.io
           multiPlatform: true
           overrideDriver: true
+          enableBuildKit: true
           platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/386,linux/ppc64le,linux/s390x
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -61,6 +62,7 @@ jobs:
           registry: docker.io
           multiPlatform: true
           overrideDriver: true
+          enableBuildKit: true
           platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/386,linux/ppc64le,linux/s390x
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
