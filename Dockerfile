@@ -2,11 +2,15 @@
 # 1. ALPINE BUILDER STAGE
 # =============================================================================
 
-ARG IMAGE_REPOSITORY=docker.io/library
-ARG IMAGE_ALPINE_VERSION=latest
+ARG IMAGE_REPOSITORY=docker.io/library  \
+    IMAGE_ALPINE_VERSION=latest         \
+    BUILDPLATFORM=linux/amd64
 
-FROM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS alpine-builder
+FROM --platform=${BUILD_PLATFORM} ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS alpine-builder
 WORKDIR /app
+
+ARG TARGETPLATFORM
+ARG TARGETOS
 
 # For clean-up, each stage is labeled
 LABEL stage=alpine-builder
@@ -26,38 +30,62 @@ ARG IMAGE_REPOSITORY=docker.io/library                      \
     CONT_GID=1001                                           \
     GOPATH=/app/go                                          \
     GOCACHE=/app/go/cache                                   \
+    GOOS=linux                                              \
     GIT_DIR=/app/git                                        \
     GIT_WORKTREE=/app/worktree
 
-COPY --chmod=0755 scripts/array-helper.sh   \ 
+ENV CGO_ENABLED=0 \
+    XCADDY_SKIP_CLEANUP=1 \
+    XCADDY_GO_BUILD_FLAGS="-ldflags '-w -s'"
+
+
+COPY --chmod=0755 scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
 
-COPY templates/template.bashrc         \ 
+COPY templates/template.bashrc \ 
     /app/template.bashrc
 
-COPY templates/template.MODULES             \ 
+COPY templates/template.MODULES \ 
     /app/helper/.MODULES
 
-RUN echo "Installing dependencies" \
-    && apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+RUN set -eux; \
+    echo "Determining architecture"; \
+    # https://stackoverflow.com/a/58222507
+    apkArch="$(apk --print-arch)"; \
+    case "$apkArch" in \
+        armhf) export GOARCH='arm' GOARM=6  ;; \
+        armv7) export GOARCH='arm' GOARM=7  ;; \
+        aarch64) export GOARCH='arm' ;; \
+        x86) export GOARCH='386' ;; \
+        x86_64) export GOARCH='amd64' ;; \
+        ppc64le) export GOARCH='ppc64le' ;; \
+        mips64le) export GOARCH='mips64le' ;; \
+        s390x) export GOARCH='s390x' ;; \
+    esac; \
+    echo "Installing dependencies" \
+    ; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         gettext-envsubst    \
         bash                \
         git                 \
         ca-certificates     \
         go                  \
-    && echo "Building xcaddy from source"                                       \
-    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
-    && echo "Filling template with our environmental variables"                 \
-    && envsubst < /app/template.bashrc > /root/.bashrc                          \
-    && echo "Executing array-helper.sh"                                         \
-    && /bin/bash -c /app/helper/array-helper.sh                                 \
-    && echo "Final clean up"                                                    \
-    && apk del --rdepends                                                       \
-        build_ess                                                               \
-    && rm -rf                                                                   \
-        /app/go                                                                 \
-        /app/git                                                                \
-        /app/worktree
+        libcap              \
+        libcap-setcap       \
+    ; echo "Building xcaddy from source"                                            \
+    ; go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION}      \
+    ; echo "Filling template with our environmental variables"                      \
+    ; envsubst < /app/template.bashrc > /root/.bashrc                               \
+    ; echo "Executing array-helper.sh"                                              \
+    ; /bin/bash -c /app/helper/array-helper.sh                                      \
+    ; echo "Final clean up"                                                         \
+    ; setcap cap_net_bind_service=+ep /usr/bin/caddy                                \
+    ; chmod +x /usr/bin/caddy                                                       \
+    ; apk del --rdepends                                                            \
+        build_ess                                                                   \
+    ; rm -rf                                                                        \
+        /app/go                                                                     \
+        /app/git                                                                    \
+        /tmp
 
 # =============================================================================
 # 2. ALPINE BASE STAGE
@@ -66,7 +94,7 @@ RUN echo "Installing dependencies" \
 ARG IMAGE_REPOSITORY=docker.io/library                      \
     IMAGE_ALPINE_VERSION=latest
 
-FROM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS qor-caddy
+FROM --platform=${BUILD_PLATFORM} ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
@@ -115,6 +143,10 @@ RUN echo "Installing dependencies" \
         --uid "$CONT_UID"        \
         --disabled-password      \
         "$CONT_USER"             \
+    && mkdir -p \
+        /app/logs                \
+        /app/user_dir            \
+        /srv/www                 \
     && echo "Fixing permissions"                        \
     && chown -R "$CONT_UID":"$CONT_GID" /srv /app       \
     && tail -n +2 /etc/passwd > /app/passwd             \
@@ -131,6 +163,6 @@ RUN echo "Installing dependencies" \
         /etc/passwd                                     \
         /etc/shadow
 
-USER ${CONT_UID}:${CONT_GID}
+USER ${CONT_UID}
 
 ENTRYPOINT /app/scripts/docker-entrypoint.sh
