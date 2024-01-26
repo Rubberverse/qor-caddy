@@ -6,7 +6,7 @@ ARG IMAGE_REPOSITORY=docker.io/library  \
     IMAGE_ALPINE_VERSION=latest         \
     BUILDPLATFORM=linux/amd64
 
-FROM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} --platform=${BUILDPLATFORM} AS alpine-builder
+FROM --platform=${BUILDPLATFORM} alpine:${IMAGE_ALPINE_VERSION} AS alpine-builder
 WORKDIR /app
 
 ARG TARGETPLATFORM
