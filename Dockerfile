@@ -12,6 +12,8 @@ WORKDIR /app
 
 ARG TARGETPLATFORM
 ARG TARGETOS
+ENV GOOS $TARGETOS
+ENV GOARCH $TARGETARCH
 
 # For clean-up, each stage is labeled
 LABEL stage=alpine-builder
@@ -94,7 +96,7 @@ RUN set -eux; \
 ARG IMAGE_REPOSITORY=docker.io/library                      \
     IMAGE_ALPINE_VERSION=latest
 
-FROM --platform=$BUILDPLATFORM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS qor-caddy
+FROM --platform=$TARGETPLATFORM ${IMAGE_REPOSITORY}/alpine:${IMAGE_ALPINE_VERSION} AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
