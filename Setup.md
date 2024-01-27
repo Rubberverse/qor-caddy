@@ -223,7 +223,7 @@ podman build -f Dockerfile \
 
 4. Then just run the built image either via docker-compose, quadlet or with `podman run`
 
-> [!INFO]
+> [!NOTE]
 > If you get a platform is "" error, remove --platform=$BUILDPLATFORM from Dockerfile references. This however should work normally, at least it does on Podman 4.3+
 
 ---
