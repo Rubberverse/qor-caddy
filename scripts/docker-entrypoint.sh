@@ -1,65 +1,80 @@
-#!/bin/bash
-source /app/.bashrc
+#!/bin/sh
 
 # Colors
-NO_FORMAT="\033[0m"
-C_DARKORANGE="\033[38;5;208m"
-C_DEEPPINK2="\033[38;5;197m"
-C_MEDIUMPURPLE2="\033[38;5;135m"
-C_SPRINGGREEN3="\033[38;5;41m"
-C_SLATEBLUE1="\033[38;5;99m"
+cend='\033[0m'
+darkorange='\033[38;5;208m'
+pink='\033[38;5;197m'
+purple='\033[38;5;135m'
+green='\033[38;5;41m'
+blue='\033[38;5;99m'
 
-
-function isEnvironmentValid() {
-    if ! [[ $CADDY_ENVIRONMENT =~ %(TEST|PROD|test|prod)$ && $ADAPTER_TYPE =~ %(caddyfile|json|yaml)$ ]]; then
-        echo -e "[✨ ${C_MEDIUMPURPLE2}Startup${NO_FORMAT}] ✅ Your environmental variables are valid"
-    else
-        echo -e "[❌ ${C_DEEEPINK2}Error${NO_FORMAT}] One or both of the environmental variables has failed the check"
-        echo "CADDY_ENVIRONMENT: ${CADDY_ENVIRONMENT}, ADAPTER_TYPE: ${ADAPTER_TYPE}"
-        echo "Valid values for CADDY_ENVIRONMENT: TEST, PROD"
-        echo "Valid values for ADAPTER_TYPE: caddyfile, json, yaml"
-        echo -e "${C_DEEPPINK2}This doesn't check for CONFIG_PATH variable!"
-        exit -1
-    fi
+isProdOrTest() {
+case "$(echo "$CADDY_ENVIRONMENT" | tr '[:upper:]' '[:lower:]')" in
+    prod) return 0 ;;
+    test) return 1 ;;
+    *) return 2 ;;
+esac
 }
 
-function environmentPreLaunch() {
-    if [[ $CADDY_ENVIRONMENT != "TEST" && $(whoami) != "root" ]]; then
-        echo -e "[✨ ${C_SPRINGGREEN3}Pre-Launch${NO_FORMAT}] Starting Caddy, your current Environment reflects in-prod/prod setup"
-        echo "Caddy won't watch over the config and won't run in background in this mode"
-        /app/caddy run --config ${CONFIG_PATH} --adapter ${ADAPTER_TYPE}
-    elif [[ $CADDY_ENVIRONMENT == "TEST" && $(whoami) == "root" ]]; then
-        echo "Starting Caddy, your current Environment reflects in-dev/testing setup"
-        echo "Caddy will watch over the config and will run in the background"
-        echo "It is recommended to make use of the interactive session. Nothing will be logged here starting from now on"
-        /app/caddy start --config ${CONFIG_PATH} --adapter ${ADAPTER_TYPE} --watch
-        tail -f /dev/null
-    else
-        echo "Image error, tell maintainer to fix this"
-        exit -127
-    fi
+isAdapterTypeValid() {
+case "$(echo "ADAPTER_TYPE" | tr '[:upper:]' '[:lower:]')" in
+    caddyfile)  return 0 ;;
+    json) return 1 ;;
+    yaml) return 2 ;;
+    *) return 3 ;;
+esac
 }
 
-echo -e "[✨ ${C_MEDIUMPURPLE2}Startup${NO_FORMAT}] Checking validity of environmental variables"
-isEnvironmentValid
+if isProdOrTest "$CADDY_ENVIRONMENT" = 0 -z 1; then
+    printf "%b" "[✨ " "$purple" "Startup" "$cend" "] ✅ Your environmental variables are valid\n"
+else
+    printf "%b" "[❌ " "$pink" "Error" "$cend" "] ⛔ Your CADDY_ENVIRONMENT environmental variable is invalid!\n"
+    printf "%b" "⚠️ Only " "$green" "valid" "$cend" " types are prod or test (case insensitive)\n"
+    printf "😕 Confused? Read our Documentation! https://github.com/qor-caddy/blob/main/SetupTroubleshooting.md \n"
+    exit 1
+fi
 
-echo -e "${C_DARKORANGE}"
-echo -e "______        _     _                                              ";
-echo -e "(_____ \      | |   | |                                            ";
-echo -e " _____) )_   _| |__ | |__  _____  ____ _   _ _____  ____ ___ _____ ";
-echo -e "|  __  /| | | |  _ \|  _ \| ___ |/ ___) | | | ___ |/ ___)___) ___ |";
-echo -e "| |  \ \| |_| | |_) ) |_) ) ____| |    \ V /| ____| |  |___ | ____|";
-echo -e "|_|   |_|____/|____/|____/|_____)_|     \_/ |_____)_|  (___/|_____)";
-echo -e "${NO_FORMAT}";
-echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-echo -e "[✨ ${C_SLATEBLUE1}Debug${NO_FORMAT}] Environmental variables for debugging listed below"
-echo "USER: $(whoami), GROUP: ${CONT_GROUP} | UID: ${CONT_UID}, GID ${CONT_GID} | BASE IMAGE: ${IMAGE_ALPINE_VERSION}"
-echo "🗒️ Documentation - https://github.com/Rubberverse/qor-caddy/README.md"
-echo "Now actually a bit more reliable..."
-echo ""
+if isAdapterTypeValid "$ADAPTER_TYPE" = 0 -a "$ADAPTER_TYPE" = 1 -a "$ADAPTER_TYPE" = 2; then
+    printf "%b" "[✨ " "$purple" "Startup" "$cend" "] ✅ ADAPTER_TYPE is valid!\n"
+else
+    printf "%b" "[⚠️ " "$darkorange" "Warning" "$cend" "] ❔ Potentially invalid ADAPTER_TYPE value\n"
+    printf "💥 THIS CHECK IS CURRENTLY BROKEN!!! TODO: Fix\n"
+    printf "😕 Confused? Read our Documentation! https://github.com/qor-caddy/blob/main/SetupTroubleshooting.md \n"
+fi
 
-echo -e "${C_SPRINGGREEN3}"
-echo -e "If your container stops abruptly after pre-launch, please make sure you have skip_install_trust in your Caddyfile"
-echo -e "Without it, Caddy will attempt to install certificates to root store resulting in a exception due to a rootless user"
-echo -e "${NO_FORMAT}"
-environmentPreLaunch
+if [ -n "$CONFIG_PATH" ]; then
+    printf "%b" "[✨ " "$purple" "Startup" "$cend" "] ✅ CONFIG_PATH appears to be valid\n"
+    printf "🙂 If you experience issues, make sure to point it to /apps/config/Caddyfile or similar\n"
+    printf "😌 It should be generally fine no matter where you point it as long as you have a volume mapped to that location with your configuration\n"
+    printf "😕 Confused? Read our Documentation! https://github.com/qor-caddy/blob/main/SetupTroubleshooting.md \n"
+else
+    printf "%b" "[❌ " "$pink" "Error" "$cend" "] ⛔ Your CONFIG_PATH is empty! It is required to launch the container successfully! 🙈\n"
+    printf "➡️ Please fix it and relaunch the container\n"
+    printf "😕 Confused? Read our Documentation! https://github.com/qor-caddy/blob/main/SetupTroubleshooting.md \n"
+    exit 2
+fi
+
+printf "%b" "$darkorange" " ______        _     _                                             \n(_____ \      | |   | |                                            \n _____) )_   _| |__ | |__  _____  ____ _   _ _____  ____ ___ _____ \n|  __  /| | | |  _ \|  _ \| ___ |/ ___) | | | ___ |/ ___)___) ___ |\n| |  \ \| |_| | |_) ) |_) ) ____| |    \ V /| ____| |  |___ | ____|\n|_|   |_|____/|____/|____/|_____)_|     \_/ |_____)_|  (___/|_____)\n" "$cend";
+printf "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n"
+printf "%b" "🗒️ " "$blue" "Setup Guide " "$cend" "- https://github.com/rubberverse/qor-caddy/Setup.md \n"
+printf "%b" "📁 " "$green" "Repository " "$cend" "- https://github.com/rubberverse/qor-caddy \n"
+printf "🦆 No more bash!\n"
+
+printf "ℹ️ If your container stops abruptly after pre-launch, please make sure you have skip_install_trust in your Caddyfile\n"
+printf "Without it, Caddy will attempt to install certificates to root store which might either crash the container or just spam the log with attempts\n"
+
+if isProdOrTest "$CADDY_ENVIRONMENT" = 0; then 
+    printf "%b" "[✨" " $green" "Pre-Launch" "$cend" "] Launching Caddy - The Ultimate Server with Automatic HTTPS\n"
+    printf "ℹ️ You're launching in LOCAL/PROD environment. Config won't be dynamically reloaded!\n"
+    exec /app/caddy run --config "${CONFIG_PATH}" --adapter "${ADAPTER_TYPE}"
+elif isProdOrTest "$CADDY_ENVIRONMENT" = 1; then
+    printf "%b" "[✨" " $green" "Pre-Launch" "$cend" "] Launching Caddy - The Ultimate Server with Automatic HTTPS\n"
+    printf "ℹ️ You're launching in TEST environment. Config will be dynamically reloaded!\n"
+    /app/caddy start --config "${CONFIG_PATH}" --adapter "${ADAPTER_TYPE}" --watch
+    exec tail -f /dev/null
+else
+    printf "%b" "[❌ " "$pink" "Error" "$cend" "] ⛔ Image failed to launch\n"
+    printf "➡️ This is usually caused by a broken shell script or image\n"
+    printf "➡️ Please create a GitHub Issue so I can look into it!\n"
+    exit 2
+fi
