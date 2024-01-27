@@ -1,6 +1,6 @@
 ## 😺 Using the already built multi-arch image
 
-- ⚠️ Starting from version v0.16.0+, the container will run rootlessly (breakage may happen, report issues here in case something doesn't work!)
+- ⚠️ Starting from version v0.15.0, the container will run rootlessly (breakage may happen, report issues here in case something doesn't work!)
 
 ### 🦕 With Podman 4.4+ (quadlet rootless deployment)
 
