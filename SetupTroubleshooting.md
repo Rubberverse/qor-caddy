@@ -22,6 +22,9 @@ To choose your environment, pass CADDY_ENVIRONMENT with the environment type you
 
 - **Potentially invalid ADAPTER_TYPE value**
 
+> [!NOTE]
+> This check is currently broken and will be fixed later on, just well, need to learn non-bash scripting better
+
 If you're using a config adapter that's not one of the following: caddyfile, json, yaml in your custom-built image, then you can discard this error.
 
 However if you're using our Caddy image, it means that your `ADAPTER_TYPE` environmental variable is set **wrong**. Please make sure it's one of the supported values which is `caddyfile`, `json` or `yaml`! 
