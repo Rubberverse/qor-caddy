@@ -48,8 +48,19 @@ Available build arguments and how to use them during build - [Build Arguments](h
 
 Setup guide - [here](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md)
 
-## Some planned Dockerfiles and what not
+## Planned sub-images
+Stuff I want to try! This was done as part of learning Dockerfile, build, multi-platform builds and so on. I feel like it was a good exercise but why stop there?
 
-- `qor-xcaddy`  - Simple interactive container that bundles `git`, `xcaddy` and `ca-certificates` for testing out plugins (~335MB image due to build deps for xcaddy)
-- `qor-builder` - Standalone alpine-builder image that can be referenced in your images. probably gonna be a thing idk
-- `qor-scaddy`   - As low as possible image size vanilla Caddy image
+They will be released as extra images alongside current ones.
+
+#### Most probably
+
+- `qor-xcaddy-xpu` - Experimental, Post-build Caddy binary compressed with [upx](https://github.com/upx/upx) (probably going to be limited to 2-3 architectures)
+- `qor-scaddy` - Build Caddy for multi-platform using xcaddy, this is already possible with `qor-caddy` image (if you don't pass any modules, it will build vanilla) but as a seperate module with same features as `qor-caddy`, just without plugins.
+
+
+#### Can make them if there's interest in these
+
+- `qor-xcaddy` - Simple interactive container that bundles `git`, `xcaddy` and `ca-certificates` for testing out plugins
+- `qor-builder` - Standalone alpine-builder image that can be referenced in your images. Might be useful for somebody, I dunno.
+- `qor-wincaddy` - Windows variant of the `qor-caddy` image
