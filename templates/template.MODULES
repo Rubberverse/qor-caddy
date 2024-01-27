@@ -15,11 +15,10 @@ github.com/caddy-dns/namesilo
 github.com/caddy-dns/ddnss
 github.com/caddy-dns/mailinabox
 github.com/mholt/caddy-dynamicdns
-github.com/corazawaf/coraza-caddy
+github.com/corazawaf/coraza-caddy/v2
 github.com/greenpau/caddy-security
 github.com/mholt/caddy-l4
 github.com/hairyhenderson/caddy-teapot-module
 github.com/dunglas/vulcain/caddy
 github.com/dunglas/mercure/caddy
 github.com/caddyserver/replace-response
-github.com/ueffel/caddy-brotli
