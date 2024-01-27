@@ -75,7 +75,8 @@ EnvironmentFile=.qor-caddy
 PublishPort=80:80
 PublishPort=443:443
 IP=10.10.10.2
-Sysctl=net.ipv4.ip_unprivileged_port_start=0
+# only needed on v0.15.0
+#Sysctl=net.ipv4.ip_unprivileged_port_start=0
 LogDriver=journald
 User=caddy
 Volume=/home/youruser/AppData/qor-caddy/Caddyfile:/app/configs/Caddyfile
@@ -91,6 +92,8 @@ WantedBy=multi-user.target
 6. Run the container with `systemctl --user start qor-caddy.service`
 
 ### 🐳 With docker-compose (recommended)
+
+**Starting from v0.16.0**, you no longer need to add a `sysctl` parameter to the container! Versions below **still require it** - v0.15.0 and v0.12.0 (though you can run the last one as root)
 
 1. Create following docker-compose.yaml below
 
@@ -115,9 +118,9 @@ services:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
-    # It is required to have this so rootless user can bind to ports below 1000 and solve cert challenges
-    sysctls:
-      - net.ipv4.ip_unprivileged_port_start=80
+    # Only needed on v0.15.0 and v0.12.0
+    #sysctls:
+    #  - net.ipv4.ip_unprivileged_port_start=80
     ports:
       - "80:80"
       - "443:443"
@@ -179,9 +182,12 @@ podman run \
   --volume qor-caddy-logs:/app/logs \
   --publish 8080:80 \
   --publish 4443:443 \
-  --sysctl net.ipv4.ip_unprivileged_port_start=80 \
 docker.io/mrrubberducky/qor-caddy:latest
 ```
+
+> [!WARNING]
+> If running version equal or less to v0.15.0, you will need to add a extra parameter to the run command: `--sysctl net.ipv4.ip_unprivileged_port_start=80`. This allows rootless user inside container to bvind to ports below 1000
+
 ---
 
 #### 🛠️ Building
@@ -216,6 +222,9 @@ podman build -f Dockerfile \
 ```
 
 4. Then just run the built image either via docker-compose, quadlet or with `podman run`
+
+> [!INFO]
+> If you get a platform is "" error, remove --platform=$BUILDPLATFORM from Dockerfile references. This however should work normally, at least it does on Podman 4.3+
 
 ---
 
@@ -263,9 +272,9 @@ services:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
-    # It is required to have this so rootless user can bind to ports below 1000 and solve cert challenges
-    sysctls:
-      - net.ipv4.ip_unprivileged_port_start=80
+    # Only needed on v0.15.0 and v0.12.0
+    #sysctls:
+    #  - net.ipv4.ip_unprivileged_port_start=80
     ports:
       - "80:80"
       - "443:443"
