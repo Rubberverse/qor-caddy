@@ -32,6 +32,9 @@ sudo apt install buildah
 3. Create following directory `mkdir -p .config/containers/systemd` (in your users' home folder) and `cd` into it
 4. In here we'll create 4 files - qor-appdata.volume, qor-config.volume, qor-logs.volume, quadlet-vps.network and finally, qor-caddy.container with following contents, in order
 
+>[!WARNING]
+> You will need to allow your rootless user on your host to map below 1000, either by editing sysctl or redirecting port 80 to 8080
+
 ℹ️ You can name them however you want
 
 ```ini
@@ -98,7 +101,8 @@ WantedBy=multi-user.target
 1. Create following docker-compose.yaml below
 
 >[!WARNING]
-> You will need to create the following directory caddy-appdata will bind to, otherwise it will fail with `special device <location> does not exist`
+> 1. You will need to create the following directory caddy-appdata will bind to, otherwise it will fail with `special device <location> does not exist`
+> 2. You will need to allow your rootless user on your host to map below 1000, either by editing sysctl or redirecting port 80 to 8080
 
 ```yaml
 version: "3.8"
