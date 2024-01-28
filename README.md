@@ -55,9 +55,8 @@ They will be released as extra images alongside current ones.
 
 #### Most probably
 
-- `qor-xcaddy-upx` - Experimental, Post-build Caddy binary compressed with [upx](https://github.com/upx/upx) (probably going to be limited to 2-3 architectures)
 - `qor-scaddy` - Build Caddy for multi-platform using xcaddy, this is already possible with `qor-caddy` image (if you don't pass any modules, it will build vanilla) but as a seperate module with same features as `qor-caddy`, just without plugins.
-
+- `qor-caddy-debian` - Same as `qor-caddy` but supports two more architectures!
 
 #### Can make them if there's interest in these
 
