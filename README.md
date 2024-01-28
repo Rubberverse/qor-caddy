@@ -6,7 +6,7 @@ Plus, it also acts as our modified repository for building our own customized ve
 
 Images are also verified to ensure that they work on my local testing VM so you can always ensure that at minimum plugins will work just fine. No guarantees though.
 
-You're free to use any images here, spin up your own images and overall contribute to this by posting issues, doing pull requests to fix some things etc. You can pull our image from ghcr.io or [Docker Hub](https://hub.docker.com/mrrubberducky/qor-caddy)
+You're free to use any images here, spin up your own images and overall contribute to this by posting issues, doing pull requests to fix some things etc. You can pull our image from ghcr.io or [Docker Hub](https://hub.docker.com/r/mrrubberducky/qor-caddy)
 
 ## What's the purpose of this project?
 - Lazy people (me)
