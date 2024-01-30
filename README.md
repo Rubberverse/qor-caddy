@@ -1,3 +1,11 @@
+>[!WARNING]
+> Multi-Architecture images are built using qemu, I don't have the hardware to ensure it will 100% be working post-build. 
+
+>[!CAUTION]
+>There's a chance version v0.15.0- has broken multi-architecture due to not using qemu for images (my mistake)
+
+**Please report issues if there are any regarding the architecture you're using, I'll try to find a way to fix them**
+
 ## What's this repository about?
 
 This repository houses our Dockerfile that spins up xcaddy, builds Caddy along with plugins from a defined list and then runs on a rootless user inside the container. It makes use of Alpine Linux for low image size and some Dockerfile optimizations to not overbloat the final result. It's also version and even repository agnostic so you don't have to worry about anything, everything is customizable with [Build Arguments]()
