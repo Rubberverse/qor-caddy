@@ -10,7 +10,7 @@ ARG IMAGE_REPOSITORY=docker.io/library  \
     ALPINE_VERSION=blank
 ARG BUILDPLATFORM
 
-FROM --platform=${BUILDPLATFORM} golang:alpine${ALPINE_VERSION} 
+FROM --platform=${BUILDPLATFORM} golang:alpine
 WORKDIR /app
 
 ARG XCADDY_SKIP_CLEANUP=1 \
