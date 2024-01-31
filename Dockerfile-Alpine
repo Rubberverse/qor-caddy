@@ -1,4 +1,4 @@
-ARG BUILDPLATFORM=linux/amd64
+ARG BUILDPLATFORM=linux/amd64 \
     IMAGE_REPOSITORY=docker.io/library  \
     IMAGE_ALPINE_VERSION=edge \
     GO_VERSION=blank \
