@@ -1,14 +1,19 @@
 ARG BUILDPLATFORM=linux/amd64
+    IMAGE_REPOSITORY=docker.io/library  \
+    IMAGE_ALPINE_VERSION=edge \
+    GO_VERSION=blank \
+    ALPINE_VERSION=blank
+
 FROM --platform=${BUILDPLATFORM} qmcgaw/xcputranslate:v0.8.0 AS xcputranslate
 # =============================================================================
 # 1. ALPINE BUILDER STAGE - arm64v8, armv6 armv7 i386 amd64, riscv64
 # =============================================================================
 
-ARG IMAGE_REPOSITORY=docker.io/library  \
-    IMAGE_ALPINE_VERSION=edge \
-    GO_VERSION=blank \
-    ALPINE_VERSION=blank
-ARG BUILDPLATFORM
+ARG IMAGE_REPOSITORY  \
+    IMAGE_ALPINE_VERSION= \
+    GO_VERSION \
+    ALPINE_VERSION \
+    BUILDPLATFORM
 
 FROM --platform=${BUILDPLATFORM} golang:alpine
 WORKDIR /app
