@@ -50,7 +50,7 @@ jobs:
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Alpine
           registry: ghcr.io
-          multiPlatform: true
+          multiPlatform: false
           overrideDriver: true
           enableBuildKit: true
           platform: linux/amd64,linux/i386,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x
