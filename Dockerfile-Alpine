@@ -1,0 +1,97 @@
+# =============================================================================
+# 1. ALPINE BUILDER STAGE
+# =============================================================================
+
+ARG IMAGE_REPOSITORY=docker.io/library  \
+    IMAGE_ALPINE_VERSION=latest
+
+ARG BUILDPLATFORM
+
+FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+WORKDIR /app
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG XCADDY_MODULES
+
+ENV GOOS $TARGETOS
+ENV GOARCH $TARGETARCH
+ENV CGO_ENABLED=0
+ENV XCADDY_SKIP_CLEANUP=1
+ENV XCADDY_DEBUG=0
+ENV XCADDY_SUDO=0
+ENV XCADDY_SETCAP=1
+ENV XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'"
+
+LABEL stage=alpine-builder
+
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
+    ALPINE_REPO_VERSION=v3.19                               \
+    GO_XCADDY_VERSION=latest                                \
+    GO_CADDY_VERSION=latest                                 \
+    GOPATH=/app/go                                          \
+    GOCACHE=/app/go/cache                                   \
+    GOOS=linux                                              \
+    GIT_DIR=/app/git                                        \
+    GIT_WORKTREE=/app/worktree
+
+COPY --chmod=0755 scripts/array-helper.sh \ 
+    /app/helper/array-helper.sh
+
+RUN apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        bash            \
+        git             \
+        ca-certificates \
+        go              \
+        libcap          \
+        libcap-setcap   \
+    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
+    && /app/helper/array-helper.sh \
+    && apk del --rdepends \
+        build_ess \
+    && rm -rf /app/go /app/git /tmp
+
+# =============================================================================
+# 2. ALPINE BASE STAGE
+# =============================================================================
+
+ARG IMAGE_REPOSITORY \
+    IMAGE_ALPINE_VERSION=edge
+
+ARG TARGETPLATFORM
+
+FROM --platform=$TARGETPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS qor-caddy
+WORKDIR /app
+
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
+    ALPINE_REPO_VERSION=v3.19 \
+    CONT_USER=caddy \
+    CONT_UID=1001
+
+LABEL stage=qor-caddy
+
+COPY --from=alpine-builder \
+    --chmod=755 /usr/bin/caddy /app/caddy
+
+COPY --chmod=755 \
+    scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+
+RUN && apk upgrade --no-cache \
+    && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        ca-certificates \
+        openssl         \
+    && adduser \
+        --home "/app"          \
+        --shell "/bin/ash"     \
+        --uid "$CONT_UID"      \
+        --disabled-password    \
+        --no-create-home       \
+        "$CONT_USER" \
+    && mkdir -p /app/logs \
+    && chown -R "$CONT_UID" /srv /app \
+    && apk del --rdepends --no-cache \
+        deps
+
+USER ${CONT_UID}
+
+ENTRYPOINT /app/scripts/docker-entrypoint.sh
