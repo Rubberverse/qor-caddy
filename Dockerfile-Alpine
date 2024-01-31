@@ -1,20 +1,20 @@
 # =============================================================================
-# 1. ALPINE BUILDER STAGE
+# 1. ALPINE BUILDER STAGE - arm64v8, armv6 armv7 i386 amd64, riscv64
 # =============================================================================
 
 ARG IMAGE_REPOSITORY=docker.io/library  \
-    IMAGE_ALPINE_VERSION=edge
+    IMAGE_ALPINE_VERSION=latest
 
 ARG BUILDPLATFORM
 
-FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+FROM --platform $BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+ARG TARGETPLATFORM
+
 WORKDIR /app
 
 ARG TARGETOS
 ARG TARGETARCH
 ARG XCADDY_MODULES
-ARG GOPATH=/app/go
-ARG GOCACHE=/app/go/cache
 
 ENV GOOS $TARGETOS
 ENV GOARCH $TARGETARCH
@@ -25,10 +25,14 @@ ENV XCADDY_SUDO=0
 ENV XCADDY_SETCAP=1
 ENV XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'"
 
+LABEL stage=alpine-builder
+
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
-    ALPINE_REPO_VERSION=v3.19                               \
+    ALPINE_REPO_VERSION=edge                                \
     GO_XCADDY_VERSION=latest                                \
     GO_CADDY_VERSION=latest                                 \
+    GOPATH=/app/go                                          \
+    GOCACHE=/app/go/cache                                   \
     GIT_DIR=/app/git                                        \
     GIT_WORKTREE=/app/worktree
 
@@ -57,7 +61,7 @@ ARG IMAGE_REPOSITORY \
 
 ARG TARGETPLATFORM
 
-FROM --platform=$TARGETPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS qor-caddy
+FROM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
