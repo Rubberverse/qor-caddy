@@ -1,3 +1,18 @@
+## v0.17.0-dev
+- [Dockerfile] Remove echo comments
+- [Dockerfile] Set ARG TARGETARCH properly
+- [Dockerfile] Use edge image for Alpine Linux image
+- [Dockerfile] Properly reuse ARG across Dockerfile
+- [Build] Set capabilities on alpine-builder stage
+- [Build] Apply optimizations to all go build xyz
+- [Build] Don't chmod uselessly on alpine-builder stage
+- [Build] Drop dependency on modifying the file, now modules are passed via ENV variable
+- [Files] Stop including test Caddyfile, prompt users to mount their own instead
+- [Files] Don't Modify /etc/shadow /etc/passwd
+- [Scripts] Safety checks for array-helper.sh
+- [Image] Add debian variant
+- [Image] Retag latest to latest-alpine, latest-debian
+
 ## v0.16.0
 - Revert: Created a dedicated logging directory in /apps/logs and serve directory /srv/www
 - Created a dedicated logging directory in `/app/logs`
