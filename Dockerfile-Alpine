@@ -3,9 +3,11 @@
 # =============================================================================
 
 ARG IMAGE_REPOSITORY=docker.io/library  \
-    IMAGE_ALPINE_VERSION=latest
+    IMAGE_ALPINE_VERSION=edge
 
-FROM --platform=linux/amd64 $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION@sha256:6457d53fb065d6f250e1504b9bc42d5b6c65941d57532c072d929dd0628977d0 AS alpine-builder
+ARG BUILDPLATFORM
+
+FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
 WORKDIR /app
 
 ARG TARGETOS
@@ -54,7 +56,7 @@ RUN apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALP
 # =============================================================================
 
 ARG IMAGE_REPOSITORY \
-    IMAGE_ALPINE_VERSION=edge
+    IMAGE_ALPINE_VERSION
 
 ARG TARGETPLATFORM
 
