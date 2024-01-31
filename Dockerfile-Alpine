@@ -13,6 +13,8 @@ WORKDIR /app
 ARG TARGETOS
 ARG TARGETARCH
 ARG XCADDY_MODULES
+ARG GOPATH=/app/go
+ARG GOCACHE=/app/go/cache
 
 ENV GOOS $TARGETOS
 ENV GOARCH $TARGETARCH
@@ -23,15 +25,10 @@ ENV XCADDY_SUDO=0
 ENV XCADDY_SETCAP=1
 ENV XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'"
 
-LABEL stage=alpine-builder
-
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
     ALPINE_REPO_VERSION=v3.19                               \
     GO_XCADDY_VERSION=latest                                \
     GO_CADDY_VERSION=latest                                 \
-    GOPATH=/app/go                                          \
-    GOCACHE=/app/go/cache                                   \
-    GOOS=linux                                              \
     GIT_DIR=/app/git                                        \
     GIT_WORKTREE=/app/worktree
 
