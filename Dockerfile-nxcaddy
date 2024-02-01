@@ -1,0 +1,38 @@
+ARG IMAGE_REPOSITORY=docker.io/library  \
+    IMAGE_ALPINE_VERSION=edge
+
+FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+WORKDIR /app
+
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETPLATFORM
+
+ARG XCADDY_SKIP_CLEANUP=1 \
+    XCADDY_DEBUG=0 \
+    XCADDY_SUDO=0 \
+    XCADDY_SETCAP=1 \
+    XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'" \
+    ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
+    ALPINE_REPO_VERSION=edge \
+    GO_XCADDY_VERSION=latest \
+    GO_CADDY_VERSION=latest \
+    GOPATH=/app/go \
+    GOCACHE=/app/go/cache \
+    GIT_DIR=/app/git \
+    GIT_WORKTREE=/app/worktree \
+    CGO_ENABLED=0
+
+COPY --chmod=0755 scripts/array-helper.sh /app/helper/array-helper.sh
+
+RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        bash            \
+        git             \
+        ca-certificates \
+        go              \
+        libcap          \
+        libcap-setcap   \
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH}; go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION}
+
+CMD ["/app/helper/array-helper.sh"]
