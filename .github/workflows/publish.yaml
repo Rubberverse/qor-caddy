@@ -42,7 +42,7 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build and push Alpine variant of the image
         with:
-          image: qor-helper
+          image: qor-helper-dev
           tags: DONOTUSE-${RANDOM}${RANDOM}, DONOTUSE-latest
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Helper
@@ -62,7 +62,7 @@ jobs:
         with:
           image: qor-caddy-dev
           tags: DONOTUSE-${RANDOM}${RANDOM}-ALPINE, DONOTUSE-ALPINE-latest
-          buildArgs: BUILDPLATFORM=linux/amd64
+          buildArgs: BUILDPLATFORM=linux/amd64,IMAGE_MIRROR_REPO=ghcr.io/rubberverse/qor-helper-dev:DONOTUSE-latest
           dockerfile: Dockerfile-Alpine
           registry: ghcr.io
           multiPlatform: true
@@ -77,7 +77,7 @@ jobs:
         with:
           image: qor-caddy-dev
           tags: DONOTUSE-${RANDOM}${RANDOM}-DEBIAN, DONOTUSE-DEBIAN-latest
-          buildArgs: BUILDPLATFORM=linux/amd64
+          buildArgs: BUILDPLATFORM=linux/amd64,IMAGE_MIRROR_REPO=ghcr.io/rubberverse/qor-helper-dev:DONOTUSE-latest
           dockerfile: Dockerfile-Debian
           registry: ghcr.io
           multiPlatform: true
