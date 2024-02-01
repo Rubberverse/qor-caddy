@@ -8,6 +8,9 @@ FROM --platform=$TARGETPLATFORM docker.io/library/debian:bookworm-slim AS qor-ca
 WORKDIR /app
 
 ENV DEBIAN_FRONTEND=noninteractive
+ARG CONT_USER=caddy
+ARG CONT_SHELL=/bin/sh
+ARG CONT_UID=1001
 
 COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/caddy
 COPY --chmod=0755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
