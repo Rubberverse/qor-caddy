@@ -1,7 +1,5 @@
 #!/bin/bash
-if [ -z ${XCADDY_MODULES+1} ]; then
-    echo "env XCADDY_MODULES is set"
-else
+if [ "x$XCADDY_MODULES" = "x" ]; then
     echo "Empty or non-existent env XCADDY_MODULES, falling back to vanilla build"
     exec /app/go/bin/xcaddy build ${GO_CADDY_VERSION} --output /usr/bin/caddy
 fi
@@ -13,7 +11,7 @@ for module in "${env_arr[@]}"; do
     cmd_array+=( --with "$module" )
 done
 
-cmd_array+=( --output /usr/bin/caddy )
+cmd_array+=( --output /app/bin/caddy )
 "${cmd_array[@]}"
 
 # https://unix.stackexchange.com/a/403401
