@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "x$XCADDY_MODULES" = "x" ]; then
     echo "Empty or non-existent env XCADDY_MODULES, falling back to vanilla build"
-    exec /app/go/bin/xcaddy build ${GO_CADDY_VERSION} --output /usr/bin/caddy
+    exec /app/go/bin/xcaddy build ${GO_CADDY_VERSION} --output /app/bin/caddy
 fi
 
 read -ra env_arr <<<"$XCADDY_MODULES"
