@@ -21,12 +21,11 @@ RUN apt-get update; apt-get upgrade -y; apt install -y \
         libcap2 \
         libcap2-bin \
         adduser \
-    && adduser \
-        --home "/app" \
+    && useradd \
+        --home-dir "/app" \
         --shell "$CONT_SHELL" \
         --uid "$CONT_UID" \
         --no-create-home \
-        --disabled-password \
         "$CONT_USER" \
     && mkdir -p /var/www/ \
     && chown -R "$CONT_UID" /var/www /app \
