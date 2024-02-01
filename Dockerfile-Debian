@@ -9,7 +9,7 @@ WORKDIR /app
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-COPY --from=ghcr.io/rubberverse/xcaddy-helper --chmod=0755 /app/bin/caddy /app/caddy
+COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/caddy
 COPY --chmod=0755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apt-get update; apt-get upgrade -y; apt install -y \
