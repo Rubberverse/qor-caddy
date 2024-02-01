@@ -34,14 +34,6 @@ if test "$VAR_ADAPTER" != ERR; then
     printf "%b" "[✨ " "$purple" "Startup" "$cend" "] ✅ ADAPTER_TYPE is valid!\n"
 else
     printf "%b" "[⚠️ " "$darkorange" "Warning" "$cend" "] ❔ Potentially invalid ADAPTER_TYPE value\n"
-    printf "💥 It might cause container to die upon launch"
-    printf "😕 Confused? Read our Documentation! https://github.com/qor-caddy/blob/main/SetupTroubleshooting.md \n"
-fi
-
-if test "$VAR_ADAPTER" != ERR; then
-    printf "%b" "[✨ " "$purple" "Startup" "$cend" "] ✅ ADAPTER_TYPE is valid!\n"
-else
-    printf "%b" "[⚠️ " "$darkorange" "Warning" "$cend" "] ❔ Potentially invalid ADAPTER_TYPE value\n"
     printf "💥 It might cause container to die upon launch\n"
     printf "😕 Confused? Read our Documentation! https://github.com/qor-caddy/blob/main/SetupTroubleshooting.md \n"
 fi
