@@ -34,7 +34,7 @@ ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
 COPY --chmod=0755 scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
 
-RUN && apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         bash            \
         git             \
         ca-certificates \
