@@ -18,19 +18,21 @@ COPY --chmod=0755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 RUN apt-get update; apt-get upgrade -y; apt install -y \
         ca-certificates \
         openssl \
+        shadow \
         libcap-ng0 \
         libcap-ng-utils \
-    && useradd \
-        --home-dir "/app"     \
+        adduser \
+    && adduser \
+        --home "/app" \
         --shell "$CONT_SHELL" \
-        --uid "$CONT_UID"     \
-        --disabled-password   \
-        --no-create-home      \
+        --uid "$CONT_UID" \
+        --no-create-home \
+        --disabled-password \
         "$CONT_USER" \
     && mkdir -p /var/www/ \
     && chown -R "$CONT_UID" /var/www /app \
     && setcap 'cap_net_bind_service=+ep' /app/caddy \
-    && apt remove libcap-ng0 libcap-ng-utils -y \
+    && apt remove libcap-ng0 libcap-ng-utils adduser -y \
     && rm -rf /var/cache/apt
 
 USER "${CONT_UID}"
