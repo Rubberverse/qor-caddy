@@ -30,6 +30,26 @@ This image bundles following moduels by default, in order to know how to use the
 - [Replace Response](https://github.com/caddyserver/replace-response)
 - [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)
 
+## What each image tag/dockerfile represents
+
+- Dockerfile-Debian, Dockerfile-Alpine, `latest-debian`, `latest-alpine` -> Standard QoR-Caddy images, they're what's pushed to GitHub Container Registry and Docker Registry
+- Dockerfile-Helper, `latest-helper-dev` -> This image is used to build multi-architecture artifacts for images
+- Dockerfile-itxcaddy, `latest-itxcaddy` -> Interactive xcaddy environment, by default does nothing. Comes bundled with `array-helper.sh` script that will parse XCADDY_MODULES environmental variable and run xcaddy command
+- Dockerfile-nxcaddy, `latest-nxcaddy` -> Non-interactive variant of xcaddy environment, this expects you to provide modules via XCADDY_MODULES and all it will do is build Caddy with it. Less useful than `itxcaddy` but it's whole purpose is to easily create your own Caddy binary
+
+## Image versioning
+
+Images use following versioning:
+vY.XX.ZZ
+
+- Y includes version type, 0 is considered "beta"
+- XX Includes Major & Minor changes
+- ZZ Includes Patches
+
+They will always be one higher than the previous ex. if a patch releases and prev version was v0.16.0, the next one will be v0.16.1.
+
+**Exception being** anything past version v0.30.0 will change to v1.00.0 "release"
+
 ## Building your own image
 
 >[!NOTE]
