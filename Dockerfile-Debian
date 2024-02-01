@@ -4,7 +4,7 @@ ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
 FROM --platform=$TARGETPLATFORM ${IMAGE_GHCR_REPOSITORY}/${QOR_HELPER_TYPE} AS qor-helper-dev
 # le edging the FROM prompt moment
 
-FROM --platform=$TARGETPLATFORM docker.io/library/debian:bookworm-slim AS qor-caddy
+FROM --platform=$TARGETPLATFORM docker.io/library/debian:trixie-slim AS qor-caddy
 WORKDIR /app
 
 ENV DEBIAN_FRONTEND=noninteractive
