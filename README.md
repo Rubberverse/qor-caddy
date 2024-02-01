@@ -32,10 +32,20 @@ This image bundles following moduels by default, in order to know how to use the
 
 ## What each image tag/dockerfile represents
 
-- Dockerfile-Debian, Dockerfile-Alpine, `latest-debian`, `latest-alpine` -> Standard QoR-Caddy images, they're what's pushed to GitHub Container Registry and Docker Registry
-- Dockerfile-Helper, `latest-helper-dev` -> This image is used to build multi-architecture artifacts for images
-- Dockerfile-itxcaddy, `latest-itxcaddy` -> Interactive xcaddy environment, by default does nothing. Comes bundled with `array-helper.sh` script that will parse XCADDY_MODULES environmental variable and run xcaddy command
-- Dockerfile-nxcaddy, `latest-nxcaddy` -> Non-interactive variant of xcaddy environment, this expects you to provide modules via XCADDY_MODULES and all it will do is build Caddy with it. Less useful than `itxcaddy` but it's whole purpose is to easily create your own Caddy binary
+> [!WARNING]
+> It is recommended to pull Debian image only if you need a certain architecture that's not provided by Alpine variant. Mostly due to the fact that Debian images are chonkier compared to Alpine ones, might reach 150MB+ with Debian.
+
+| Dockerfile | Tag | Description | Architectures |
+|-----------|------|-------------|-----------------------------------------------------|
+| Dockerfile-Debian | latest-debian | Built QoR-Caddy image with modules shown above | x86_64, x86, ARM64, ARMv7, ARMv5, mips64le, powerpc64le, s390x |
+| Dockerfile-Alpine | latest-alpine | Built QoR-Caddy image with modules shown above | x86_64, x86, ARM64, ARMv7, ARMv6, riscv64, powerpc64le, s390x  |
+| Dockerfile-Helper | latest-helper-dev | Helper Image for GitHub workflow Cross-Compilation support | x86_64 (Build Platform) |
+| Dockerfile-itxcaddy | latest-itxcaddy | Interactive xcaddy environment, by default does nothing | x86_64 (let me know if you want multi-arch) |
+| Dockerfile-nxcaddy | latest-nxcaddy | Non-Interactive xcaddy builder | x86_64 (let me know if you want multi-arch) |
+
+`Dockerfile-itxcaddy` comes with array-helper.sh helper script, can be found in `/app/scripts/array-helper.sh`. You can pass modules via XCADDY_MODULES. xcaddy itself can be found in `/app/go/bin/xcaddy`
+
+`Dockerfile-nxcaddy` expects a environmental variable called XCADDY_MODULES with a list of modules. Otherwise it'll build vanilla Caddy and exit.
 
 ## Image versioning
 
