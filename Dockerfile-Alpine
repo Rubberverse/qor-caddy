@@ -19,8 +19,9 @@ COPY --chmod=755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 RUN apk upgrade --no-cache; apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         ca-certificates \
         openssl         \
+        libcap          \
+        libcap2         \
     && apk add --no-cache --virtual build-deps --repository=$(ALPINE_REPO_URL)/${ALPINE_REPO_VERSION}/main \
-        libcap \
         libcap-setcap \
     && adduser \
         --home "/app"          \
@@ -30,7 +31,7 @@ RUN apk upgrade --no-cache; apk add --no-cache --repository=${ALPINE_REPO_URL}/$
         --no-create-home       \
         "$CONT_USER" \
     && mkdir -p /app/logs \
-    && setcap 'cap_net_bind_service+ep' /app/caddy \
+    && setcap 'cap_net_bind_service=+ep' /app/caddy \
     && chown -R "$CONT_UID" /srv /app \
     && apk del --rdepends build-deps
 
