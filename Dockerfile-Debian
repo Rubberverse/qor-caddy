@@ -23,4 +23,6 @@ RUN apt-get update; apt-get upgrade -y; apt install -y \
     && chown -R "$CONT_UID" /var/www /app \
     && rm -rf /var/cache/apt
 
+USER "$CONT_UID"
+
 ENTRYPOINT /app/scripts/docker-entrypoint.sh
