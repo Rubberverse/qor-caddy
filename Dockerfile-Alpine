@@ -1,61 +1,3 @@
-ARG BUILDPLATFORM=linux/amd64 \
-    IMAGE_REPOSITORY=docker.io/library  \
-    IMAGE_ALPINE_VERSION=edge \
-    GO_VERSION=blank \
-    ALPINE_VERSION=blank
-
-FROM --platform=${BUILDPLATFORM} qmcgaw/xcputranslate:v0.8.0 AS xcputranslate
-# =============================================================================
-# 1. ALPINE BUILDER STAGE - arm64v8, armv6 armv7 i386 amd64, riscv64
-# =============================================================================
-
-ARG IMAGE_REPOSITORY  \
-    IMAGE_ALPINE_VERSION= \
-    GO_VERSION \
-    ALPINE_VERSION \
-    BUILDPLATFORM
-
-FROM --platform=${BUILDPLATFORM} golang:alpine AS alpine-builder
-WORKDIR /app
-
-ARG XCADDY_SKIP_CLEANUP=1 \
-    XCADDY_DEBUG=0 \
-    XCADDY_SUDO=0 \
-    XCADDY_SETCAP=1 \
-    XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'" \
-    ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
-    ALPINE_REPO_VERSION=edge \
-    GO_XCADDY_VERSION=latest \
-    GO_CADDY_VERSION=latest \
-    GOPATH=/app/go \
-    GOCACHE=/app/go/cache \
-    GIT_DIR=/app/git \
-    GIT_WORKTREE=/app/worktree \
-    CGO_ENABLED=0 \
-    ALLTARGETPLATFORMS=linux/amd64,linux/386,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/riscv64
-
-COPY --chmod=0755 scripts/array-helper.sh /app/helper/array-helper.sh
-COPY --from=xcputranslate --chmod=0755 /xcputranslate /usr/local/bin/xcputranslate
-
-RUN apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
-        bash            \
-        git             \
-        ca-certificates \
-        go              \
-        libcap          \
-        libcap-setcap   \
-    && GOARCH="$(/usr/local/bin/xcputranslate translate -targetplatform ${TARGETPLATFORM} -language golang -field arch)" \
-    && GOARM="$(/usr/local/bin/xcputranslate translate -targetplatform ${TARGETPLATFORM} -language golang -field arm)" \
-    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
-    && /app/helper/array-helper.sh \
-    && apk del --rdepends \
-        build_ess \
-    && rm -rf /app/go /app/git /tmp
-
-# =============================================================================
-# 2. ALPINE BASE STAGE
-# =============================================================================
-
 ARG IMAGE_REPOSITORY \
     IMAGE_ALPINE_VERSION
 
@@ -69,14 +11,10 @@ ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
 
 LABEL stage=qor-caddy
 
-COPY --from=alpine-builder \
-    --chmod=755 /usr/bin/caddy /app/caddy
+COPY --from=ghcr.io/rubberverse/xcaddy-helper --chmod=0755 /app/bin/caddy /app/caddy
+COPY --chmod=755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
-COPY --chmod=755 \
-    scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
-
-RUN && apk upgrade --no-cache \
-    && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+RUN apk upgrade --no-cache; apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         ca-certificates \
         openssl         \
     && adduser \
@@ -87,9 +25,7 @@ RUN && apk upgrade --no-cache \
         --no-create-home       \
         "$CONT_USER" \
     && mkdir -p /app/logs \
-    && chown -R "$CONT_UID" /srv /app \
-    && apk del --rdepends --no-cache \
-        deps
+    && chown -R "$CONT_UID" /srv /app
 
 USER ${CONT_UID}
 
