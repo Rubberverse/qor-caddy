@@ -1,6 +1,6 @@
 ## Rubberverse container images
 
-This repository contains Dockerfiles specific for building and running `qor-caddy` image. It's our customized image that runs builds Caddy with custom modules (also known as plugins) and is maintained by MrRubberDucky (same username on Discord)
+This repository contains Dockerfiles specific for building and running `qor-caddy` image. It's our customized image that builds Caddy with custom modules (also known as plugins) and is maintained by MrRubberDucky (same username on Discord)
 
 This image bundles following moduels by default, in order to know how to use them, consider checking out their repositories. If you would like a extra module you need to be added to this image, create a Issue with [FEATURE REQUEST] in the title.
 
