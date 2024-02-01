@@ -18,8 +18,8 @@ COPY --chmod=0755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 RUN apt-get update; apt-get upgrade -y; apt install -y \
         ca-certificates \
         openssl \
-        libcap-ng0 \
-        libcap-ng-utils \
+        libcap2 \
+        libcap2-bin \
         adduser \
     && adduser \
         --home "/app" \
