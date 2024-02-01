@@ -37,7 +37,22 @@ jobs:
       - uses: docker/setup-buildx-action@v3
         name: Customize Docker driver
         with:
-          driver-opts: image=moby/buildkit:v0.12.4
+          driver-opts: image=moby/buildkit:master
+          
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build and push Alpine variant of the image
+        with:
+          image: qor-helper
+          tags: DONOTUSE-${RANDOM}${RANDOM}, DONOTUSE-latest
+          buildArgs: BUILDPLATFORM=linux/amd64
+          dockerfile: Dockerfile-Helper
+          registry: ghcr.io
+          multiPlatform: true
+          overrideDriver: true
+          enableBuildKit: true
+          platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/mips64le,linux/s390x
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -46,14 +61,29 @@ jobs:
         name: Build and push Alpine variant of the image
         with:
           image: qor-caddy-dev
-          tags: DONOTUSE-${RANDOM}${RANDOM}, DONOTUSE-latest
+          tags: DONOTUSE-${RANDOM}${RANDOM}-ALPINE, DONOTUSE-ALPINE-latest
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Alpine
           registry: ghcr.io
           multiPlatform: true
           overrideDriver: true
           enableBuildKit: true
-          platform: linux/amd64,linux/i386,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x
+          platform: linux/amd64,linux/i386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build and push Alpine variant of the image
+        with:
+          image: qor-caddy-dev
+          tags: DONOTUSE-${RANDOM}${RANDOM}-DEBIAN, DONOTUSE-DEBIAN-latest
+          buildArgs: BUILDPLATFORM=linux/amd64
+          dockerfile: Dockerfile-Debian
+          registry: ghcr.io
+          multiPlatform: true
+          overrideDriver: true
+          enableBuildKit: true
+          platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
