@@ -7,11 +7,13 @@ WORKDIR /app
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
     ALPINE_REPO_VERSION=v3.19 \
     CONT_USER=caddy \
-    CONT_UID=1001
+    CONT_UID=1001 \
+
+ARG IMAGE_MIRROR_REPO
 
 LABEL stage=qor-caddy
 
-COPY --from=ghcr.io/rubberverse/xcaddy-helper --chmod=0755 /app/bin/caddy /app/caddy
+COPY --from=$IMAGE_MIRROR_REPO --chmod=0755 /app/bin/caddy /app/caddy
 COPY --chmod=755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apk upgrade --no-cache; apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
