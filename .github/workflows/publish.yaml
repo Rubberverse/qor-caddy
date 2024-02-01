@@ -38,9 +38,16 @@ jobs:
         name: Customize Docker driver
         with:
           driver-opts: image=moby/buildkit:master
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build and push Alpine variant of the image
+        name: Build the helper image
         with:
           image: qor-helper-dev
           tags: DONOTUSE-${RANDOM}${RANDOM}, DONOTUSE-latest
@@ -73,7 +80,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build and push Alpine variant of the image
+        name: Build and push Debian variant of the image
         with:
           image: qor-caddy-dev
           tags: DONOTUSE-${RANDOM}${RANDOM}-DEBIAN, DONOTUSE-DEBIAN-latest
