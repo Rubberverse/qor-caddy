@@ -1,0 +1,49 @@
+ARG IMAGE_REPOSITORY=docker.io/library  \
+    IMAGE_ALPINE_VERSION=edge
+
+ARG BUILDPLATFORM
+
+FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+WORKDIR /app
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG XCADDY_MODULES
+
+ENV GOOS $TARGETOS
+ENV GOARCH $TARGETARCH
+ENV CGO_ENABLED=0
+ENV XCADDY_SKIP_CLEANUP=1
+ENV XCADDY_DEBUG=0
+ENV XCADDY_SUDO=0
+ENV XCADDY_SETCAP=1
+ENV XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'"
+
+LABEL stage=alpine-builder
+
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine   \
+    ALPINE_REPO_VERSION=v3.19                               \
+    GO_XCADDY_VERSION=latest                                \
+    GO_CADDY_VERSION=latest                                 \
+    GOPATH=/app/go                                          \
+    GOCACHE=/app/go/cache                                   \
+    GOOS=linux                                              \
+    GIT_DIR=/app/git                                        \
+    GIT_WORKTREE=/app/worktree
+
+COPY --chmod=0755 scripts/array-helper.sh \ 
+    /app/helper/array-helper.sh
+
+RUN && apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        bash            \
+        git             \
+        ca-certificates \
+        go              \
+        libcap          \
+        libcap-setcap   \
+    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
+    && /app/helper/array-helper.sh \
+    && setcap 'cap_net_bind_service+ep' /usr/bin/caddy \
+    && apk del --rdepends \
+        build_ess \
+    && rm -rf /app/go /app/git /tmp
