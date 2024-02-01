@@ -1,6 +1,5 @@
 ARG IMAGE_GHCR_REPOSITORY=ghcr.io/rubberverse
 ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
-ARG TARGETPLATFORM
 
 FROM --platform=$TARGETPLATFORM ${IMAGE_GHCR_REPOSITORY}/${QOR_HELPER_TYPE} AS qor-helper-dev
 # le edging the FROM prompt moment
