@@ -4,9 +4,11 @@ ARG IMAGE_REPOSITORY=docker.io/library  \
 FROM --platform=$TARGETPLATFORM $IMAGE_REPOSITORY/debian/$IMAGE_DEBIAN_VERSION AS qor-caddy
 WORKDIR /app
 
+ARG IMAGE_MIRROR_REPO
+
 ENV DEBIAN_FRONTEND=noninteractive
 
-COPY --from=ghcr.io/rubberverse/xcaddy-helper --chmod=0755 /app/bin/caddy /app/caddy
+COPY --from=$IMAGE_MIRROR_REPO --chmod=0755 /app/bin/caddy /app/caddy
 COPY --chmod=0755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apt-get update; apt-get upgrade -y; apt install -y \
