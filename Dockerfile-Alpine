@@ -20,9 +20,6 @@ RUN apk upgrade --no-cache; apk add --no-cache --repository=${ALPINE_REPO_URL}/$
         ca-certificates \
         openssl         \
         libcap          \
-        libcap2         \
-    && apk add --no-cache --virtual build-deps --repository=$(ALPINE_REPO_URL)/${ALPINE_REPO_VERSION}/main \
-        libcap-setcap \
     && adduser \
         --home "/app"          \
         --shell "/bin/ash"     \
@@ -31,7 +28,7 @@ RUN apk upgrade --no-cache; apk add --no-cache --repository=${ALPINE_REPO_URL}/$
         --no-create-home       \
         "$CONT_USER" \
     && mkdir -p /app/logs \
-    && setcap 'cap_net_bind_service+ep' /app/caddy \
+    && setcap 'cap_net_bind_service=+ep' /app/caddy \
     && chown -R "$CONT_UID" /srv /app \
     && apk del --rdepends build-deps
 
