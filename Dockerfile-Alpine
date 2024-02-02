@@ -29,8 +29,7 @@ RUN apk upgrade --no-cache; apk add --no-cache --repository=${ALPINE_REPO_URL}/$
         "$CONT_USER" \
     && mkdir -p /app/logs \
     && setcap 'cap_net_bind_service=+ep' /app/caddy \
-    && chown -R "$CONT_UID" /srv /app \
-    && apk del --rdepends build-deps
+    && chown -R "$CONT_UID" /srv /app
 
 USER "${CONT_UID}"
 
