@@ -6,10 +6,10 @@ FROM --platform=$TARGETPLATFORM ${IMAGE_GHCR_REPOSITORY}/${QOR_HELPER_TYPE} AS q
 FROM docker.io/library/alpine:edge AS qor-caddy
 WORKDIR /app
 
-ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
-    ALPINE_REPO_VERSION=v3.19 \
-    CONT_USER=caddy \
-    CONT_UID=1001
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine
+ARG ALPINE_REPO_VERSION=v3.19
+ARG CONT_USER=caddy
+ARG CONT_UID=1001
 
 LABEL stage=qor-caddy
 
