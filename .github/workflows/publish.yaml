@@ -42,10 +42,10 @@ jobs:
           driver-opts: image=moby/buildkit:master
 
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build the helper image
+        name: Build the helper image using golang cross-compilation
         with:
           image: qor-helper-dev
-          tags: DONOTUSE-${RANDOM}${RANDOM}, DONOTUSE-latest
+          tags: Internal-Helper, donotuse-latest
           buildArgs: BUILDPLATFORM=linux/amd64,XCADDY_MODULES="github.com/caddy-dns/cloudflare github.com/caddy-dns/route53 github.com/caddy-dns/duckdns github.com/caddy-dns/alidns github.com/caddy-dns/godaddy github.com/caddy-dns/gandi github.com/caddy-dns/porkbun github.com/caddy-dns/namecheap github.com/caddy-dns/netlify github.com/caddy-dns/azure github.com/caddy-dns/acmedns github.com/caddy-dns/vercel github.com/caddy-dns/namesilo github.com/caddy-dns/ddnss github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2  github.com/greenpau/caddy-security github.com/hairyhenderson/caddy-teapot-module github.com/dunglas/vulcain/caddy github.com/dunglas/mercure/caddy github.com/caddyserver/replace-response github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4"
           dockerfile: Dockerfile-Helper
           registry: ghcr.io
@@ -60,10 +60,10 @@ jobs:
         uses: docker/setup-qemu-action@v3
 
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build and push Alpine variant of the image
+        name: Build and push Alpine variant of the image to GitHub Container Registry
         with:
           image: qor-caddy-dev
-          tags: DONOTUSE-${RANDOM}${RANDOM}-ALPINE, DONOTUSE-ALPINE-latest
+          tags: ${{ steps.autotagger.outputs.new_tag }}, latest-alpine
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Alpine
           registry: ghcr.io
@@ -75,11 +75,25 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build and push Debian variant of the image
+        name: Push Docker image to docker.io for Alpine variant
         with:
-          image: qor-caddy-dev
-          tags: DONOTUSE-${RANDOM}${RANDOM}-DEBIAN, DONOTUSE-DEBIAN-latest
-          buildArgs: BUILDPLATFORM=linux/amd64,IMAGE_MIRROR_REPO=ghcr.io/rubberverse/qor-helper-dev:DONOTUSE-latest
+          image: mrrubberducky/qor-caddy
+          tags: ${{ steps.autotagger.outputs.new_tag }}, latest-alpine
+          buildArgs: BUILDPLATFORM=linux/amd64
+          registry: docker.io
+          multiPlatform: true
+          overrideDriver: true
+          enableBuildKit: true
+          platform: linux/amd64,linux/i386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build and push Debian variant of the image to GitHub Container Registry
+        with:
+          image: qor-caddy
+          tags: alpine-v0.17.0, latest-debian
+          buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Debian
           registry: ghcr.io
           multiPlatform: true
@@ -88,6 +102,20 @@ jobs:
           platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v7,linux/arm64,linux/ppc64le,linux/mips64le,linux/s390x
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Push Docker image to docker.io for Debian variant
+        with:
+          image: mrrubberducky/qor-caddy
+          tags: debian-v0.17.0, latest-debian
+          buildArgs: BUILDPLATFORM=linux/amd64
+          registry: docker.io
+          multiPlatform: true
+          overrideDriver: true
+          enableBuildKit: true
+          platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v7,linux/arm64,linux/ppc64le,linux/mips64le,linux/s390x
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       #- uses: mr-smithers-excellent/docker-build-push@v6
       #  name: Build & push Docker image to docker.io for ${{ matrix.db-type }}
