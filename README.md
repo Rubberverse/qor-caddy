@@ -39,7 +39,7 @@ Guide can be found here: https://github.com/Rubberverse/qor-caddy/blob/main/Setu
 ## What each image tag/dockerfile represents
 
 > [!WARNING]
-> It is recommended to pull Debian image only if you need a certain architecture that's not provided by Alpine variant. Mostly due to the fact that Debian images are chonkier compared to Alpine ones, might reach 150MB+ with Debian.
+> It is recommended to pull Debian image only if you need a certain architecture that's not provided by Alpine variant. Mostly due to the fact that Debian images are chonkier compared to Alpine ones, might reach 240MB+ with Debian.
 
 | Dockerfile | Tag | Description | Architectures |
 |-----------|------|-------------|-----------------------------------------------------|
