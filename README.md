@@ -6,6 +6,10 @@ This repository contains Dockerfiles specific for building and running `qor-cadd
 
 This image bundles following moduels by default, in order to know how to use them, consider checking out their repositories. If you would like a extra module you need to be added to this image, create a Issue with [FEATURE REQUEST] in the title.
 
+## Using the image
+
+Guide can be found here: https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md
+
 >[!NOTE]
 > Google Domain DNS plugin is removed as of v0.17.0 due to Google Domains being axed by Google and every domain registered under it going under Squarespace. On a side note, Layer4 module is still here, just bundled under Caddy Crowdsec Bouncer
 
@@ -65,7 +69,7 @@ They will always be one higher than the previous ex. if a patch releases and pre
 ## Building your own image
 
 >[!NOTE]
-> Available build arguments can be found [here](https://github.com/rubberverse/blob/main/build.md)
+> Available build arguments can be found [here](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
 
 1. Either merge both `Dockerfile-Helper` and Dockerfile-OS together or build them seperately. Keep in mind that Dockerfile-Helper is split for the sake of speeding up GitHub workflow, otherwise it used qemu which was dreadfully slow so you may need to change the Dockerfile a bit till it works.
 2. Build the image by passing following build command 
@@ -77,7 +81,7 @@ podman build -f Dockerfile-Alpine --build-args XCADDY_MODULES="github.com/caddy-
 
 ## Troubleshooting
 
-Please look at https://github.com/rubberverse/troubleshoot/qor-caddy.md
+Please look at https://github.com/rubberverse/troubleshoot/blob/main/qor-caddy.md
 
 ## Contributing
 
