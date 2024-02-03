@@ -1,15 +1,18 @@
 #!/bin/bash
-source /root/.bashrc
+if [ "x$XCADDY_MODULES" = "x" ]; then
+    echo "Empty or non-existent env XCADDY_MODULES, falling back to vanilla build"
+    exec /app/go/bin/xcaddy build ${GO_CADDY_VERSION} --output /app/bin/caddy
+fi
 
-echo "Splitting .MODULES into Array, parsing it, building out the command then executing it"
-mapfile -t lines < /app/helper/.MODULES
+read -ra env_arr <<<"$XCADDY_MODULES"
 cmd_array=( /app/go/bin/xcaddy build ${GO_CADDY_VERSION} )
 
-for module in "${lines[@]}"; do
+for module in "${env_arr[@]}"; do
     cmd_array+=( --with "$module" )
 done
 
-cmd_array+=( --output /usr/bin/caddy )
+cmd_array+=( --output /app/bin/caddy )
 "${cmd_array[@]}"
 
 # https://unix.stackexchange.com/a/403401
+# https://stackoverflow.com/a/30212526

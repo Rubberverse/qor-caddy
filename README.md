@@ -1,73 +1,88 @@
->[!WARNING]
-> Multi-Architecture images are built using qemu, I don't have the hardware to ensure it will 100% be working post-build. 
+## Rubberverse container images
 
->[!CAUTION]
->There's a chance version v0.15.0- has broken multi-architecture due to not using qemu for images (my mistake)
+**Currently supported build**: v0.17.0 "Blueberry" (rolling release)
 
-**Please report issues if there are any regarding the architecture you're using, I'll try to find a way to fix them**
+This repository contains Dockerfiles specific for building and running `qor-caddy` image. It's our customized image that builds Caddy with custom modules (also known as plugins) and is maintained by MrRubberDucky (same username on Discord)
 
-## What's this repository about?
+This image bundles following moduels by default, in order to know how to use them, consider checking out their repositories. If you would like a extra module you need to be added to this image, create a Issue with [FEATURE REQUEST] in the title.
 
-This repository houses our Dockerfile that spins up xcaddy, builds Caddy along with plugins from a defined list and then runs on a rootless user inside the container. It makes use of Alpine Linux for low image size and some Dockerfile optimizations to not overbloat the final result. It's also version and even repository agnostic so you don't have to worry about anything, everything is customizable with [Build Arguments]()
+## Using the image
 
-Plus, it also acts as our modified repository for building our own customized version of Caddy image called `qor-caddy` which includes most commonly wanted plugins and latest version of Caddy. These images are always maintained by MrRubberDucky and while there's no guarantees, they're always updated with latest hotfixes and patches in case any security vulnerability happens, as long as a fix is already available. 
+Guide can be found here: https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md
 
-Images are also verified to ensure that they work on my local testing VM so you can always ensure that at minimum plugins will work just fine. No guarantees though.
+>[!NOTE]
+> Google Domain DNS plugin is removed as of v0.17.0 due to Google Domains being axed by Google and every domain registered under it going under Squarespace. On a side note, Layer4 module is still here, just bundled under Caddy Crowdsec Bouncer
 
-You're free to use any images here, spin up your own images and overall contribute to this by posting issues, doing pull requests to fix some things etc. You can pull our image from ghcr.io or [Docker Hub](https://hub.docker.com/r/mrrubberducky/qor-caddy)
+- [Cloudflare DNS](https://github.com/caddy-dns/cloudflare)
+- [Route53 DNS](https://github.com/caddy-dns/route53)
+- [DuckDNS](https://github.com/caddy-dns/duckdns)
+- [AliDNS](https://github.com/caddy-dns/alidns)
+- [GoDaddy DNS](https://github.com/caddy-dns/godaddy)
+- [Porkbun DNS](https://github.com/caddy-dns/porkbun)
+- [Gandi DNS](https://github.com/caddy-dns/gandi)
+- [Namecheap DNS](https://github.com/caddy-dns/namecheap)
+- [Netlify DNS](https://github.com/caddy-dns/netlify)
+- [Azure DNS](https://github.com/caddy-dns/azure)
+- [AcmeDNS](https://github.com/caddy-dns/acmedns)
+- [Namesilo DNS](https://github.com/caddy-dns/namesilo)
+- [DDNNSS](https://github.com/caddy-dns/ddnnss)
+- [MailInABox DNS](https://github.com/caddy-dns/mailinabox)
+- [Dynamic DNS](https://github.com/mholt/caddy-dynamicdns)
+- [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy)
+- [Caddy Security](https://github.com/greenpau/caddy-security)
+- [Teapot Module](https://github.com/hairyhenderson/caddy-teapot-module)
+- [Vulcain for Caddy](https://github.com/vulcain/caddy)
+- [Mercure for Caddy](https://github.com/mercure/caddy)
+- [Replace Response](https://github.com/caddyserver/replace-response)
+- [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)
 
-## What's the purpose of this project?
-- Lazy people (me)
-- People (humans)
-- People who don't have time (I sell clocks)
-- People who have time (I buy clocks)
-- Aliens (as a bribe)
-- Pigeon that's spying on you in your window (recommendation: buy some window privacy films)
+## What each image tag/dockerfile represents
 
-In other words, it's here to make your life easier. If you were like me and were searching for a Caddy image that had the plugin you need only to find out that in fact, it doesn't work, well... this is a solution to that problem. Maybe you want to test your plugin against a somewhat live-like scenario, it really depends what you're gonna do with this. Creativity and all, up to you.
+> [!WARNING]
+> It is recommended to pull Debian image only if you need a certain architecture that's not provided by Alpine variant. Mostly due to the fact that Debian images are chonkier compared to Alpine ones, might reach 150MB+ with Debian.
 
-While there are many, many Docker containers of Caddy, most of them are either abandoned or too personalized/undocumented for production use. This is also why qor-caddy as a project was born.
+| Dockerfile | Tag | Description | Architectures |
+|-----------|------|-------------|-----------------------------------------------------|
+| Dockerfile-Debian | latest-debian | Built QoR-Caddy image with modules shown above | x86_64, x86, ARM64, ARMv7, ARMv5, mips64le, powerpc64le, s390x |
+| Dockerfile-Alpine | latest-alpine | Built QoR-Caddy image with modules shown above | x86_64, x86, ARM64, ARMv7, ARMv6, riscv64, powerpc64le, s390x  |
+| Dockerfile-Helper | latest-helper-dev | Helper Image for GitHub workflow Cross-Compilation support | x86_64 (Build Platform) |
+| Dockerfile-itxcaddy | latest-itxcaddy | Interactive xcaddy environment, by default does nothing | x86_64 (let me know if you want multi-arch) |
+| Dockerfile-nxcaddy | latest-nxcaddy | Non-Interactive xcaddy builder | x86_64 (let me know if you want multi-arch) |
 
-## What does your custom built Caddy image do?
+`Dockerfile-itxcaddy` comes with array-helper.sh helper script, can be found in `/app/scripts/array-helper.sh`. You can pass modules via XCADDY_MODULES. xcaddy itself can be found in `/app/go/bin/xcaddy`
 
-In terms of features, nothing special but if that would be it, would I be writing this?
+`Dockerfile-nxcaddy` expects a environmental variable called XCADDY_MODULES with a list of modules. Otherwise it'll build vanilla Caddy and exit.
 
-Mainly our image runs **rootless** meaning that container user has no privileges, we also additionally do some two modifications that may or may not do something to make escalating them further harder, although that's up for a debate.
+## Image versioning
 
-They're also **multi-architecture** which for now supports following architectures: amd64, i386, arm64v8, amrv7, armv6, ppc64le and s390x. riscv64 will be supported the moment Alpine Linux has stable packages for it.
+Images use following versioning:
+vY.XX.ZZ
 
-Uh... right. It also includes common plugins you would've probably liked to have but didn't want to go through the trouble of manually building caddy from source.
+- Y includes version type, 0 is considered "beta"
+- XX Includes Major & Minor changes
+- ZZ Includes Patches
 
-**Plugins included**: Cloudflare, Route53, DuckDNS, AliDNS, Porkbun, Namecheap, Google Domains, Netlify, AcmeDNS, Vercel, Namesilo, DDNNSS, MailInAbox for extra DNS options and Coraza WAF, Caddy-DynamicDNS, Caddy-Security, Vulcain, Mercure, Replace Response, Caddy-Teapot-Module for extra features/security.
+They will always be one higher than the previous ex. if a patch releases and prev version was v0.16.0, the next one will be v0.16.1.
 
-## Environment Variables
+**Exception being** anything past version v0.30.0 will change to v1.00.0 "release"
 
-These are required to have the container launch as of v0.11.0
+## Building your own image
 
-`CONFIG_PATH` - This is in case you mounted the config somewhere else in the container or using different one than Caddy, by default the location should be `/app/configs/Caddyfile`
+>[!NOTE]
+> Available build arguments can be found [here](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
 
-`ADAPTER_TYPE` - Specify config adapter type for Caddy to use, should be one of these: `caddyfile`, `json`, `yaml`
+1. Either merge both `Dockerfile-Helper` and Dockerfile-OS together or build them seperately. Keep in mind that Dockerfile-Helper is split for the sake of speeding up GitHub workflow, otherwise it used qemu which was dreadfully slow so you may need to change the Dockerfile a bit till it works.
+2. Build the image by passing following build command 
+3. Run the image
 
-`CADDY_ENVIRONMENT` - In what type of environment you will be running this in, it can either be `PROD` or `TEST`. TEST environment will launch the web server as root with config watching.
+```bash
+podman build -f Dockerfile-Alpine --build-args XCADDY_MODULES="github.com/caddy-dns/cloudflare github.com/hslatman/caddy-crowdsec-bouncer"
+```
 
-## How-To's
+## Troubleshooting
 
-Available build arguments and how to use them during build - [Build Arguments](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
+Please look at https://github.com/rubberverse/troubleshoot/blob/main/qor-caddy.md
 
-Setup guide - [here](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md)
+## Contributing
 
-## Planned sub-images
-Stuff I want to try! This was done as part of learning Dockerfile, build, multi-platform builds and so on. I feel like it was a good exercise but why stop there?
-
-They will be released as extra images alongside current ones.
-
-#### Most probably
-
-- `qor-scaddy` - Build Caddy for multi-platform using xcaddy, this is already possible with `qor-caddy` image (if you don't pass any modules, it will build vanilla) but as a seperate module with same features as `qor-caddy`, just without plugins.
-- `qor-caddy-debian` - Same as `qor-caddy` but supports two more architectures!
-
-#### Can make them if there's interest in these
-
-- `qor-xcaddy` - Simple interactive container that bundles `git`, `xcaddy` and `ca-certificates` for testing out plugins
-- `qor-builder` - Standalone alpine-builder image that can be referenced in your images. Might be useful for somebody, I dunno.
-- `qor-wincaddy` - Windows variant of the `qor-caddy` image
+Feel free to do so if you feel like something is wrong, just explain why as I'm still taking jabs at Dockerfile so I might not understand few things still. It might be better to make a issue first though.
