@@ -78,8 +78,8 @@ EnvironmentFile=.qor-caddy
 PublishPort=80:80
 PublishPort=443:443
 IP=10.10.10.2
-# only needed on v0.15.0
-#Sysctl=net.ipv4.ip_unprivileged_port_start=0
+# Required on Alpine variant if you plan to have the container bind to ports below 1000
+# Sysctl=net.ipv4.ip_unprivileged_port_start=0
 LogDriver=journald
 User=caddy
 Volume=/home/youruser/AppData/qor-caddy/Caddyfile:/app/configs/Caddyfile
@@ -122,9 +122,9 @@ services:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
-    # Only needed on v0.15.0 and v0.12.0
-    #sysctls:
-    #  - net.ipv4.ip_unprivileged_port_start=80
+    # Only needed on Alpine variant if you plan to have the container bind to ports below 1000
+    # sysctls:
+    #   - net.ipv4.ip_unprivileged_port_start=80
     ports:
       - "80:80"
       - "443:443"
@@ -186,7 +186,7 @@ podman run \
   --volume qor-caddy-logs:/app/logs \
   --publish 8080:80 \
   --publish 4443:443 \
-docker.io/mrrubberducky/qor-caddy:latest
+docker.io/mrrubberducky/qor-caddy:latest-debian
 ```
 
 > [!WARNING]
@@ -217,12 +217,8 @@ podman build -f Dockerfile \
   --build-arg ALPINE_REPO_VERSION=v3.19 \
   --build-arg GO_XCADDY_VERSION=latest \
   --build-arg GO_CADDY_VERSION=latest \
-  --build-arg CONT_SHELL=/bin/bash \
-  --build-arg CONT_HOME=/app \
   --build-arg CONT_USER=caddy \
-  --build-arg CONT_GROUP=web \
   --build-arg CONT_UID=1001 \
-  --build-arg CONT_GID=1001
 ```
 
 4. Then just run the built image either via docker-compose, quadlet or with `podman run`
@@ -276,9 +272,9 @@ services:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
-    # Only needed on v0.15.0 and v0.12.0
-    #sysctls:
-    #  - net.ipv4.ip_unprivileged_port_start=80
+    # Only needed on Alpine variant if you plan to have the container bind to ports below 1000
+    # sysctls:
+    #   - net.ipv4.ip_unprivileged_port_start=80
     ports:
       - "80:80"
       - "443:443"
