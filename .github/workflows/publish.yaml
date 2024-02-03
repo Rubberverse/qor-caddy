@@ -119,6 +119,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # This is just a template, I yoinked it from umami repository
+      # Basically how I learned about this workflow to begin with, it's pretty nice
+      # 
+      # love you guys over at umami, and also the guy who made this workflow!!! <3
+
       #- uses: mr-smithers-excellent/docker-build-push@v6
       #  name: Build & push Docker image to docker.io for ${{ matrix.db-type }}
       #  with:
