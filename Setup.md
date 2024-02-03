@@ -78,7 +78,7 @@ EnvironmentFile=.qor-caddy
 PublishPort=80:80
 PublishPort=443:443
 IP=10.10.10.2
-# Required on Alpine variant if you plan to have the container bind to ports below 1000
+# Required on Alpine variant if you plan to have the container bind to ports below 1000. However if you map both 80:80 ports on both host and container, it will bind fine.
 # Sysctl=net.ipv4.ip_unprivileged_port_start=0
 LogDriver=journald
 User=caddy
@@ -122,7 +122,7 @@ services:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
-    # Only needed on Alpine variant if you plan to have the container bind to ports below 1000
+    # Required on Alpine variant if you plan to have the container bind to ports below 1000. However if you map both 80:80 ports on both host and container, it will bind fine.
     # sysctls:
     #   - net.ipv4.ip_unprivileged_port_start=80
     ports:
