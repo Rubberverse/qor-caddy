@@ -62,7 +62,7 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build and push Alpine variant of the image to GitHub Container Registry
         with:
-          image: qor-caddy-dev
+          image: qor-caddy
           tags: ${{ steps.autotagger.outputs.new_tag }}, latest-alpine
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Alpine
