@@ -1,7 +1,7 @@
 ARG IMAGE_GHCR_REPOSITORY=ghcr.io/rubberverse
 ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
 
-FROM --platform=$TARGETPLATFORM ${IMAGE_GHCR_REPOSITORY}/${QOR_HELPER_TYPE} AS qor-helper-dev
+FROM --platform=$TARGETPLATFORM ghcr.io/rubberverse/qor-helper-dev:donotuse-latest AS qor-helper-dev
 # le edging the FROM prompt moment
 
 FROM --platform=$TARGETPLATFORM docker.io/library/debian:bookworm-slim AS qor-caddy
