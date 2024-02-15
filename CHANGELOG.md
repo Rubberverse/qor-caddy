@@ -1,11 +1,14 @@
 # Release
 
-**Currently supported build**: v0.17.0 "Blueberry" (rolling release)
+**Currently supported build(s)**: v0.17.0-alpine, v0.17.1-debian/alpine "Blueberry" (rolling release)
 
-#### v0.17.0 codename "Blueberry" (supported)
+#### v0.17.1 codename "Blueberry" (supported, patch)
+- Update Debian image in order to fix security vulnerabilities
+
+#### v0.17.0 codename "Blueberry" (Alpine tag supported, Debian tag users are recommended to update to v0.17.1)
 - Split `alpine-builder` into a seperate Helper image to speed up GitHub cross-compilation workflow
 - Fix various inconsistencies in entrypoint and array-helper scripts
-- Correctly set capabilities so you no longer need to pass extra flags to the container
+- Correctly set capabilities so you no longer need to pass extra flags to the container (doesn't work on Alpine image)
 - Extra builder optimization(s)
 - Introduce alternative tagging, drop `latest` and instead introduce `latest-debian` and `latest-alpine`
 - More architectures are supported now, primarly support for riscv64 and mips64le is back again
@@ -13,7 +16,7 @@
 - Addition of Caddy Crowdsec Bouncer, Removal of Google-Domains DNS (reason: service deprecation by Google, domains were transferred to Squarespace)
 - Rewrite README.md so it makes sense and isn't just a bloat of words on your screen
 
-#### v0.16.0 codename "Cranberry" (EOL - no support)
+#### v0.16.0 codename "Cranberry" (Deprecated)
 - Revert: Created a dedicated logging directory in /apps/logs and serve directory /srv/www
 - Created a dedicated logging directory in `/app/logs`
 - Remove dependency from `bash`, script is now POSIX and should run on busybox `ash` shell that Alpine Linux uses. That said `bash` is also removed from the image now.
@@ -22,8 +25,9 @@
 - Update and Upgrade apk repositories instead of manually fetching version we need
 - Set capabilities on qor-caddy stage (they get lost after copying over from alpine-builder) 
 - No longer need to pass `sysctl` to container
+- - Deprecated (no support will be provided for it)
 
-#### v0.15.0 codename "Huckleberry" (EOL - no support)
+#### v0.15.0 codename "Huckleberry" (Deprecated)
 - Rebase version v0.31.0 -> v0.15.0 (tags were all over the place if I'm being honest)
 - Normal versioning from now on, v0.15.0 increasing 0.1x.0 and up so ex. v0.11, v0.12, ..., v0.20.0
 - Cross Compilation for GitHub workflow (speeds up build time tremendolously)
@@ -31,11 +35,13 @@
 - Use this if you still want a bash shell (and older script)
 - Deprecated (no support will be provided for it)
 
-### v0.12.0 codename "Gooseberry" (EOL - no support)
+### v0.12.0 codename "Gooseberry" (No support)
 - Initial working rootful version
 - Deprecated (no support will be provided for it)
 
 # Pre-Release
+
+Pre-release builds aren't available in this repository.
 
 #### v0.17.1-dev
 - [Workflow] Fix out of space error when building multi-arch helper image
