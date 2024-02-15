@@ -1,6 +1,6 @@
 ## Rubberverse container images
 
-**Currently supported build**: v0.17.0 "Blueberry" (rolling release)
+**Currently supported build(s)**: v0.17.0-alpine, v0.17.1-debian/alpine "Blueberry" (rolling release)
 
 This repository contains Dockerfiles specific for building and running `qor-caddy` image. It's our customized image that builds Caddy with custom modules (also known as plugins) and is maintained by MrRubberDucky (same username on Discord)
 
