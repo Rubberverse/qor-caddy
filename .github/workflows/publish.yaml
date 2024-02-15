@@ -63,7 +63,7 @@ jobs:
         name: Build and push Alpine variant of the image to GitHub Container Registry
         with:
           image: qor-caddy
-          tags: alpine-v0.17.0, latest-alpine
+          tags: alpine-v0.17.1, latest-alpine
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Alpine
           registry: ghcr.io
@@ -78,7 +78,7 @@ jobs:
         name: Push Docker image to docker.io for Alpine variant
         with:
           image: mrrubberducky/qor-caddy
-          tags: alpine-v0.17.0, latest-alpine
+          tags: alpine-v0.17.1, latest-alpine
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Alpine
           registry: docker.io
@@ -93,7 +93,7 @@ jobs:
         name: Build and push Debian variant of the image to GitHub Container Registry
         with:
           image: qor-caddy
-          tags: debian-v0.17.0, latest-debian
+          tags: debian-v0.17.1, latest-debian
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Debian
           registry: ghcr.io
@@ -108,7 +108,7 @@ jobs:
         name: Push Docker image to docker.io for Debian variant
         with:
           image: mrrubberducky/qor-caddy
-          tags: debian-v0.17.0, latest-debian
+          tags: debian-v0.17.1, latest-debian
           buildArgs: BUILDPLATFORM=linux/amd64
           dockerfile: Dockerfile-Debian
           registry: docker.io
