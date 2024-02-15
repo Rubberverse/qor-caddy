@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Free up worker space
-        run: rm -rf /opt/hostedtoolcache; rm -rf /usr/share/dotnet; sudo apt-get remove -y '^dotnet-.*'; sudo apt-get autoremove -y; sudo apt-get clean
+        run: rm -rf /opt/hostedtoolcache; rm -rf /usr/share/dotnet; sudo apt-get update; sudo apt-get remove -y '^dotnet-.*'; sudo apt-get autoremove -y; sudo apt-get clean
       - uses: actions/checkout@v3
         with:
           fetch-depth: '0'
