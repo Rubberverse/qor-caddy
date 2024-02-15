@@ -31,8 +31,8 @@ Guide can be found here: https://github.com/Rubberverse/qor-caddy/blob/main/Setu
 - [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy)
 - [Caddy Security](https://github.com/greenpau/caddy-security)
 - [Teapot Module](https://github.com/hairyhenderson/caddy-teapot-module)
-- [Vulcain for Caddy](https://github.com/vulcain/caddy)
-- [Mercure for Caddy](https://github.com/mercure/caddy)
+- [Vulcain for Caddy](https://github.com/vulcain)
+- [Mercure for Caddy](https://github.com/mercure)
 - [Replace Response](https://github.com/caddyserver/replace-response)
 - [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)
 
