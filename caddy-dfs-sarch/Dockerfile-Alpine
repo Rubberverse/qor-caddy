@@ -1,0 +1,75 @@
+ARG IMAGE_REPOSITORY=docker.io/library
+ARG IMAGE_ALPINE_VERSION=edge
+
+FROM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+WORKDIR /app
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG XCADDY_MODULES
+
+# Some environmental variables don't get applied properly when nested
+ENV CGO_ENABLED=0
+ENV XCADDY_SKIP_CLEANUP=1
+ENV XCADDY_DEBUG=0
+ENV XCADDY_SUDO=0
+ENV XCADDY_SETCAP=1
+ENV XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'"
+
+LABEL stage=alpine-builder
+
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
+    ALPINE_REPO_VERSION=v3.19 \
+    GO_XCADDY_VERSION=latest \
+    GO_CADDY_VERSION=latest \
+    GOPATH=/app/go \
+    GOCACHE=/app/go/cache \
+    GOOS $TARGETOS \
+    GOARCH $TARGETARCH \
+    GIT_DIR=/app/git \
+    GIT_WORKTREE=/app/worktree
+
+COPY --chmod=0755 ../scripts/array-helper.sh \ 
+    /app/helper/array-helper.sh
+
+RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        bash            \
+        git             \
+        ca-certificates \
+        go              \
+    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
+    && /app/helper/array-helper.sh \
+    && apk del --rdepends \
+        build_ess \
+    && rm -rf /app/go /app/git /tmp
+
+FROM docker.io/library/alpine:latest AS qor-caddy
+WORKDIR /app
+
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine
+ARG ALPINE_REPO_VERSION=v3.19
+ARG CONT_USER=caddy
+ARG CONT_UID=1001
+
+LABEL stage=qor-caddy
+
+COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/bin/caddy
+COPY --chmod=755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+
+RUN apk upgrade \
+    && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        ca-certificates \
+        openssl \
+    && adduser \
+        --home "/app" \
+        --shell "/bin/ash" \
+        --uid "$CONT_UID"  \
+        --disabled-password \
+        --no-create-home \
+        "$CONT_USER" \
+    && mkdir -p /app/logs /srv/www \
+    && chown -R "$CONT_UID" /srv /app
+
+USER $CONT_UID
+
+ENTRYPOINT /app/scripts/docker-entrypoint.sh

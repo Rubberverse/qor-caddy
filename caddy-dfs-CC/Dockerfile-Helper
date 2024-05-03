@@ -30,7 +30,7 @@ ARG GOARCH $TARGETARCH
 ARG GIT_DIR=/app/git
 ARG GIT_WORKTREE=/app/worktree
 
-COPY --chmod=0755 scripts/array-helper.sh \ 
+COPY --chmod=0755 ../scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
 
 RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
@@ -38,11 +38,8 @@ RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=
         git             \
         ca-certificates \
         go              \
-        libcap          \
-        libcap-setcap   \
     && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
     && /app/helper/array-helper.sh \
-    && setcap 'cap_net_bind_service+ep' /app/bin/caddy \
     && apk del --rdepends \
         build_ess \
     && rm -rf /app/go /app/git /tmp

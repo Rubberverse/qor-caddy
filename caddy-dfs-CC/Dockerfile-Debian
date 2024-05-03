@@ -12,14 +12,12 @@ ARG CONT_USER=caddy
 ARG CONT_SHELL=/bin/sh
 ARG CONT_UID=1001
 
-COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/caddy
-COPY --chmod=0755 scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/bin/caddy
+COPY --chmod=0755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apt-get update; apt-get upgrade -y; apt install -y \
         ca-certificates \
         openssl \
-        libcap2 \
-        libcap2-bin \
     && useradd \
         --home-dir "/app" \
         --shell "$CONT_SHELL" \
@@ -28,8 +26,6 @@ RUN apt-get update; apt-get upgrade -y; apt install -y \
         "$CONT_USER" \
     && mkdir -p /var/www/ \
     && chown -R "$CONT_UID" /var/www /app \
-    && setcap 'cap_net_bind_service=+ep' /app/caddy \
-    && apt remove libcap2-bin -y \
     && rm -rf /var/cache/apt
 
 USER "${CONT_UID}"
