@@ -52,6 +52,8 @@ jobs:
     semnatic-versioning:
         name: Automatic Versioning
         runs-on: ubuntu-latest
+        if: ${{ always() && (needs.build-cc-helper.result == 'success') }}
+        needs: [build-cc-helper]
         environment: production
         defaults:
           run:
@@ -82,6 +84,8 @@ jobs:
     publish-to-ghcr:
       name: Publish multi-arch image to ghcr.io
       runs-on: ubuntu-latest
+      if: ${{ always() && (needs.semnatic-versioning.result == 'success') }}
+      needs: [semnatic-versioning]
       environment: production
     
       defaults:
