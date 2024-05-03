@@ -30,6 +30,11 @@ jobs:
             with:
                 fetch-depth: '0'
 
+          - uses: docker/setup-buildx-action@v3
+            name: Customize Docker driver
+            with:
+                driver-opts: image=moby/buildkit:master
+
           - uses: mr-smithers-excellent/docker-build-push@v6
             name: Build the helper image using golang cross-compilation
             with:
