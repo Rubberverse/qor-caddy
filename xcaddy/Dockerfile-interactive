@@ -1,7 +1,7 @@
 ARG IMAGE_REPOSITORY=docker.io/library
 ARG IMAGE_ALPINE_VERSION=edge
 
-FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+FROM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
 WORKDIR /app
 
 ARG BUILDPLATFORM
@@ -31,8 +31,7 @@ RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=
         git             \
         ca-certificates \
         go              \
-        libcap          \
-        libcap-setcap   \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH}; go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION}
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
+    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION}
 
 CMD tail -f /dev/null

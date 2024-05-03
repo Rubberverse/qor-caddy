@@ -1,0 +1,137 @@
+name: Use cross-compilation to quickly create cross-arch binaries
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/**.yaml'
+  workflow_dispatch:
+
+jobs:
+    build-cc-helper:
+        name: Build and push to ghcr
+        runs-on: ubuntu-latest
+        environment: production
+        defaults:
+            run:
+                working-directory: .
+                shell: bash
+        
+        steps:
+          - name: Free up worker space
+            run: sudo rm -rf "$AGENT_TOOLSDIRECTORY"; sudo rm -rf /usr/share/dotnet /usr/local/lib/android; sudo apt-get update; sudo apt-get remove -y '^dotnet-.*'; sudo apt-get autoremove -y; sudo apt-get clean
+
+          - name: Checkout
+            uses: actions/checkout@v3
+            with:
+                fetch-depth: '0'
+
+          - uses: mr-smithers-excellent/docker-build-push@v6
+            name: Build the helper image using golang cross-compilation
+            with:
+                image: cc-caddy-binary
+                tags: latest
+                buildArgs: BUILDPLATFORM=linux/amd64,XCADDY_MODULES="github.com/caddy-dns/cloudflare github.com/caddy-dns/duckdns github.com/caddy-dns/godaddy github.com/caddy-dns/gandi github.com/caddy-dns/porkbun github.com/caddy-dns/namecheap github.com/caddy-dns/netlify github.com/caddy-dns/azure github.com/caddy-dns/vercel github.com/caddy-dns/ddnss github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/greenpau/caddy-security github.com/greenpau/caddy-trace github.com/corazawaf/coraza-caddy/v2 github.com/dunglas/vulcain/caddy github.com/dunglas/mercure/caddy github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4"
+                dockerfile: caddy-dfs-CC/Dockerfile-Helper
+                registry: ghcr.io
+                multiPlatform: true
+                overrideDriver: true
+                enableBuildKit: true
+                platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/mips64le,linux/s390x
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+
+          - name: Cancel on failure
+            uses: andymckay/cancel-action@0.4
+            if: failure()
+
+    semnatic-versioning:
+        name: Automatic Versioning
+        runs-on: ubuntu-latest
+        if: ${{ always() && (needs.build-cc-helper.result == 'success') }}
+        needs: [build-cc-helper]
+        environment: production
+        defaults:
+          run:
+              working-directory: .
+              shell: bash
+        steps:
+          - uses: actions/checkout@v3
+            with:
+              fetch-depth: 0
+          - uses: WyriHaximus/github-action-get-previous-tag@v1.4.0
+            id: previoustag
+            with:
+              fallback: v0.18.0
+          - name: Bump release version
+            id: bump_version
+            uses: christian-draeger/increment-semantic-version@1.1.0
+            with:
+              current-version: ${{ steps.previoustag.outputs.tag }}
+              version-fragment: 'feature'
+          - uses: rickstaa/action-create-tag@v1
+            id: "tag_create"
+            with:
+              tag: ${{ steps.bump_version.outputs.next-version }}
+              tag_exists_error: false
+              message: "Latest release"
+          - uses: undergroundwires/bump-everywhere@master
+    
+    publish-to-ghcr:
+      name: Publish multi-arch image to ghcr.io
+      runs-on: ubuntu-latest
+      if: ${{ always() && (needs.semnatic-versioning.result == 'success') }}
+      needs: [semnatic-versioning]
+      environment: production
+    
+      defaults:
+        run:
+          working-directory: .
+          shell: bash
+    
+      steps:
+        - name: Free up worker space
+          run: sudo rm -rf "$AGENT_TOOLSDIRECTORY"; sudo rm -rf /usr/share/dotnet /usr/local/lib/android; sudo apt-get update; sudo apt-get remove -y '^dotnet-.*'; sudo apt-get autoremove -y; sudo apt-get clean
+        
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: '0'
+
+        - uses: docker/setup-buildx-action@v3
+          name: Customize Docker driver
+          with:
+            driver-opts: image=moby/buildkit:master
+
+        - name: Set up QEMU
+          uses: docker/setup-qemu-action@v3
+
+        - uses: mr-smithers-excellent/docker-build-push@v6
+          name: Build and push Alpine variant of the image to GitHub Container Registry
+          with:
+            image: qor-caddy
+            dockerfile: caddy-dfs-CC/Dockerfile-Alpine
+            registry: ghcr.io
+            multiPlatform: true
+            overrideDriver: true
+            enableBuildKit: true
+            platform: linux/amd64,linux/i386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - uses: mr-smithers-excellent/docker-build-push@v6
+          name: Build and push Debian variant of the image to GitHub Container Registry
+          with:
+            image: qor-caddy
+            tags: debian-v0.17.2, latest-debian
+            dockerfile: Dockerfile-Debian
+            registry: ghcr.io
+            multiPlatform: true
+            overrideDriver: true
+            enableBuildKit: true
+            platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v7,linux/arm64,linux/ppc64le,linux/mips64le,linux/s390x
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
