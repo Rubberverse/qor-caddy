@@ -1,9 +1,9 @@
 ARG IMAGE_GHCR_REPOSITORY=ghcr.io/rubberverse
 ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
 
-FROM --platform=$TARGETPLATFORM ghcr.io/rubberverse/qor-helper-dev:donotuse-latest AS qor-helper-dev
+FROM --platform=$TARGETPLATFORM ghcr.io/rubberverse/cc-caddy-binary:latest AS qor-helper-dev
 
-FROM docker.io/library/alpine:3.19.1 AS qor-caddy
+FROM docker.io/library/alpine:latest AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine
@@ -16,7 +16,8 @@ LABEL stage=qor-caddy
 COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/bin/caddy
 COPY --chmod=755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
-RUN apk upgrade \
+RUN apk update \
+    && apk upgrade --no-cache \
     && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         ca-certificates \
         openssl \

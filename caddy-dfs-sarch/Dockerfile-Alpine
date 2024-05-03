@@ -53,7 +53,7 @@ ARG CONT_UID=1001
 
 LABEL stage=qor-caddy
 
-COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/bin/caddy
+COPY --from=alpine-builder --chmod=0755 /app/bin/caddy /app/bin/caddy
 COPY --chmod=755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apk upgrade \
