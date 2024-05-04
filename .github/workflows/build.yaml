@@ -40,7 +40,7 @@ jobs:
             with:
                 image: cc-caddy-binary
                 tags: latest
-                buildArgs: BUILDPLATFORM=linux/amd64,GO_CADDY_VERSION=2.7.6,XCADDY_MODULES="github.com/caddy-dns/cloudflare github.com/caddy-dns/duckdns github.com/caddy-dns/godaddy github.com/caddy-dns/gandi github.com/caddy-dns/porkbun github.com/caddy-dns/namecheap github.com/caddy-dns/netlify github.com/caddy-dns/azure github.com/caddy-dns/vercel github.com/caddy-dns/ddnss github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/greenpau/caddy-security github.com/greenpau/caddy-trace github.com/corazawaf/coraza-caddy/v2 github.com/dunglas/vulcain/caddy github.com/dunglas/mercure/caddy github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4"
+                buildArgs: BUILDPLATFORM=linux/amd64,GO_CADDY_VERSION=v2.7.6,XCADDY_MODULES="github.com/caddy-dns/cloudflare github.com/caddy-dns/duckdns github.com/caddy-dns/godaddy github.com/caddy-dns/gandi github.com/caddy-dns/porkbun github.com/caddy-dns/namecheap github.com/caddy-dns/netlify github.com/caddy-dns/azure github.com/caddy-dns/vercel github.com/caddy-dns/ddnss github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/greenpau/caddy-security github.com/greenpau/caddy-trace github.com/corazawaf/coraza-caddy/v2 github.com/dunglas/vulcain/caddy github.com/dunglas/mercure/caddy github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4"
                 dockerfile: caddy-dfs-CC/Dockerfile-Helper
                 registry: ghcr.io
                 multiPlatform: true
@@ -123,7 +123,7 @@ jobs:
             multiPlatform: true
             overrideDriver: true
             enableBuildKit: true
-            buildArgs: GO_CADDY_VERSION=2.7.6
+            buildArgs: GO_CADDY_VERSION=v2.7.6
             platform: linux/amd64,linux/i386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
@@ -138,7 +138,7 @@ jobs:
             multiPlatform: true
             overrideDriver: true
             enableBuildKit: true
-            buildArgs: GO_CADDY_VERSION=2.7.6
+            buildArgs: GO_CADDY_VERSION=v2.7.6
             platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v7,linux/arm64,linux/ppc64le,linux/mips64le,linux/s390x
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
