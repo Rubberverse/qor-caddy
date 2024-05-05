@@ -1,57 +1,28 @@
 ## Rubberverse container images
 
-**Currently supported build(s)**: v0.18-alpine, v0.18-debian "Raspberry" (rolling release)
+**Currently supported build(s)**: v0.20-alpine, v0.20-debian "Cloudberry" (rolling release)
 
 This repository contains Dockerfiles specific for building and running `qor-caddy` image. It's our customized image that builds Caddy with custom modules (also known as plugins) and is maintained by MrRubberDucky (same username on Discord)
 
 This image bundles following moduels by default, in order to know how to use them, consider checking out their repositories. If you would like a extra module you need to be added to this image, create a Issue with [FEATURE REQUEST] in the title.
 
->[!NOTE]
-> Google Domain DNS plugin is removed as of v0.17.0 due to Google Domains being axed by Google and every domain registered under it going under Squarespace. On a side note, Layer4 module is still here, just bundled under Caddy Crowdsec Bouncer
 
-✨ - v0.18 additions
+**Modules Included**
 
-**DNS**
-- [AcmeDNS](https://github.com/caddy-dns/acmedns)
-- [AliDNS](https://github.com/caddy-dns/alidns)
-- [Azure](https://github.com/caddy-dns/azure)
-- [Cloudflare](https://github.com/caddy-dns/cloudflare)
-- [DDNNSS](https://github.com/caddy-dns/ddnnss)
+Reduced plugin support for now
+
+- [Cloudflare](https://github.com/caddy-dns/cloudflare) 
 - [DuckDNS](https://github.com/caddy-dns/duckdns)
-- [Gandi](https://github.com/caddy-dns/gandi)
 - [GoDaddy](https://github.com/caddy-dns/godaddy)
-- ✨ [ionos](https://github.com/caddy-dns/ionos)
-- [MailInABox](https://github.com/caddy-dns/mailinabox)
-- [Namecheap](https://github.com/caddy-dns/namecheap)
-- [Namesilo](https://github.com/caddy-dns/namesilo)
-- [Netlify](https://github.com/caddy-dns/netlify)
-- ✨ [OVHcloud/ovh](github.com/caddy-dns/ovh)
-- [Porkbun](https://github.com/caddy-dns/porkbun)
-- ✨ [Tencent Cloud](https://github.com/caddy-dns/tencentcloud)
-- [Route53](https://github.com/caddy-dns/route53)
-- ✨ [Vultr](github.com/caddy-dns/vultr)
-
-
-**Security**
-
-- [Caddy Security](https://github.com/greenpau/caddy-security)
+- [NameCheap](https://github.com/caddy-dns/namecheap)
+- [Vercel](https://github.com/caddy-dns/vercel)
+- [DDNSS](https://github.com/caddy-dns/ddnss)
+- [MailInABox](github.com/caddy-dns/mailinabox)
 - [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy)
 - [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)
-
-**Extra Features**
-
 - [Dynamic DNS](https://github.com/mholt/caddy-dynamicdns)
-- [Mercure for Caddy](https://github.com/mercure)
-- [Replace Response](https://github.com/caddyserver/replace-response)
-- [Vulcain for Caddy](https://github.com/vulcain)
+- [Caddy Cloudflare IP CIDRs](github.com/WeidiDeng/caddy-cloudflare-ip), this one is for whitelisting Cloudflare IP ranges via trusted_proxies directive
 
-**Service-specific**
-
-- ✨ [Caddy Cloudflare IP CIDRs](github.com/WeidiDeng/caddy-cloudflare-ip), this one is for whitelisting Cloudflare IP ranges via trusted_proxies directive
-
-**Misc** - uncategorized, mostly for fun stuff. Maybe with a hint of nostalgia for the old times.
-
-- ✨ [Caddy Hit Counter](github.com/mholt/caddy-hitcounter)
 
 ## Using the image
 

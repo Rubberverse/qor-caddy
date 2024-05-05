@@ -10,7 +10,7 @@ blue='\033[38;5;99m'
 
 printf "%b" "[entrypoint] Entrypoint script is launched\n[entrypoint] You're running as $(whoami)\n[entrypoint] Listing directory ownership\n"
 ls -ld /app
-printf "\n[entrypoint] Continuing\n"
+printf "\n[entrypoint] Continuing...\n"
 
 case "$(echo "$CADDY_ENVIRONMENT" | tr '[:upper:]' '[:lower:]')" in
     prod) export VAR_ENV=1 ;;
@@ -53,7 +53,7 @@ printf "%b" "$darkorange" " ______        _     _                               
 printf "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n"
 printf "%b" "🗒️ " "$blue" "Setup Guide " "$cend" "- https://github.com/rubberverse/qor-caddy/Setup.md \n"
 printf "%b" "📁 " "$green" "GitHub Repository " "$cend" "- https://github.com/rubberverse/qor-caddy \n"
-printf "🦆 Now more cool. Probably.\n"
+printf "🦆 Have you fed the demons in your closet yet?\n"
 
 printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] If your container stops abruptly with self-hosted certificates, make sure to put skip_install_trust in your Caddyfile\n"
 printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] Without it, Caddy will attempt to install self-signed certificates to root trust store resulting in unexpected things happening\n"
@@ -62,7 +62,7 @@ printf "%b" "[✨ " "$purple" "entrypoint - Info" "$cend" "] You can always relo
 printf "%b" "[✨ " "$purple" "entrypoint - Info" "$cend" "] It is recommended to enable local admin endpoint, otherwise you won't be able to execute commands such as above.\n"
 
 if [ "$VAR_ENV" = 1 ] || [ "$VAR_ENV" = 0 ]; then
-    printf "%b" "[✨" " $green" "entrypoint" "$cend" "] Starting Caddy"
+    printf "%b" "[✨" " $green" "entrypoint" "$cend" "] Starting Caddy\n"
     printf "%b" "[✨" " $green" "entrypoint" "$cend" "] You're launching in Production environment, Caddy will not listen for config changes\n\n"
     exec /app/bin/caddy run --config "${CONFIG_PATH}" --adapter "${ADAPTER_TYPE}" "${EXTRA_ARGUMENTS}"
 elif test "$VAR_ENV" = 2; then

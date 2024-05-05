@@ -1,3 +1,4 @@
+# v1.0.3 - Fix single and multi-architecture build process
 ARG IMAGE_GHCR_REPOSITORY=ghcr.io/rubberverse
 ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
 
@@ -29,7 +30,7 @@ RUN apk update \
         --no-create-home \
         "$CONT_USER" \
     && mkdir -p /app/logs /srv/www \
-    && chown -R "$CONT_UID" /srv /app
+    && chown -R "$CONT_UID":"$CONT_UID" /srv /app
 
 USER $CONT_UID
 

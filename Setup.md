@@ -2,6 +2,16 @@
 
 - ⚠️ Starting from version v0.15.0, the container will run rootlessly (breakage may happen, report issues here in case something doesn't work!)
 
+
+### From source
+
+1. Clone this repository `git clone https://github.com/Rubberverse/qor-caddy.git`
+2. Navigate to caddy-dfs-sarch
+3. Copy ../scripts to caddy-dfs-sarch `cp -r ../scripts .`
+4. Check out available build arguments by reading `BuildArguments.md` either here or locally
+5. Build the image out with `podman build -f Dockerfile-Alpine`, make sure to add Build Arguments you want to use at the end of that command
+6. Run the image with `podman run -e CADDY_ENVIRONMENT=PROD -e CONFIG_PATH=/app/configs/Caddyfile -e ADAPTER_TYPE=caddyfile -d <id> -v ./Caddyfile:/app/configs/Caddyfile:ro`
+
 ### 🦕 With Podman 4.4+ (quadlet rootless deployment)
 
 1. Make sure you have Podman 4.4+ as 4.3- don't have Quadlet support, you can check by typing `podman version`

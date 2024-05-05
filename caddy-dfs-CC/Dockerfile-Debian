@@ -1,8 +1,8 @@
+# v1.0.3 - Fix single and multi-architecture build process
 ARG IMAGE_GHCR_REPOSITORY=ghcr.io/rubberverse
 ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
 
 FROM --platform=$TARGETPLATFORM ghcr.io/rubberverse/cc-caddy-binary:latest AS qor-helper-dev
-# le edging the FROM prompt moment
 
 FROM --platform=$TARGETPLATFORM docker.io/library/debian:bookworm-slim AS qor-caddy
 WORKDIR /app
@@ -25,7 +25,7 @@ RUN apt-get update; apt-get upgrade -y; apt install -y \
         --no-create-home \
         "$CONT_USER" \
     && mkdir -p /var/www/ \
-    && chown -R "$CONT_UID" /var/www /app \
+    && chown -R "$CONT_UID":"$CONT_UID" /var/www /app \
     && rm -rf /var/cache/apt
 
 USER "${CONT_UID}"

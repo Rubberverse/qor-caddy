@@ -1,7 +1,8 @@
+# v1.0.3 - Fix single and multi-architecture build process
 ARG IMAGE_REPOSITORY=docker.io/library
-ARG IMAGE_ALPINE_VERSION=edge
+ARG IMAGE_ALPINE_VERSION=1.22.2-alpine3.19
 
-FROM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+FROM $IMAGE_REPOSITORY/golang:$IMAGE_ALPINE_VERSION AS alpine-builder
 WORKDIR /app
 
 ARG TARGETOS
@@ -13,7 +14,7 @@ ENV CGO_ENABLED=0
 ENV XCADDY_SKIP_CLEANUP=1
 ENV XCADDY_DEBUG=0
 ENV XCADDY_SUDO=0
-ENV XCADDY_SETCAP=1
+ENV XCADDY_SETCAP=0
 ENV XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'"
 
 LABEL stage=alpine-builder
@@ -29,14 +30,13 @@ ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
     GIT_DIR=/app/git \
     GIT_WORKTREE=/app/worktree
 
-COPY --chmod=0755 ../scripts/array-helper.sh \ 
+COPY --chmod=0755 /scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
 
 RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         bash            \
         git             \
         ca-certificates \
-        go              \
     && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
     && /app/helper/array-helper.sh \
     && apk del --rdepends \
@@ -52,7 +52,7 @@ ARG CONT_SHELL=/bin/sh
 ARG CONT_UID=1001
 
 COPY --from=alpine-builder --chmod=0755 /app/bin/caddy /app/bin/caddy
-COPY --chmod=0755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+COPY --chmod=0755 /scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apt-get update; apt-get upgrade -y; apt install -y \
         ca-certificates \
@@ -64,7 +64,7 @@ RUN apt-get update; apt-get upgrade -y; apt install -y \
         --no-create-home \
         "$CONT_USER" \
     && mkdir -p /var/www/ \
-    && chown -R "$CONT_UID" /var/www /app \
+    && chown -R "$CONT_UID":"$CONT_UID" /var/www /app \
     && rm -rf /var/cache/apt
 
 USER $CONT_UID
