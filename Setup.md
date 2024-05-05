@@ -1,118 +1,15 @@
 ## 😺 Using the already built multi-arch image
 
-- ⚠️ Starting from version v0.15.0, the container will run rootlessly (breakage may happen, report issues here in case something doesn't work!)
-
-
-### From source
-
-1. Clone this repository `git clone https://github.com/Rubberverse/qor-caddy.git`
-2. Navigate to caddy-dfs-sarch
-3. Copy ../scripts to caddy-dfs-sarch `cp -r ../scripts .`
-4. Check out available build arguments by reading `BuildArguments.md` either here or locally
-5. Build the image out with `podman build -f Dockerfile-Alpine`, make sure to add Build Arguments you want to use at the end of that command
-6. Run the image with `podman run -e CADDY_ENVIRONMENT=PROD -e CONFIG_PATH=/app/configs/Caddyfile -e ADAPTER_TYPE=caddyfile -d <id> -v ./Caddyfile:/app/configs/Caddyfile:ro`
-
-### 🦕 With Podman 4.4+ (quadlet rootless deployment)
-
-1. Make sure you have Podman 4.4+ as 4.3- don't have Quadlet support, you can check by typing `podman version`
-2. If you're on Debian, you can get up-to-date Podman in a following manner (please keep in mind that this is potentially dangerous, **make sure you're using overlay as your storage before upgrading** as vfs will more than likely wipe everything. You will have to recreate everything either way if your storage.conf is vfs...)
-
-```bash
-# From: https://podman.io/docs/installation#debian
-sudo mkdir -p /etc/apt/keyrings
-
-# Debian Testing/Bookworm
-curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/Release.key \
-  | gpg --dearmor \
-  | sudo tee /etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg > /dev/null
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg]\
-    https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/ /" \
-  | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list > /dev/null
-
-# Update repository and fetch latest package
-sudo apt-get update
-sudo apt upgrade
-
-# This is to solve buildah version being wrong
-sudo apt remove buildah
-sudo apt install buildah
-```
-
-3. Create following directory `mkdir -p .config/containers/systemd` (in your users' home folder) and `cd` into it
-4. In here we'll create 4 files - qor-appdata.volume, qor-config.volume, qor-logs.volume, quadlet-vps.network and finally, qor-caddy.container with following contents, in order
-
->[!WARNING]
-> You will need to allow your rootless user on your host to map below 1000, either by editing sysctl or redirecting port 80 to 8080
-
-ℹ️ You can name them however you want
-
-```ini
-# qor-appdata.volume
-[Volume]
-Device=/home/youruser/AppData/qor-caddy/app-data
-Driver=local
-Options=bind,rw,type=ext4
-VolumeName=qor-appdata
-```
-
-```ini
-# qor-config.volume
-[Volume]
-Device=/home/youruser/AppData/qor-caddy/config
-Driver=local
-Options=bind,rw,type=ext4
-VolumeName=qor-config
-```
-
-```ini
-# quadlet-vps.network
-[Network]
-Subnet=10.10.10.0/24
-Gateway=10.10.10.1
-Label=app=qor-caddy
-```
-
-```ini
-# qor-caddy.container
-[Unit]
-Description=Deploy QoR-Caddy Image
-
-[Container]
-Image=docker.io/mrrubberducky/qor-caddy:latest
-AutoUpdate=registry
-ContainerName=qor-caddy
-Network=quadlet-vps.network
-DNS=10.10.10.1
-EnvironmentFile=.qor-caddy
-PublishPort=80:80
-PublishPort=443:443
-IP=10.10.10.2
-# Required on Alpine variant if you plan to have the container bind to ports below 1000. However if you map both 80:80 ports on both host and container, it will bind fine.
-# Sysctl=net.ipv4.ip_unprivileged_port_start=0
-LogDriver=journald
-User=caddy
-Volume=/home/youruser/AppData/qor-caddy/Caddyfile:/app/configs/Caddyfile
-Volume=qor-appdata.volume:/app/.local/share/caddy
-Volume=qor-config.volume:/app/.config/caddy
-Volume=qor-logs:/app/logs
-
-[Install]
-WantedBy=multi-user.target
-```
-
-5. Reload systemctl daemon with `systemctl --user daemon-reload`
-6. Run the container with `systemctl --user start qor-caddy.service`
+[⚠️] Starting from version v0.15.0, the container will run rootlessly (breakage may happen, report issues here in case something doesn't work!)
 
 ### 🐳 With docker-compose (recommended)
-
-**Starting from v0.16.0**, you no longer need to add a `sysctl` parameter to the container! Versions below **still require it** - v0.15.0 and v0.12.0 (though you can run the last one as root)
 
 1. Create following docker-compose.yaml below
 
 >[!WARNING]
 > 1. You will need to create the following directory caddy-appdata will bind to, otherwise it will fail with `special device <location> does not exist`
 > 2. You will need to allow your rootless user on your host to map below 1000, either by editing sysctl or redirecting port 80 to 8080
+> 3. For container privileged port binding, a sysctl addition is required
 
 ```yaml
 version: "3.8"
@@ -120,7 +17,7 @@ services:
   qor-caddy:
     image: docker.io/mrrubberducky/qor-caddy:latest
     user: 1001:1001
-    # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest
+    # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest-alpine
     volumes:
     # Directories container can write to:
     # /srv, /srv/www, /app, /app/logs, /app/.config, /app/.local
@@ -132,9 +29,8 @@ services:
       - CADDY_ENVIRONMENT=PROD
       - ADAPTER_TYPE=caddyfile
       - CONFIG_PATH=/app/configs/Caddyfile
-    # Required on Alpine variant if you plan to have the container bind to ports below 1000. However if you map both 80:80 ports on both host and container, it will bind fine.
-    # sysctls:
-    #   - net.ipv4.ip_unprivileged_port_start=80
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=80
     ports:
       - "80:80"
       - "443:443"
@@ -158,13 +54,11 @@ volumes:
 
 2. Run `docker-compose -f docker-compose.yaml up -d` afterwards and it should be ready
 
-### ✍️ Manually (not really recommended but you do you)
+### ✍️ Manually, without docker-compose
 
-1. Pull the image
-
-`podman pull docker.io/mrrubberducky/qor-caddy:latest`
-
+1. Pull the image - `podman pull docker.io/mrrubberducky/qor-caddy:latest-alpine`
 2. Create volumes for storing certs and logs
+3. Run the image
 
 ```bash
 # You can specify any location you want, as long as you chown it so container user can write to it
@@ -183,8 +77,6 @@ podman volume create \
 qor-caddy-logs
 ```
 
-3. Run the image
-
 ```bash
 podman run \
   --detach \
@@ -196,51 +88,26 @@ podman run \
   --volume qor-caddy-logs:/app/logs \
   --publish 8080:80 \
   --publish 4443:443 \
-docker.io/mrrubberducky/qor-caddy:latest-debian
+  --sysctls net.ipv4.ip_unprivileged_port_start=80
+docker.io/mrrubberducky/qor-caddy:latest-alpine
 ```
-
-> [!WARNING]
-> If running version equal or less to v0.15.0, you will need to add a extra parameter to the run command: `--sysctl net.ipv4.ip_unprivileged_port_start=80`. This allows rootless user inside container to bvind to ports below 1000
 
 ---
 
-#### 🛠️ Building
+### From source
 
-## 😎 Create your own image from the repository
-
-1. Pull this repository with git `git pull Rubberverse/qor-caddy:master`
-2. Edit `template.MODULES` to include plugins you want in your final Caddy binary
-
-```ini
-# DIR: qor-caddy/templates/template.MODULES
-github.com/caddy-dns/cloudflare
-github.com/caddy-dns/route53
-```
-
-3. Run the build with following command below, including all build arguments in case you want to customize with your own repository etc. For more info about them, look [here](https://github.com/Rubberverse/qor-caddy/blob/main/BuildArguments.md)
-
-```bash
-podman build -f Dockerfile \
-  --build-arg IMAGE_REPOSITORY=docker.io/library \
-  --build-arg IMAGE_ALPINE_VERSION=latest \
-  --build-arg ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
-  --build-arg ALPINE_REPO_VERSION=v3.19 \
-  --build-arg GO_XCADDY_VERSION=latest \
-  --build-arg GO_CADDY_VERSION=latest \
-  --build-arg CONT_USER=caddy \
-  --build-arg CONT_UID=1001 \
-```
-
-4. Then just run the built image either via docker-compose, quadlet or with `podman run`
-
-> [!NOTE]
-> If you get a platform is "" error, remove --platform=$BUILDPLATFORM from Dockerfile references. This however should work normally, at least it does on Podman 4.3+
+1. Clone this repository `git clone https://github.com/Rubberverse/qor-caddy.git`
+2. Navigate to caddy-dfs-sarch
+3. Copy ../scripts to caddy-dfs-sarch `cp -r ../scripts .`
+4. Check out available build arguments by reading `BuildArguments.md` either here or locally
+5. Build the image out with `podman build -f Dockerfile-Alpine`, make sure to add Build Arguments you want to use at the end of that command
+6. Run the image with `podman run -e CADDY_ENVIRONMENT=PROD -e CONFIG_PATH=/app/configs/Caddyfile -e ADAPTER_TYPE=caddyfile -d <id> -v ./Caddyfile:/app/configs/Caddyfile:ro`
 
 ---
 
 #### 🐈 Extras
 
-## 📨 Using Environmental variables in Caddyfile
+### 📨 Using Environmental variables in Caddyfile
 
 You can pass any variable you want (ex. Cloudflare API Token for Cloudflare DNS) to the image using either `--e` flag with `docker run` or `environment:` on docker-compose.yaml. Caddy will see them and recognize them as long as they're in `{$brackets}` prefixed by a dollar sign.
 

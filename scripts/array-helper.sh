@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$GO_CADDY_VERSION" = "" ]; then
     printf "[array-helper - warn] Empty value supplied for GO_CADDY_VERSION\n"
-    printf "[array-helper - warn] Falling back to master tag\n"
+    printf "[array-helper - warn] Falling back to master tag, might not build!\n"
     export GO_CADDY_VERSION=master
 fi
 
@@ -16,14 +16,14 @@ if [ "$XCADDY_MODULES" = "" ]; then
     exit 1
 elif [ "$XCADDY_MODULES" = "0" ]; then
     printf "[array-helper] User wants to build vanilla/stock Caddy (without extra modules)\n[array-helper - info] This process may take a while\n\n"
-    exec xcaddy build "${GO_CADDY_VERSION}" --output /app/bin/caddy
+    exec /app/go/bin/xcaddy build "${GO_CADDY_VERSION}" --output /app/bin/caddy
 fi
 
 printf "[array-helper] Parsing XCADDY_MODULES into an array\n\n"
 read -ra env_arr <<<"$XCADDY_MODULES"
 
 printf "[array-helper] Building out the command and then running it\n[array-helper] This process may take a while\n\n"
-cmd_array=( xcaddy build "${GO_CADDY_VERSION}" )
+cmd_array=( /app/go/bin/xcaddy build "${GO_CADDY_VERSION}" )
 
 for module in "${env_arr[@]}"; do
     cmd_array+=( --with "$module" )

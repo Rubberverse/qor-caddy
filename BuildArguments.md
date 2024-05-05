@@ -53,11 +53,11 @@ This occurs during building phase where `array-helper.sh` is summoned to parse `
 
 Passed to `go install`, will grab this specific version of `xcaddy`
 
-- GO_CADDY_VERSION
+- `GO_CADDY_VERSION`
 
 Used by `xcaddy` to pull certain `Caddy` version while building
 
-- XCADDY_MODULES
+- `XCADDY_MODULES`
 
 Passed to `array-helper.sh` script which parses it and builds out `xcaddy build` command with modules listed here. Modules should be seperated by space and be valid links to module repository.
 
