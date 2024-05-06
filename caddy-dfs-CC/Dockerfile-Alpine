@@ -4,7 +4,7 @@ ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
 
 FROM --platform=$TARGETPLATFORM ghcr.io/rubberverse/cc-caddy-binary:latest AS qor-helper-dev
 
-FROM docker.io/library/alpine:3.19.1 AS qor-caddy
+FROM docker.io/library/alpine:edge AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine
