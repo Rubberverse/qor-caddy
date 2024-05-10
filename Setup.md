@@ -26,8 +26,11 @@ services:
       - caddy-config:/app/.config/caddy
       - caddy-logs:/app/logs
     environment:
+      # Available types: prod, test. Prod doesn't make use of automatic config reload, test does. It is generally not recommended to have dynamic config reload in production, as said by Caddy wiki.
       - CADDY_ENVIRONMENT=PROD
+      # Available types: json, caddyfile
       - ADAPTER_TYPE=caddyfile
+      # Any valid path inside of the container. Map a volume with the config file to this location
       - CONFIG_PATH=/app/configs/Caddyfile
     sysctls:
       - net.ipv4.ip_unprivileged_port_start=80
