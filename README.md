@@ -1,6 +1,6 @@
 ## Rubberverse container images
 
-**Currently supported build(s)**: v0.18-alpine, v0.18-debian "Cloudberry" (rolling release), built upon v2.8.0-beta.1
+**Currently supported build(s)**: v0.18.1-alpine, v0.18.1-debian "Cloudberry" (rolling release), built upon v2.8.0-beta.2
 
 This repository contains Dockerfiles and helper scripts for building Caddy from source by making use of `xcaddy`. 
 
