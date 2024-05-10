@@ -54,6 +54,8 @@ volumes:
 
 2. Run `docker-compose -f docker-compose.yaml up -d` afterwards and it should be ready
 
+---
+
 ### ✍️ Manually, without docker-compose
 
 1. Pull the image - `podman pull docker.io/mrrubberducky/qor-caddy:latest-alpine`
@@ -171,6 +173,8 @@ volumes:
       o: bind,rw
   caddy-logs:
 ```
+
+---
 
 ### 🗺️ Mapping your own directory with certificates into the container
 
