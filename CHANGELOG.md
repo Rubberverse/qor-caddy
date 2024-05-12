@@ -1,13 +1,18 @@
 # Changelog
 
 ## v0.19
+
 - Major: Streamline building process so it's similar across our Dockerfiles, drop `xcaddy`
+- Major: Build process dependency change, before: `git, bash, go, ca-certificates`, now: `jq, git, tar, bash, curl, file, ca-certificates`
+- Minor: Add Target Architecture in the binary name ex. `caddy-arm64`
+- Minor: Fetch Go binaries directly from [Go's website](https://go.dev/dl/)
 - Fix: multi-architecture builds producing broken artifacts (once again...)
-- Probably fixed a few more things here 'n there
-- Update documentation
-- Caddy version: 2.8.0-beta.2
+- Patch: Always run `apk upgrade`, `apt upgrade` on building step on Debian & Alpine images
+- Repository: Update documentation
+- Caddy binary version: 2.8.0-beta.2
 
 ## v0.18.1
+
 - Caddy version: Caddy 2.8.0-beta.2
 
 ## v0.18.0
