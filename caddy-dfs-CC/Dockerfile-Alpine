@@ -12,9 +12,11 @@ ARG ALPINE_REPO_VERSION=v3.19
 ARG CONT_USER=caddy
 ARG CONT_UID=1001
 
+ARG TARGETARCH
+
 LABEL stage=qor-caddy
 
-COPY --from=qor-helper-dev --chmod=0755 /app/bin/caddy /app/bin/caddy
+COPY --from=qor-helper-dev --chmod=0755 /app/go/bin/caddy-${TARGETARCH} /app/bin/caddy
 COPY --chmod=755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apk update \

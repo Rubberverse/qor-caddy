@@ -2,73 +2,76 @@
 
 Here you can see most, if not all build arguments that are available during build time that you can use to configure the final image to your liking. Here's a example bullet point list of what you can configure
 
-- Image Registry to pull from
-- Specific Image version to pull
-- Repository URL and specific version to pull from when it comes to Alpine Linux packages
-- `xcaddy` and `caddy` version
-- What modules will be built using `xcaddy`
-- Container User and it's UID
 
 The actual build arguments and short explanation can be found below
 
-### Non-Image Specific
-
-This part occurs before a image gets pulled from registry
-
-- `IMAGE_REGISTRY`
-
-From what registry to pull our image from
-
-ex. docker.io, ghcr.io, quay.io
-
-⚠️ Needs to be a valid registry where golang image is present
-
-### Alpine Single-Arch & Multi-Arch Dockerfile
-
-This is ran both during Alpine Builder stage and Alpine Dockerfile creation. Based upon choices here, extra needed packages will be fetched from different repository mirror.
-
-- `IMAGE_ALPINE_VERSION`
-
-Apart of `$IMAGE_REPOSITORY`, pulls specific version of Alpine Linux image from the image repository specified before
-
-ex. ``v3.19``
+### Repository / Download Managment
 
 - `ALPINE_REPO_URL`
 
-Used in every `apk add` statement, allows specifying a mirror repository that will be used to pull the required packages from
+Alpine package mirror repository, can either be main one or a mirror. As long as it's valid and Alpine package manager can pull from it.
 
-ex. `https://dl-cdn.alpinelinux.org/alpine`
+Default: `https://dl-cdn.alpinelinux.org/alpine`
 
 - `ALPINE_REPO_VERSION`
 
-Used in every `apk add` statement, allows specifying repository version so you can use edge repository on
+Full version that's present in package repository to pull packages from
 
-ex. `v3.19`, `v3.18`, `edge`
+Default: `v3.19`, can be changed to `edge` if so inclined!
 
-### Caddy Build
+- `REMOTE_URL`
 
-This occurs during building phase where `array-helper.sh` is summoned to parse `XCADDY_MODULES` into a command which then builds out Caddy with specific modules
+Remote URL of a place that stores the `main.go` file that's used to build Caddy with extra modules
 
-- `GO_XCADDY_VERSION`
+Default: `https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go`
 
-Passed to `go install`, will grab this specific version of `xcaddy`
+### Arguments passed to array-helper.sh
+
+Little script that does a bit of work in making the dream work. Parses the environmental variable into array, modifies the `main.go` file and so on.
+
+- `CADDY_MODULES`
+
+List of modules you want to compile with, these modules can't have version affixed to them ex. `github.com/rubberverse/test@version` and can't have trailing `https://` at the front.
+
+Default: `""`, script expects at least value that's `0` or `"module1 module2"`.
+
+Do not add quotation marks around module names as they'll be added automatically via the script!
 
 - `GO_CADDY_VERSION`
 
-Used by `xcaddy` to pull certain `Caddy` version while building
+Pin-points a specific Caddy release and builds against it, it is very **not** recommended to leave it at default as it might not even build and even if it does, it probably won't be suitable for production use.
 
-- `XCADDY_MODULES`
+Default: `master`
 
-Passed to `array-helper.sh` script which parses it and builds out `xcaddy build` command with modules listed here. Modules should be seperated by space and be valid links to module repository.
+### Arguments passed to builder
 
-### Post Build
+This part is used when `go build` is ran, which is right after `array-helper.sh` finishes doing it's work.
 
-Ran at the very end of both `Alpine` and `Debian` variant of the Dockerfiles. 
+- `GO_BUILD_FLAGS`
 
-- `CONT_USER`
+You can add some extra flags here that will be used during `go build` process. This may or may not work well and it's not possible to use this in order to configure `-ldflags` value as it's forced. (As to why, for some reason build process just broke when it was in environmental variable)
 
-Creates a container user with name specified
+Default: `-trimpath`
 
-- `CONT_UID`
+- Platform-specific `TARGETOS` and `TARGETARCH`
 
-Creates a container user with following UID specified
+Those are automatically made to reflect your host in case no argument is specified. Otherwise you can specify target operating system and architecture from here, Go will use cross-compilation to create your binary.
+
+These can be passed to the builder using `--os` and `--platform` alike. 
+
+Might not be present in `sarch` variants!
+
+### Working directories (for alpine-builder stage)
+
+- `GOCACHE`
+
+Here are the cache files stored from Go, that's implying that Go even cares about environmental variables and doesn't write them somewhere else.
+
+Default: `/app/go/cache`
+
+- `GIT_WORKTREE`
+
+Specifies where git creates it's worktree
+
+Default: `/app/worktree`
+

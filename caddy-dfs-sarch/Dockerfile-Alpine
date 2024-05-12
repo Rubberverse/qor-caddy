@@ -1,4 +1,5 @@
 # v1.0.3 - Fix single and multi-architecture build process
+# todo: update these
 ARG IMAGE_REPOSITORY=docker.io/library
 ARG IMAGE_ALPINE_VERSION=edge
 

@@ -1,8 +1,8 @@
 ## Rubberverse container images
 
-**Currently supported build(s)**: v0.18.1-alpine, v0.18.1-debian "Cloudberry" (rolling release), built upon v2.8.0-beta.2
+**Currently supported build(s)**: v0.19-alpine, v0.19-debian "Silvanberry" (rolling release), built upon v2.8.0-beta.2
 
-This repository contains Dockerfiles and helper scripts for building Caddy from source by making use of `xcaddy`. 
+This repository contains Dockerfiles and helper scripts for building Caddy from source by making use of Caddy's main.go file. 
 
 If you're interested with what our Caddy images come by default, here's a list. Click on the names to visit their repositories and learn more on how to use them and what not.
 
@@ -40,11 +40,12 @@ Legend:
 ## Image versioning
 
 Images use following versioning:
-vY.XX.ZZ
+vX.YY.ZD
 
-- Y includes version type, 0 is considered "beta" or "semi-stable"
-- XX Includes Major Changes
-- ZZ Includes Minor Changes & Patches
+- X includes version type, 0 is considered "beta" or "semi-stable"
+- YY includes major changes
+- ZZ includes minor changes
+- DD includes patches
 
 They will always be one higher than the previous ex. if a patch releases and prev version was v0.16.0, the next one will be v0.16.1.
 

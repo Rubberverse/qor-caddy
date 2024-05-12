@@ -53,7 +53,7 @@ printf "%b" "$darkorange" " ______        _     _                               
 printf "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n"
 printf "%b" "🗒️ " "$blue" "Setup Guide " "$cend" "- https://github.com/rubberverse/qor-caddy/Setup.md \n"
 printf "%b" "📁 " "$green" "GitHub Repository " "$cend" "- https://github.com/rubberverse/qor-caddy \n"
-printf "🦆 Have you fed the demons in your closet yet?\n"
+printf "🦆 Third's time the charm\n"
 
 printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] If your container stops abruptly with self-hosted certificates, make sure to put skip_install_trust in your Caddyfile\n"
 printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] Without it, Caddy will attempt to install self-signed certificates to root trust store resulting in unexpected things happening\n"

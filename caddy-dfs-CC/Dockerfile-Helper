@@ -9,38 +9,49 @@ WORKDIR /app
 
 ARG TARGETOS
 ARG TARGETARCH
-ARG XCADDY_MODULES
-
-ENV CGO_ENABLED=0
-ENV XCADDY_SKIP_CLEANUP=1
-ENV XCADDY_DEBUG=0
-ENV XCADDY_SUDO=0
-ENV XCADDY_SETCAP=0
-ENV XCADDY_GO_BUILD_FLAGS="-a --trimpath -ldflags '-w -s'"
+ARG CADDY_MODULES
 
 LABEL stage=alpine-builder
 
-ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine
-ARG ALPINE_REPO_VERSION=v3.19
-ARG GO_XCADDY_VERSION=latest
-ARG GO_CADDY_VERSION=latest
-ARG GOPATH=/app/go
-ARG GOCACHE=/app/go/cache
-ARG GOOS $TARGETOS
-ARG GOARCH $TARGETARCH
-ARG GIT_DIR=/app/git
-ARG GIT_WORKTREE=/app/worktree
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
+    REMOTE_URL=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
+    CADDY_BRANCH_VERSION=v2.8.0-beta.2 \
+    ALPINE_REPO_VERSION=v3.19 \
+    GOCACHE=/app/go/cache \
+    GOOS $TARGETOS \
+    GOARCH $TARGETARCH \
+    GIT_WORKTREE=/app/worktree \
+    CGO_ENABLED=0 \
+    GO_BUILD_FLAGS="-trimpath" \
+    CADDY_MODULES=""
 
 COPY --chmod=0755 ../scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
 
-RUN apk upgrade --no-cache; apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
-        bash            \
-        git             \
+# build deps: jq, git, tar, bash, curl
+RUN apk upgrade --no-cache \
+    && apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+        jq \
+        git \
+        tar \
+        bash \
+        curl \
+        file \
         ca-certificates \
-        go              \
-    && go install github.com/caddyserver/xcaddy/cmd/xcaddy@${GO_XCADDY_VERSION} \
+    && export GO_VERSION=$(curl https://go.dev/dl/?mode=json | jq -r '.[0].version' ) \
+    && curl -LO go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf "${GO_VERSION}".linux-amd64.tar.gz \
+    && rm "${GO_VERSION}".linux-amd64.tar.gz \
+    && export PATH=${PATH}:/usr/local/go/bin:/app/go/bin \
+    && git config --global --add safe.directory '*' \
+    && mkdir -p caddy \
+    && curl -L "${REMOTE_URL}" -o caddy/main.go \
+    && cd caddy \
+    && go mod init caddy \
     && /app/helper/array-helper.sh \
+    && GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -v ${GO_BUILD_FLAGS} -ldflags '-s -w' -o /app/go/bin/caddy-"${TARGETARCH}" -gcflags=all="-N -l" ./ \
+    && ls -l /app/go/bin \
+    && file /app/go/bin/caddy-"${TARGETARCH}" \
     && apk del --rdepends \
         build_ess \
-    && rm -rf /app/go /app/git /tmp
+    && rm -rf /app/go/cache /app/git /tmp /app/caddy /usr/local/go /app/worktree
