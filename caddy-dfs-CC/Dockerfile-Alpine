@@ -1,16 +1,13 @@
-# v1.0.3 - Fix single and multi-architecture build process
-ARG IMAGE_GHCR_REPOSITORY=ghcr.io/rubberverse
-ARG QOR_HELPER_TYPE=qor-helper-dev:donotuse-latest
-
 FROM --platform=$TARGETPLATFORM ghcr.io/rubberverse/cc-caddy-binary:latest AS qor-helper-dev
 
 FROM docker.io/library/alpine:edge AS qor-caddy
 WORKDIR /app
 
-ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine
-ARG ALPINE_REPO_VERSION=v3.19
-ARG CONT_USER=caddy
-ARG CONT_UID=1001
+ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
+    ALPINE_REPO_VERSION=v3.19 \
+    CONT_USER=caddy \
+    CONT_SHELL="/bin/sh" \
+    CONT_UID=1001
 
 ARG TARGETARCH
 
@@ -26,13 +23,13 @@ RUN apk update \
         openssl \
     && adduser \
         --home "/app" \
-        --shell "/bin/ash" \
+        --shell "$CONT_SHELL" \
         --uid "$CONT_UID"  \
         --disabled-password \
         --no-create-home \
         "$CONT_USER" \
     && mkdir -p /app/logs /srv/www \
-    && chown -R "$CONT_UID":"$CONT_UID" /srv /app
+    && chown -R "$CONT_UID":"$CONT_UID" /app /srv/www
 
 USER $CONT_UID
 

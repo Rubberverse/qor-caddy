@@ -40,12 +40,12 @@ Legend:
 ## Image versioning
 
 Images use following versioning:
-vX.YY.ZD
+vX.YZ.HH
 
 - X includes version type, 0 is considered "beta" or "semi-stable"
 - YY includes major changes
 - ZZ includes minor changes
-- DD includes patches
+- HH includes patches
 
 They will always be one higher than the previous ex. if a patch releases and prev version was v0.16.0, the next one will be v0.16.1.
 

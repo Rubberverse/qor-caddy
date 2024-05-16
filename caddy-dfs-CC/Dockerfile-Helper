@@ -1,4 +1,3 @@
-# v1.0.3
 ARG IMAGE_REPOSITORY=docker.io/library
 ARG IMAGE_ALPINE_VERSION=edge
 
@@ -9,20 +8,18 @@ WORKDIR /app
 
 ARG TARGETOS
 ARG TARGETARCH
-ARG CADDY_MODULES
 
 LABEL stage=alpine-builder
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
-    REMOTE_URL=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
-    CADDY_BRANCH_VERSION=v2.8.0-beta.2 \
+    GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
+    GO_CADDY_VERSION=v2.8.0-beta.2 \
     ALPINE_REPO_VERSION=v3.19 \
     GOCACHE=/app/go/cache \
     GOOS $TARGETOS \
     GOARCH $TARGETARCH \
     GIT_WORKTREE=/app/worktree \
     CGO_ENABLED=0 \
-    GO_BUILD_FLAGS="-trimpath" \
     CADDY_MODULES=""
 
 COPY --chmod=0755 ../scripts/array-helper.sh \ 
@@ -45,12 +42,11 @@ RUN apk upgrade --no-cache \
     && export PATH=${PATH}:/usr/local/go/bin:/app/go/bin \
     && git config --global --add safe.directory '*' \
     && mkdir -p caddy \
-    && curl -L "${REMOTE_URL}" -o caddy/main.go \
+    && curl -L "${GO_MAIN_FILE}" -o caddy/main.go \
     && cd caddy \
     && go mod init caddy \
     && /app/helper/array-helper.sh \
-    && GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -v ${GO_BUILD_FLAGS} -ldflags '-s -w' -o /app/go/bin/caddy-"${TARGETARCH}" -gcflags=all="-N -l" ./ \
-    && ls -l /app/go/bin \
+    && GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /app/go/bin/caddy-"${TARGETARCH}" -a -trimpath -ldflags '-s -w' ./ \
     && file /app/go/bin/caddy-"${TARGETARCH}" \
     && apk del --rdepends \
         build_ess \
