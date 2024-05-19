@@ -1,6 +1,6 @@
 ## Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Version-v0.19.1-white) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
+![qor-caddy version](https://img.shields.io/badge/Version-v0.19.1-purple) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
 **Currently supported build(s)**: v0.19.1-alpine, v0.19.1-debian "Silvanberry" (rolling release), built upon v2.8.0-beta.2
 
