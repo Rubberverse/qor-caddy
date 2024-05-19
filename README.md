@@ -1,6 +1,8 @@
 ## Rubberverse container images
 
-**Currently supported build(s)**: v0.19-alpine, v0.19-debian "Silvanberry" (rolling release), built upon v2.8.0-beta.2
+![qor-caddy version](https://img.shields.io/badge/Version-v0.19.1-white) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
+
+**Currently supported build(s)**: v0.19.1-alpine, v0.19.1-debian "Silvanberry" (rolling release), built upon v2.8.0-beta.2
 
 This repository contains Dockerfiles and helper scripts for building Caddy from source by making use of Caddy's main.go file. 
 
