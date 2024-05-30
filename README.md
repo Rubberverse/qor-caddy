@@ -1,9 +1,9 @@
 ## Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.19.2-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.8.0--rc.1-brown
+![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.19.3-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.8.0-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
-**Currently supported build(s)**: v0.19.2-alpine, v0.19.2-debian "Silvanberry" (rolling release), built upon v2.8.0-rc.1
+**Currently supported build(s)**: v0.19.3-alpine, v0.19.3-debian "Silvanberry" (rolling release), built upon v2.8.0
 
 This repository contains ready-to-use multi-platform images for Caddy built using [GitHub actions](https://github.com/Rubberverse/qor-caddy/blob/main/.github/workflows/build.yaml). Binaries themselves are built using Caddy's [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go), you can see the Dockerfile used for that [here](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/Dockerfile-Helper)
 
@@ -28,7 +28,7 @@ This repository contains ready-to-use multi-platform images for Caddy built usin
 | qor-caddy | latest-alpine, [version]-alpine | Lower file-size, uses Alpine image as it's base | x86_64, x86, ARM64 | ARMv7, ARMv6, powerpc64le, riscv64, s390x | 
 | qor-caddy | latest-debian, [version]-debian | Bigger file-size, uses Debian image as it's base | x86_64, x86, ARM64 | ARMv7, ARMv5, powerpc64le, mips64le, s390x |
 
-⚠️ **We can't guarantee full compatibility for every single multi-architecture**
+⚠️ **We can't guarantee full compatibility for every single architecture**
 
 Sadly, my testing capabilities are limited to ARM64 and x86_64, I technically have a ARMv6 device somewhere but don't have proper tools to properly prepare it for testing. General consensus is, ARM builds and x86 builds should work fine, the rest of the architectures are provided as-is but would still be helpful hearing about potential issues while running my image on those architectures.
 
