@@ -189,12 +189,12 @@ volumes:
 Let's say you have a ACME client running on your OPNsense or locally in your organization and your web server device gets certificates from it
 
 1. Add it as a volume to the container
-2. Run container and reference it in Caddyfile like so
+2. Run container and reference it in Caddyfile like so, do **not** add a whole certificates folder as a volume bind as it will cause issues for the container itself and certificate grabbing
 
 ```yaml
 (...)
 volumes:
-- ${HOME}/certificates/yourdomain.tld:/app/certificates
+- ${HOME}/certificates/yourdomain.tld:/app/certificates/sub.domain.tld
 ```
 
 ```caddyfile
