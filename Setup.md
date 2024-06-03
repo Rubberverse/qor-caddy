@@ -104,14 +104,13 @@ podman volume create qor-caddy-logs
 podman run \
   --detach \
   --env CADDY_ENVIRONMENT=PROD \
-  --env ADAPTER_TYPE=caddyfile \
   --env CONFIG_PATH=/app/configs/Caddyfile \
   --volume /home/ducky/qor-caddy/configs/Caddyfile:/app/configs/Caddyfile \
   --volume qor-caddy-appdata:/app/.local/share/caddy \
   --volume qor-caddy-config:/app/.config/caddy \
   --volume qor-caddy-logs:/app/logs \
-  --publish 8080:80 \
-  --publish 4443:443 \
+  --publish 80:80 \
+  --publish 443:443 \
   --sysctls net.ipv4.ip_unprivileged_port_start=80 \
 docker.io/mrrubberducky/qor-caddy:latest-alpine
 ```
