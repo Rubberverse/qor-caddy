@@ -1,23 +1,32 @@
-## 😺 Using the already built multi-arch image
+# 😺 Setup guide
 
-[⚠️] Starting from version v0.15.0, the container will run rootlessly (breakage may happen, report issues here in case something doesn't work!)
+In here you can learn how to effortlessly use our image in your infrastructure or your project, whatever really. In case something is not clear then let me know but this should be a fully working guide to making it just work.
 
-### 🐳 With docker-compose (recommended)
+Below in warning box, you will see every major change that may result in breakage or configuration options being different being listed. These are here for your own information and might help you with understanding when the problem might've started!
+
+>[!WARNING]
+> Major changes occured during those versions, you might have to modify your current Caddyfiles or environmental variables in order to accomodate for them
+
+- v0.12 and above: Test multi-architecture builds using Go Cross-Compilation and building out the base images with `qemu-server`
+- v0.15.0 and above: Container will now run rootlessly, expect some breakage or some functions not working as intended (so far seems to be fine though)
+- v0.18.1 and above: Reduction in included modules, only cherry picked modules are staying in order to reduce bloat and potential security issues due to dependencies/or module itself
+- v0.19.1 and above: `ADAPTER_TYPE` environmental variable was dropped. If you still need the functionality, look into passing a parameter with `EXTRA_ARGUMENTS` instead
+
+## 🐳 With docker-compose (recommended)
 
 1. Create following docker-compose.yaml below
 
 >[!WARNING]
 > 1. You will need to create the following directory caddy-appdata will bind to, otherwise it will fail with `special device <location> does not exist`
 > 2. You will need to allow your rootless user on your host to map below 1000, either by editing sysctl or redirecting port 80 to 8080
-> 3. For container privileged port binding, a sysctl addition is required
+> 3. For container user privileged port binding, a sysctl addition is required (via compose)
 
 ```yaml
 version: "3.8"
 services:
   qor-caddy:
-    image: docker.io/mrrubberducky/qor-caddy:latest
-    user: 1001:1001
     # For GitHub Container Registry: image: ghcr.io/rubberverse/qor-caddy:latest-alpine
+    image: docker.io/mrrubberducky/qor-caddy:latest
     volumes:
     # Directories container can write to:
     # /srv, /srv/www, /app, /app/logs, /app/.config, /app/.local
@@ -28,28 +37,36 @@ services:
     environment:
       # Available types: prod, test. Prod doesn't make use of automatic config reload, test does. It is generally not recommended to have dynamic config reload in production, as said by Caddy wiki.
       - CADDY_ENVIRONMENT=PROD
-      # Available types: json, caddyfile
-      - ADAPTER_TYPE=caddyfile
       # Any valid path inside of the container. Map a volume with the config file to this location
       - CONFIG_PATH=/app/configs/Caddyfile
-    sysctls:
-      - net.ipv4.ip_unprivileged_port_start=80
+    # Required if you want to bind ports below privileged port range (1000 by default) with rootless container user
+    #sysctls:
+    #  - net.ipv4.ip_unprivileged_port_start=80
+    # Recommended for crowdsec-caddy so you get proper ip resolving, also possible to accomplish it with pasta but it makes it more annoying to setup
+    # network_mode: "host"
     ports:
       - "80:80"
       - "443:443"
+    # If using host networking, remove this
     networks:
       - qor-caddy
 
+# If using host networking, remove this
 networks:
   qor-caddy:
 
 # Certificate and config persistence
+# Remember to create those configs before hand otherwise you'll run into issues while trying to deploy
 volumes:
   caddy-config:
+   driver_opts:
+      type: none
+      device: /home/youruser/AppData/qor-caddy/config
+      o: bind,rw
   caddy-appdata:
     driver_opts:
       type: none
-      device: /home/youruser/caddy-data
+      device: /home/youruser/AppData/qor-caddy/data
       o: bind,rw
   # It is recommended to use a log parser like Crowdsec for security
   caddy-logs:
@@ -57,9 +74,8 @@ volumes:
 
 2. Run `docker-compose -f docker-compose.yaml up -d` afterwards and it should be ready
 
----
 
-### ✍️ Manually, without docker-compose
+## ✍️ Manually, without docker-compose
 
 1. Pull the image - `podman pull docker.io/mrrubberducky/qor-caddy:latest-alpine`
 2. Create volumes for storing certs and logs
@@ -70,16 +86,18 @@ volumes:
 podman volume create \
   --driver local \
   --opt type=none \
-  --opt device=/home/youruser/qor-caddy/appdata \
+  --opt device=/home/youruser/AppData/qor-caddy/data \
   --opt o=bind,rw \
 qor-caddy-appdata
 
 podman volume create \
   --driver local \
   --opt type=ext4 \
-  --opt device=/home/youruser/qor-caddy/logs \
+  --opt device=/home/youruser/AppData/qor-caddy/config \
   --opt o=bind,rw \
-qor-caddy-logs
+qor-caddy-config
+
+podman volume create qor-caddy-logs
 ```
 
 ```bash
@@ -90,29 +108,19 @@ podman run \
   --env CONFIG_PATH=/app/configs/Caddyfile \
   --volume /home/ducky/qor-caddy/configs/Caddyfile:/app/configs/Caddyfile \
   --volume qor-caddy-appdata:/app/.local/share/caddy \
+  --volume qor-caddy-config:/app/.config/caddy \
   --volume qor-caddy-logs:/app/logs \
   --publish 8080:80 \
   --publish 4443:443 \
-  --sysctls net.ipv4.ip_unprivileged_port_start=80
+  --sysctls net.ipv4.ip_unprivileged_port_start=80 \
 docker.io/mrrubberducky/qor-caddy:latest-alpine
 ```
 
----
+## From source
 
-### From source
+Will be rewritten soon, need to make a clean Dockerfile for manual building. There was one before but now it's considered legacy so no support for it from my side, however you can still use that one if you want. It will be a tad dated though.
 
-1. Clone this repository `git clone https://github.com/Rubberverse/qor-caddy.git`
-2. Navigate to caddy-dfs-sarch
-3. Copy ../scripts to caddy-dfs-sarch `cp -r ../scripts .`
-4. Check out available build arguments by reading `BuildArguments.md` either here or locally
-5. Build the image out with `podman build -f Dockerfile-Alpine`, make sure to add Build Arguments you want to use at the end of that command
-6. Run the image with `podman run -e CADDY_ENVIRONMENT=PROD -e CONFIG_PATH=/app/configs/Caddyfile -e ADAPTER_TYPE=caddyfile -d <id> -v ./Caddyfile:/app/configs/Caddyfile:ro`
-
----
-
-#### 🐈 Extras
-
-### 📨 Using Environmental variables in Caddyfile
+## 📨 Using Environmental variables in Caddyfile
 
 You can pass any variable you want (ex. Cloudflare API Token for Cloudflare DNS) to the image using either `--e` flag with `docker run` or `environment:` on docker-compose.yaml. Caddy will see them and recognize them as long as they're in `{$brackets}` prefixed by a dollar sign.
 
@@ -177,9 +185,7 @@ volumes:
   caddy-logs:
 ```
 
----
-
-### 🗺️ Mapping your own directory with certificates into the container
+## 🗺️ Mapping your own directory with certificates into the container
 
 Let's say you have a ACME client running on your OPNsense or locally in your organization and your web server device gets certificates from it
 
