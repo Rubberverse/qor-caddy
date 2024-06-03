@@ -5,6 +5,8 @@
 
 **Currently supported build(s)**: v0.19.4-alpine, v0.19.4-debian "Silvanberry" (rolling release), built upon v2.8.4
 
+(by mistake I pushed 0.19.4 as 0.19.3 so that's amazing... next release going to be 0.19.5 due to it)
+
 This repository contains ready-to-use multi-platform images for Caddy built using [GitHub actions](https://github.com/Rubberverse/qor-caddy/blob/main/.github/workflows/build.yaml). Binaries themselves are built using Caddy's [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go), you can see the Dockerfile used for that [here](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/Dockerfile-Helper)
 
 **Modules Included**
@@ -15,11 +17,11 @@ This repository contains ready-to-use multi-platform images for Caddy built usin
 - [NameCheap](https://github.com/caddy-dns/namecheap)
 - [Vercel](https://github.com/caddy-dns/vercel)
 - [DDNSS](https://github.com/caddy-dns/ddnss)
-- [MailInABox](github.com/caddy-dns/mailinabox)
+- [MailInABox](https://github.com/caddy-dns/mailinabox)
 - [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy)
 - [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)
 - [Dynamic DNS](https://github.com/mholt/caddy-dynamicdns)
-- [Caddy Cloudflare IP CIDRs](github.com/WeidiDeng/caddy-cloudflare-ip), this one is for whitelisting Cloudflare IP ranges via trusted_proxies directive
+- [Caddy Cloudflare IP CIDRs](https://github.com/WeidiDeng/caddy-cloudflare-ip), this one is for whitelisting Cloudflare IP ranges via trusted_proxies directive
 
 ## 🐳 For Docker Hub
 
@@ -47,6 +49,7 @@ Legend:
 - sarch: single-arch, no cc
 
 ❔ `cc-caddy-binary` is built from Dockerfile-Helper in caddy-dfs-CC directory
+
 ❔ `legacy` folder includes all prior work and scripts that were used to build previous versions of `qor-caddy` images. 
 
 ## Image versioning
