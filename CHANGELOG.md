@@ -1,5 +1,29 @@
 # Changelog
 
+This changelog is updated everytime I feel like it, not a lot of things is going to get changed anymore so should be pretty tame for the time being.
+
+## v0.19.5
+
+- Patch: Update dependencies to fix following CVEs: CVE-2024-24790, CVE-2024-24789
+
+## v0.19.4 (retag: v0.19.3)
+
+- Version Bump: Caddy v2.8.4
+
+## v0.19.3
+
+- Version Bump: Caddy v2.8.0
+
+## v0.19.2
+
+- Patch: Update dependencies to fix following CVEs: CVE-2023-42365
+- Version Bump: Caddy v2.8.0-rc.1
+
+## v0.19.1 
+
+- Fix: Remove `ADAPTER_TYPE` and don't force it as a parameter, allows usage of caddy.json
+- Version Bump: Caddy v2.8.0-beta.2
+
 ## v0.19
 
 - Major: Streamline building process so it's similar across our Dockerfiles, drop `xcaddy`
