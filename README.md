@@ -23,6 +23,7 @@ This repository contains ready-to-use multi-platform images for Caddy built usin
 | [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | Security | High-Performance Web Application Firewall for Caddy |
 | [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer) | Security | Bouncer for Crowdsec, makes decisions and denies connections in case IP is banned |
 | [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Security | Provides extra filtering capabilites for Layer 4 applications with Caddy Bouncer |
+| [https://github.com/mholt/caddy-dynamicdns] | Utility | Keeps your DNS pointed to your machine |
 | [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Utility | Umami analytics on any site without needing to modify or add extra scripts to your site |
 
 ## 🐳 For Docker Hub
