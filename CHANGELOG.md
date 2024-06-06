@@ -2,6 +2,11 @@
 
 This changelog is updated everytime I feel like it, not a lot of things is going to get changed anymore so should be pretty tame for the time being.
 
+## v0.20.0
+
+- Minor: Add Porkbun DNS module (caddy-dns/porkbun)
+- Minor: Add Umami Caddy module (jonaharagon/caddy-umami)
+
 ## v0.19.5
 
 - Patch: Update dependencies to fix following CVEs: CVE-2024-24790, CVE-2024-24789
