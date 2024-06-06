@@ -13,11 +13,11 @@ This repository contains ready-to-use multi-platform images for Caddy built usin
 
 | Name + URL | Type | Short Description |
 |------------|------|-------------------|
-| [Porkbun](https://github.com/caddy-dns/porkbun) | DNS Provider | Provides DNS managment capabilites for [Porkbun](https://porkbun.com) |
-| [GoDaddy](https://github.com/caddy-dns/godaddy) | DNS Provider | Provides DNS managment capabilites for [GoDaddy](https://godaddy.com) |
-| [Namecheap](https://github.com/caddy-dns/namecheap) | DNS Provider | Provides DNS managment capabilites for [Namecheap](https://namecheap.com) |
-| [Cloudflare](https://github.com/caddy-dns/cloudflare) | DNS Provider | Provides DNS managment capabilites for [Cloudflare](https://cloudflare.com) |
-| [Vercel](https://github.com/caddy-dns/vercel) | DNS Provider | Provides DNS managment capabilites for [Vercel](https://vercel.com) |
+| [Porkbun](https://github.com/caddy-dns/porkbun) | DNS Provider | Provides DNS management capabilites for [Porkbun](https://porkbun.com) |
+| [GoDaddy](https://github.com/caddy-dns/godaddy) | DNS Provider | Provides DNS management capabilites for [GoDaddy](https://godaddy.com) |
+| [Namecheap](https://github.com/caddy-dns/namecheap) | DNS Provider | Provides DNS management capabilites for [Namecheap](https://namecheap.com) |
+| [Cloudflare](https://github.com/caddy-dns/cloudflare) | DNS Provider | Provides DNS management capabilites for [Cloudflare](https://cloudflare.com) |
+| [Vercel](https://github.com/caddy-dns/vercel) | DNS Provider | Provides DNS management capabilites for [Vercel](https://vercel.com) |
 | [DDNSS](https://github.com/caddy-dns/ddnss) | DNS Provider | Provides DNS management capabilities for [DDNSS.de](https://ddnss.de) |
 | [MailInABox](https://github.com/caddy-dns/mailinabox) | DNS Provider | Provides DNS management capabilities for [MailInABox](https://mailinabox.email/) |
 | [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | Security | High-Performance Web Application Firewall for Caddy |
