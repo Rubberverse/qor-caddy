@@ -1,6 +1,6 @@
 ## Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.19.5-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.8.4-brown
+![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.20.0-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.8.4-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
 **Currently supported build(s)**: v0.19.5-alpine, v0.19.5-debian "Silvanberry" (rolling release), built upon v2.8.4
@@ -11,17 +11,19 @@ This repository contains ready-to-use multi-platform images for Caddy built usin
 
 **Modules Included**
 
-- [Cloudflare](https://github.com/caddy-dns/cloudflare) 
-- [DuckDNS](https://github.com/caddy-dns/duckdns)
-- [GoDaddy](https://github.com/caddy-dns/godaddy)
-- [NameCheap](https://github.com/caddy-dns/namecheap)
-- [Vercel](https://github.com/caddy-dns/vercel)
-- [DDNSS](https://github.com/caddy-dns/ddnss)
-- [MailInABox](https://github.com/caddy-dns/mailinabox)
-- [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy)
-- [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)
-- [Dynamic DNS](https://github.com/mholt/caddy-dynamicdns)
-- [Caddy Cloudflare IP CIDRs](https://github.com/WeidiDeng/caddy-cloudflare-ip), this one is for whitelisting Cloudflare IP ranges via trusted_proxies directive
+| Name + URL | Type | Short Description |
+|------------|------|-------------------|
+| [Porkbun](https://github.com/caddy-dns/porkbun) | DNS Provider | Provides DNS managment capabilites for [Porkbun](https://porkbun.com) |
+| [GoDaddy](https://github.com/caddy-dns/godaddy) | DNS Provider | Provides DNS managment capabilites for [GoDaddy](https://godaddy.com) |
+| [Namecheap](https://github.com/caddy-dns/namecheap) | DNS Provider | Provides DNS managment capabilites for [Namecheap](https://namecheap.com) |
+| [Cloudflare](https://github.com/caddy-dns/cloudflare) | DNS Provider | Provides DNS managment capabilites for [Cloudflare](https://cloudflare.com) |
+| [Vercel](https://github.com/caddy-dns/vercel) | DNS Provider | Provides DNS managment capabilites for [Vercel](https://vercel.com) |
+| [DDNSS](https://github.com/caddy-dns/ddnss) | DNS Provider | Provides DNS management capabilities for [DDNSS.de](https://ddnss.de) |
+| [MailInABox](https://github.com/caddy-dns/mailinabox) | DNS Provider | Provides DNS management capabilities for [MailInABox](https://mailinabox.email/) |
+| [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | Security | High-Performance Web Application Firewall for Caddy |
+| [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer) | Security | Bouncer for Crowdsec, makes decisions and denies connections in case IP is banned |
+| [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Security | Provides extra filtering capabilites for Layer 4 applications with Caddy Bouncer |
+| [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Utility | Umami analytics on any site without needing to modify or add extra scripts to your site |
 
 ## 🐳 For Docker Hub
 
