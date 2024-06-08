@@ -4,7 +4,7 @@ FROM docker.io/library/alpine:edge AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
-    ALPINE_REPO_VERSION=v3.19 \
+    ALPINE_REPO_VERSION=edge \
     CONT_USER=caddy \
     CONT_SHELL="/bin/sh" \
     CONT_UID=1001
