@@ -142,7 +142,7 @@ jobs:
             multiPlatform: true
             overrideDriver: true
             enableBuildKit: true
-            tags: alpine-v0.20.2, latest-alpine
+            tags: alpine-v0.20.3, latest-alpine
             platform: linux/amd64,linux/i386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -156,7 +156,7 @@ jobs:
             multiPlatform: true
             overrideDriver: true
             enableBuildKit: true
-            tags: debian-v0.20.2, latest-debian
+            tags: debian-v0.20.3, latest-debian
             platform: linux/amd64,linux/i386,linux/arm/v5,linux/arm/v7,linux/arm64,linux/ppc64le,linux/mips64le,linux/s390x
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
