@@ -1,9 +1,9 @@
 ## Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.20.3-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.8.4-brown
+![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.20.4-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.8.4-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
-**Currently supported build(s)**: v0.20.3-alpine, v0.20.3-debian "Cowberry" (rolling release), built upon v2.8.4
+**Currently supported build(s)**: v0.20.4-alpine, v0.20.4-debian "Cowberry" (rolling release), built upon v2.8.4
 
 This repository contains ready-to-use multi-platform images for Caddy built using [GitHub actions](https://github.com/Rubberverse/qor-caddy/blob/main/.github/workflows/build.yaml). Binaries themselves are built using Caddy's [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go), you can see the Dockerfile used for that [here](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/Dockerfile-Helper)
 
