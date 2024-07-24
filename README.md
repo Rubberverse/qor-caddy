@@ -5,7 +5,15 @@
 
 **Currently supported build(s)**: v0.20.4-alpine, v0.20.4-debian "Cowberry" (rolling release), built upon v2.8.4
 
-This repository contains ready-to-use multi-platform images for Caddy built using [GitHub actions](https://github.com/Rubberverse/qor-caddy/blob/main/.github/workflows/build.yaml). Binaries themselves are built using Caddy's [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go), you can see the Dockerfile used for that [here](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/Dockerfile-Helper)
+**Update Policy**: Caddy Releases: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. Security: Everytime there's a patched CVE that arises on the horizon.
+
+This repository contains ready-to-use multi-platform images for Caddy built using [GitHub actions](https://github.com/Rubberverse/qor-caddy/blob/main/.github/workflows/build.yaml). 
+
+Multi-Architecture binares are built using Go cross-compilation, Images themselves are finalized using `qemu-server`. We are making use of `main.go` which is modified during build-time to include modules that we need. It can be seen on [Caddy repository](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go). 
+
+Exact build command is `GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /app/go/bin/caddy-"${TARGETARCH}" -a -trimpath -ldflags '-s -w' ./ \`
+
+[Dockerfile-Helper](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/Dockerfile-Helper) | [Dockerfile-Alpine](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/Dockerfile-Alpine) | [Dockerfile-Debian](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/Dockerfile-Debian) | [array-helper.sh](https://github.com/Rubberverse/qor-caddy/blob/main/scripts/array-helper.sh) | [docker-entrypoint.sh](https://github.com/Rubberverse/qor-caddy/blob/main/scripts/docker-entrypoint.sh)
 
 **Modules Included**
 
@@ -39,7 +47,7 @@ Sadly, my testing capabilities are limited to ARM64 and x86_64, I technically ha
 
 | Directory | Tag(s) | Description | Architectures |
 |-----------|------|-------------|-----------------------------------------------------|
-| 📁 caddy-dfs-CC | latest-debian, latest-alpine, cc-caddy-binary | Built QoR-Caddy image with modules shown above. Dockerfiles are seperated for GitHub Cross-Compilation support with golang | x86_64, x86, ARM64v8, ARMv7, ARMv6, ARMv5, riscv64, mips64le, powerpc64le, s390x |
+| 📁 caddy-dfs-CC | cc-caddy-binary | Built QoR-Caddy image with modules shown above. Dockerfiles are seperated for GitHub Cross-Compilation support with golang | x86_64, x86, ARM64v8, ARMv7, ARMv6, ARMv5, riscv64, mips64le, powerpc64le, s390x |
 | 📁 caddy-dfs-sarch | latest | Merged together Dockerfile-Helper + Dockerfile-Alpine /or Dockerfile-Debian that doesn't depend on GitHub actions | Host dependant |
 | 📁 legacy/xcaddy | xcaddy-interactive, xcaddy-noninteractive | Interactive and non-interactive xcaddy builders that are made to quickly build Caddy with any modules | Host dependant |
 
@@ -77,13 +85,12 @@ They will always be one higher than the previous ex. if a patch releases and pre
 
 Since v0.19.1, `ADAPTER_TYPE` has been dropped from being required. This was due to very smol oversight where you would be unable to use normal caddy.json if this was set to anything. In case you still need the functionality, it's recommended to make use of `EXTRA_ARGUMENTS` instead
 
-## Docker Compose
+## Deployment Methods
 
-See [here](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#-with-docker-compose-recommended)
-
-## Building your own image
-
-See [here](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#from-source)
+- [Rootless Quadlet via Podman, recommended](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#-quadlet-experimental-recommended)
+- [Docker Compose, recommended](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#-with-docker-compose-recommended)
+- [docker run command](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#%EF%B8%8F-manually-without-docker-compose)
+- [Customized image from source (WIP)](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#from-source)
 
 ## Troubleshooting
 
