@@ -12,14 +12,47 @@ Below in warning box, you will see every major change that may result in breakag
 - v0.18.1 and above: Reduction in included modules, only cherry picked modules are staying in order to reduce bloat and potential security issues due to dependencies/or module itself
 - v0.19.1 and above: `ADAPTER_TYPE` environmental variable was dropped. If you still need the functionality, look into passing a parameter with `EXTRA_ARGUMENTS` instead
 
+## 🦕 Quadlet (experimental, recommended)
+
+>[!NOTE]
+> This requires Podman version 5.1.0+
+
+This setup is for rootless quadlet deployment, it is currently used in production by me and works great. Plus, you gain advantage of having automatic updates with Podman! (just make sure to turn on the timer)
+
+
+If you're installing it from nix package manager, make sure to move systemd files from nix users' directory to respective system directiories `/lib/systemd/system-generators`, `/lib/systemd/system`, `/lib/systemd/user-generators`, `/lib/systemd/user` then reload your daemon for **both rootful and rootless** - `sudo systemctl daemon-reload` and `systemctl --user daemon-reload`. Only then you will have a working Quadlet generator.
+
+1. Create following directiories in your `${HOME}` directory - `mkdir -p AppData\qor-caddy\data AppData\qor-caddy\config`
+2. If you haven't done it yet, create following directiories inside `~/.config` - `mkdir -p containers/systemd/qor-caddy`
+3. Change your directory to `~/.config/containers/systemd/qor-caddy`
+4. Create a new blank file called `qor-caddy.container` then edit it with `nano qor-caddy.container`. Replace `your_user` with the name of your rootless user.
+5. Save and exit it, reload systemd daemon with `systemctl --user daemon-reload`
+6. Start the service with `systemctl --user start qor-caddy.service`
+
+```.service
+[Container]
+Image=docker.io/mrrubberducky/qor-caddy:latest-alpine
+ContainerName=qor-caddy
+Volume=/home/your_user/AppData/qor-caddy/Caddyfile:/app/configs/Caddyfile:ro
+# It will look cleaner if you do .volume instead of Mounts
+Mount=type=bind,source=/home/your_user/AppData/qor-caddy/data,destination=/app/.local/share/caddy,U=true
+Mount=type=bind,source=/home/your_user/AppData/qor-caddy/config,destination=/app/.config/caddy,U=true
+Environment=CONFIG_PATH=/app/configs
+Environment=CADDY_ENVIRONMENT=prod
+# DNS challenge fails with pasta, rootlessport (?)
+Network=host
+NoNewPrivileges=true
+AutoUpdate=registry
+```
+
 ## 🐳 With docker-compose (recommended)
 
-1. Create following docker-compose.yaml below
-
->[!WARNING]
+>[!NOTE]
 > 1. You will need to create the following directory caddy-appdata will bind to, otherwise it will fail with `special device <location> does not exist`
 > 2. You will need to allow your rootless user on your host to map below 1000, either by editing sysctl or redirecting port 80 to 8080
 > 3. For container user privileged port binding, a sysctl addition is required (via compose)
+
+1. Create following docker-compose.yaml below
 
 ```yaml
 version: "3.8"
@@ -96,8 +129,6 @@ podman volume create \
   --opt device=/home/youruser/AppData/qor-caddy/config \
   --opt o=bind,rw \
 qor-caddy-config
-
-podman volume create qor-caddy-logs
 ```
 
 ```bash
@@ -108,7 +139,6 @@ podman run \
   --volume /home/ducky/qor-caddy/configs/Caddyfile:/app/configs/Caddyfile \
   --volume qor-caddy-appdata:/app/.local/share/caddy \
   --volume qor-caddy-config:/app/.config/caddy \
-  --volume qor-caddy-logs:/app/logs \
   --publish 80:80 \
   --publish 443:443 \
   --sysctls net.ipv4.ip_unprivileged_port_start=80 \
@@ -122,6 +152,9 @@ Will be rewritten soon, need to make a clean Dockerfile for manual building. The
 ## 📨 Using Environmental variables in Caddyfile
 
 You can pass any variable you want (ex. Cloudflare API Token for Cloudflare DNS) to the image using either `--e` flag with `docker run` or `environment:` on docker-compose.yaml. Caddy will see them and recognize them as long as they're in `{$brackets}` prefixed by a dollar sign.
+
+>[!NOTE]
+> Environmental variables are unsupported for `JSON` format
 
 This is a example of how you can do it
 
