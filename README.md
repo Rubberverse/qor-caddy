@@ -1,9 +1,7 @@
 ## Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.20.4-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.8.4-brown
+![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.0-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta2-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
-
-**Currently supported build(s)**: v0.20.4-alpine, v0.20.4-debian "Cowberry" (rolling release), built upon v2.8.4
 
 **Update Policy**: Caddy Releases: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. Security: Everytime there's a patched CVE that arises on the horizon.
 
