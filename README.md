@@ -13,7 +13,7 @@ This repository contains ready-to-use multi-platform images for Caddy built usin
 
 Multi-Architecture binares are built using Go cross-compilation, Images themselves are finalized using `qemu-server`. We are making use of `main.go` which is modified during build-time to include modules that we need. It can be seen on [Caddy repository](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go). 
 
-Exact build command is `GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /app/go/bin/caddy-"${TARGETARCH}" -a -trimpath -ldflags '-s -w' ./ \`
+Exact build command is `GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /app/go/bin/caddy-"${TARGETARCH}" -trimpath ./ \`
 
 [alpine/Dockerfile](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/alpine/Dockerfile) | [debian/Dockerfile](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/debian/Dockerfile) | [array-helper.sh](https://github.com/Rubberverse/qor-caddy/blob/main/scripts/array-helper.sh) | [docker-entrypoint.sh](https://github.com/Rubberverse/qor-caddy/blob/main/scripts/docker-entrypoint.sh)
 
