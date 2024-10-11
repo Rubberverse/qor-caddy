@@ -41,7 +41,7 @@ RUN apk upgrade --no-cache \
     && cd caddy \
     && go mod init caddy \
     && /app/helper/array-helper.sh \
-    && GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /app/go/bin/caddy-"${TARGETARCH}" -a -trimpath -ldflags '-s -w' ./ \
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /app/go/bin/caddy-${TARGETARCH} ./ \
     && file /app/go/bin/caddy-"${TARGETARCH}" \
     && apk del --rdepends \
         build_ess \
