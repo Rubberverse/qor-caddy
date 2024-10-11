@@ -41,7 +41,7 @@ jobs:
           multiPlatform: true
           enableBuildKit: true
           tags: debian-v0.21.0, latest-debian
-          platform: linux/amd64,linux/i386,linux/arm64
+          platform: linux/amd64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build & Push Alpine Image to DH
@@ -54,7 +54,7 @@ jobs:
           multiPlatform: true
           enableBuildKit: true
           tags: alpine-v0.21.0, latest-alpine
-          platform: linux/amd64,linux/i386,linux/arm64
+          platform: linux/amd64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Cancel on failure
