@@ -4,7 +4,7 @@ ARG IMAGE_ALPINE_VERSION=edge
 FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
 WORKDIR /app
 
-ARG TARGETOS
+ARG TARGETOS=linux
 ARG TARGETARCH
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
@@ -41,7 +41,7 @@ RUN apk upgrade --no-cache \
     && cd caddy \
     && go mod init caddy \
     && /app/helper/array-helper.sh \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /app/go/bin/caddy-${TARGETARCH} ./ \
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./ \
     && file /app/go/bin/caddy-"${TARGETARCH}" \
     && apk del --rdepends \
         build_ess \
