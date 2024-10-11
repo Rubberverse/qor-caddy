@@ -7,8 +7,6 @@ WORKDIR /app
 ARG TARGETOS
 ARG TARGETARCH
 
-LABEL stage=alpine-builder
-
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
     GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
     GO_CADDY_VERSION=v2.8.0-beta.2 \
