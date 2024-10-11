@@ -55,7 +55,7 @@ ARG CONT_USER=caddy \
 
 ARG TARGETARCH
 
-COPY --from=alpine-builder --chmod=0755 /app/go/bin/caddy-$TARGETARCH /app/bin/caddy
+COPY --from=debian-builder --chmod=0755 /app/go/bin/caddy-$TARGETARCH /app/bin/caddy
 COPY --chmod=0755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
 
 RUN apt-get update; apt-get upgrade -y; apt install -y \
