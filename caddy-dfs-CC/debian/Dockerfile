@@ -1,18 +1,14 @@
 ARG IMAGE_REPOSITORY=docker.io/library
-ARG IMAGE_ALPINE_VERSION=edge
+ARG IMAGE_ALPINE_VERSION=bookworm-slim
 
-FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
+FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/debian:$IMAGE_ALPINE_VERSION AS debian-builder
 WORKDIR /app
 
 ARG TARGETOS
 ARG TARGETARCH
 
-LABEL stage=alpine-builder
-
-ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
-    GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
+ARG GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
     GO_CADDY_VERSION=v2.8.0-beta.2 \
-    ALPINE_REPO_VERSION=v3.19 \
     GOCACHE=/app/go/cache \
     GOOS $TARGETOS \
     GOARCH $TARGETARCH \
@@ -24,8 +20,7 @@ COPY --chmod=0755 ../scripts/array-helper.sh \
     /app/helper/array-helper.sh
 
 # build deps: jq, git, tar, bash, curl
-RUN apk upgrade --no-cache \
-    && apk add --no-cache --virtual build_ess --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
+RUN apt-get update; apt-get upgrade -y; apt install -y \
         jq \
         git \
         tar \
