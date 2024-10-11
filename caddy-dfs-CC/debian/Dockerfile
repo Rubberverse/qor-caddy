@@ -4,7 +4,7 @@ ARG IMAGE_ALPINE_VERSION=bookworm-slim
 FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/debian:$IMAGE_ALPINE_VERSION AS debian-builder
 WORKDIR /app
 
-ARG TARGETOS
+ARG TARGETOS=linux
 ARG TARGETARCH
 
 ARG GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
@@ -39,7 +39,7 @@ RUN apt-get update; apt-get upgrade -y; apt install -y \
     && cd caddy \
     && go mod init caddy \
     && /app/helper/array-helper.sh \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /app/go/bin/caddy-${TARGETARCH} ./ \
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./ \
     && file /app/go/bin/caddy-$TARGETARCH \
     && rm -rf /app/go/cache /app/git /tmp /app/caddy /usr/local/go /app/worktree
 
