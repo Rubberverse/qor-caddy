@@ -41,8 +41,14 @@ RUN apt-get update; apt-get upgrade -y; apt install -y \
     && /app/helper/array-helper.sh \
     && GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /app/go/bin/caddy-"${TARGETARCH}" -a -trimpath -ldflags '-s -w' ./ \
     && file /app/go/bin/caddy-"${TARGETARCH}" \
-    && apk del --rdepends \
-        build_ess \
+    && apt-get remove -y \
+            jq \
+            git \
+            tar \
+            bash \
+            curl \
+            file \
+            ca-certificates \
     && rm -rf /app/go/cache /app/git /tmp /app/caddy /usr/local/go /app/worktree
 
 FROM --platform=$TARGETPLATFORM docker.io/library/debian:bookworm-slim AS qor-caddy
