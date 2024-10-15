@@ -3,7 +3,7 @@
 ![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.1-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.2-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
-**Currently supported build(s)**: v0.21.0-alpine, v0.21.0-debian "Gooseberry", built upon v2.9.0-beta.2
+**Currently supported build(s)**: v0.21.1-alpine "Gooseberry", built upon v2.9.0-beta.2
 
 **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. 
 
@@ -13,7 +13,7 @@ This repository contains ready-to-use multi-platform images for Caddy built usin
 
 Multi-Architecture binares are built using Go cross-compilation, Images themselves are finalized using `qemu-server`. We are making use of `main.go` which is modified during build-time to include modules that we need. It can be seen on [Caddy repository](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go). 
 
-Exact build command is `GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /app/go/bin/caddy-"${TARGETARCH}" -trimpath ./ \`
+Exact build command is `GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /app/go/bin/caddy-${TARGETARCH} -trimpath ./ \`
 
 [alpine/Dockerfile](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/alpine/Dockerfile) | [debian/Dockerfile](https://github.com/Rubberverse/qor-caddy/blob/main/caddy-dfs-CC/debian/Dockerfile) | [array-helper.sh](https://github.com/Rubberverse/qor-caddy/blob/main/scripts/array-helper.sh) | [docker-entrypoint.sh](https://github.com/Rubberverse/qor-caddy/blob/main/scripts/docker-entrypoint.sh)
 
@@ -33,7 +33,7 @@ Exact build command is `GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /a
 | [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Security | Provides extra filtering capabilites for Layer 4 applications with Caddy Bouncer |
 | [Caddy DynamicDNS](https://github.com/mholt/caddy-dynamicdns) | Utility | Keeps your DNS pointed to your machine |
 | [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Utility | Umami analytics on any site without needing to modify or add extra scripts to your site |
-| [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Utility | Checks against locally running cloudflared DNS and updates the IP addresses |
+| [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Utility | Checks against locally running cloudflared DNS and updates the IP addresses
 | [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Utility | Periodically checks Cloudflare IP ranges and updates them |
 | [Caddy Combine IP Ranges](https://github.com/fvbommel/caddy-combine-ip-ranges) | Utility | Allows combination of `trusted_proxies` directive |
 
@@ -43,12 +43,11 @@ Exact build command is `GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /a
 
 | Image(s) | Tag(s) | Description | Architectures |
 |----------|--------|-------------|---------------|
-| `docker.io/mrrubberducky/qor-caddy` | latest-alpine, [version]-alpine | Lower file-size, uses Alpine image as it's base | x86_64, x86, ARM64 |
-| `docker.io/mrrubberducky/qor-caddy` | latest-debian, [version]-debian | Bigger file-size, uses Debian image as it's base | x86_64, x86, ARM64 |
+| mrrubberducky/qor-caddy | latest-alpine, [version]-alpine | Lower file-size, uses Alpine image as it's base | x86_64 |
 
-Debian images are going to be generally more bulky compared to ex. Alpine. Only use if you really want to, the only difference is that both build & final image process use their respective distros to achieve the same result in the end.
+Debian images are going to be generally more bulky compared to ex. Alpine. Only use if you really want to, the only difference is that both build & final image process use their respective distros to achieve the same result in the end. 
 
-
+Dropped support for other architectures, not too popular and probably been producing broken binaries because something causes the other thing to not work and I'm too lazy to find out why again. Worked fine before, no longer does again :>
 
 ---
 
@@ -95,6 +94,14 @@ Short tl;dr:
 3. Run the image
 4. ???
 5. Profit 
+
+## Configuration Example
+
+You can find out the configuration I personally use along with this image at [MrRubberDucky/rubberverse.xyz](https://github.com/MrRubberDucky/rubberverse.xyz/blob/main/Generic/Configurations/caddy/Caddyfile) repository. Just click that hyperlink and it will take you directly to it.
+
+It makes use of following modules in the image: Cloudflare DNS, Crowdsec Caddy Bouncer, Caddy Analytics, Caddy DNS IP Range, Caddy Cloudflare IPs, Caddy Combine IP Ranges and also Caddy-specific features such as environmental variables, log files, admin endpoint etc.
+
+Consider giving it a look if you're stumped on how to use some of these modules.
 
 ## Deployment Methods
 
