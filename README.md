@@ -1,6 +1,6 @@
 ## Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.0-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.2-brown
+![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.1-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.2-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
 **Currently supported build(s)**: v0.21.0-alpine, v0.21.0-debian "Gooseberry", built upon v2.9.0-beta.2
@@ -33,6 +33,9 @@ Exact build command is `GOOS="${TARGETOS}" GOARCH="${TARGETARCH}" go build -o /a
 | [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Security | Provides extra filtering capabilites for Layer 4 applications with Caddy Bouncer |
 | [Caddy DynamicDNS](https://github.com/mholt/caddy-dynamicdns) | Utility | Keeps your DNS pointed to your machine |
 | [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Utility | Umami analytics on any site without needing to modify or add extra scripts to your site |
+| [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Utility | Checks against locally running cloudflared DNS and updates the IP addresses |
+| [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Utility | Periodically checks Cloudflare IP ranges and updates them |
+| [Caddy Combine IP Ranges](https://github.com/fvbommel/caddy-combine-ip-ranges) | Utility | Allows combination of `trusted_proxies` directive |
 
 ---
 
