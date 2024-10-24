@@ -37,10 +37,23 @@ jobs:
           image: mrrubberducky/qor-caddy
           registry: docker.io
           dockerfile: caddy-dfs-CC/alpine/Dockerfile
-          buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/caddy-dns/godaddy github.com/caddy-dns/namecheap github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/caddy-dns/ddnss github.com/caddy-dns/duckdns github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2 github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0-beta.2
+          buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/caddy-dns/godaddy github.com/caddy-dns/namecheap github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/caddy-dns/ddnss github.com/caddy-dns/duckdns github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2 github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0-beta.2
           multiPlatform: true
           enableBuildKit: true
-          tags: alpine-v0.21.1, latest-alpine
+          tags: alpine-v0.21.2, latest-alpine
+          platform: linux/amd64
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build & Push Debian Image to DH
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: mrrubberducky/qor-caddy
+          registry: docker.io
+          dockerfile: caddy-dfs-CC/debian/Dockerfile
+          buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/caddy-dns/godaddy github.com/caddy-dns/namecheap github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/caddy-dns/ddnss github.com/caddy-dns/duckdns github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2 github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0-beta.2
+          multiPlatform: true
+          enableBuildKit: true
+          tags: debian-v0.21.2, latest-debian
           platform: linux/amd64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
