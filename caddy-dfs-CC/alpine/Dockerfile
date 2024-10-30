@@ -2,21 +2,23 @@ ARG IMAGE_REPOSITORY=docker.io/library
 ARG IMAGE_ALPINE_VERSION=edge
 
 FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS alpine-builder
-WORKDIR /app
 
-ARG TARGETOS=linux
+WORKDIR /usr/app/builder
+
+ARG TARGETOS
 ARG TARGETARCH
+ARG CADDY_MODULES
+ARG GO_CADDY_VERSION
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
-    GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
-    GO_CADDY_VERSION=v2.8.0-beta.2 \
-    ALPINE_REPO_VERSION=v3.19 \
-    GOCACHE=/app/go/cache \
-    GOOS $TARGETOS \
-    GOARCH $TARGETARCH \
+    ALPINE_REPO_VERSION=edge \
     GIT_WORKTREE=/app/worktree \
-    CGO_ENABLED=0 \
-    CADDY_MODULES=""
+    GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
+    GOCACHE=/app/go/cache \
+    CGO_ENABLED=0
+
+ENV GOOS=$TARGETOS \
+    GOARCH=$TARGETARCH
 
 COPY --chmod=0755 ../scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
@@ -28,32 +30,44 @@ RUN apk upgrade --no-cache \
         tar \
         bash \
         curl \
-        file \
         ca-certificates \
-    && export GO_VERSION=$(curl https://go.dev/dl/?mode=json | jq -r '.[0].version' ) \
-    && curl -LO go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf "${GO_VERSION}".linux-amd64.tar.gz \
-    && rm "${GO_VERSION}".linux-amd64.tar.gz \
-    && export PATH=${PATH}:/usr/local/go/bin:/app/go/bin \
-    && git config --global --add safe.directory '*' \
-    && mkdir -p caddy \
-    && curl -L "${GO_MAIN_FILE}" -o caddy/main.go \
-    && cd caddy \
+    && export \
+        GO_VERSION=$(curl https://go.dev/dl/?mode=json | jq -r '.[0].version' ) \
+    && curl -Lo golang.tar.gz \
+        go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz \
+    && tar -C /usr/local \
+        -xzf golang.tar.gz \
+    && rm \
+        golang.tar.gz \
+    && export \
+        PATH=${PATH}:/usr/local/go/bin:/app/go/bin \
+    && git config \
+        --global \
+        --add safe.directory '*' \
+    && mkdir -p \
+        caddy \
+    && curl -Lo caddy/main.go \
+        ${GO_MAIN_FILE} \
     && go mod init caddy \
     && /app/helper/array-helper.sh \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./ \
-    && file /app/go/bin/caddy-"${TARGETARCH}" \
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./caddy \
     && apk del --rdepends \
         build_ess \
-    && rm -rf /app/go/cache /app/git /tmp /app/caddy /usr/local/go /app/worktree
+    && rm -rf \
+        /tmp \
+        /app/git \
+        /app/worktree \
+        /usr/local/go \
+        /usr/app/caddy \
+        /usr/app/go/cache
 
-FROM --platform=$TARGETPLATFORM docker.io/library/alpine:edge AS qor-caddy
+FROM --platform=$TARGETPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS qor-caddy
 WORKDIR /app
 
 ARG ALPINE_REPO_URL=https://dl-cdn.alpinelinux.org/alpine \
     ALPINE_REPO_VERSION=edge \
-    CONT_USER=caddy \
     CONT_SHELL="/bin/sh" \
+    CONT_USER=caddy \
     CONT_UID=1001
 
 ARG TARGETARCH
@@ -75,8 +89,14 @@ RUN apk update \
         --disabled-password \
         --no-create-home \
         "$CONT_USER" \
-    && mkdir -p /app/logs /srv/www \
-    && chown -R "$CONT_UID":"$CONT_UID" /app /srv/www
+    && mkdir -p \
+        /app/logs \
+        /srv/www \
+    && chown -R "$CONT_UID":"$CONT_UID" \
+        /app \
+        /srv/www \
+    && rm -rf \
+        /var/cache/apk/*
 
 USER caddy
 
