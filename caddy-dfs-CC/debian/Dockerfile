@@ -2,72 +2,99 @@ ARG IMAGE_REPOSITORY=docker.io/library
 ARG IMAGE_ALPINE_VERSION=bookworm-slim
 
 FROM --platform=$BUILDPLATFORM $IMAGE_REPOSITORY/debian:$IMAGE_ALPINE_VERSION AS debian-builder
-WORKDIR /app
 
-ARG TARGETOS=linux
+WORKDIR /usr/app/builder
+
+ARG TARGETOS
 ARG TARGETARCH
+ARG CADDY_MODULES
+ARG GO_CADDY_VERSION
 
-ARG GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
-    GO_CADDY_VERSION=v2.8.0-beta.2 \
+ARG GIT_WORKTREE=/app/worktree \
+    GO_MAIN_FILE=https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go \
     GOCACHE=/app/go/cache \
-    GOOS $TARGETOS \
-    GOARCH $TARGETARCH \
-    GIT_WORKTREE=/app/worktree \
-    CGO_ENABLED=0 \
-    CADDY_MODULES=""
+    CGO_ENABLED=0
+
+ENV GOOS=$TARGETOS \
+    GOARCH=$TARGETARCH \
+    DEBIAN_FRONTEND="noninteractive"
 
 COPY --chmod=0755 ../scripts/array-helper.sh \ 
     /app/helper/array-helper.sh
 
-# build deps: jq, git, tar, bash, curl
-RUN apt-get update; apt-get upgrade -y; apt install -y \
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt install -y \
         jq \
         git \
         tar \
         bash \
         curl \
-        file \
         ca-certificates \
-    && export GO_VERSION=$(curl https://go.dev/dl/?mode=json | jq -r '.[0].version' ) \
-    && curl -LO go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf "${GO_VERSION}".linux-amd64.tar.gz \
-    && rm "${GO_VERSION}".linux-amd64.tar.gz \
-    && export PATH=${PATH}:/usr/local/go/bin:/app/go/bin \
-    && git config --global --add safe.directory '*' \
-    && mkdir -p caddy \
-    && curl -L "${GO_MAIN_FILE}" -o caddy/main.go \
-    && cd caddy \
+    && export \
+        GO_VERSION=$(curl https://go.dev/dl/?mode=json | jq -r '.[0].version' ) \
+    && curl -Lo golang.tar.gz \
+        go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz \
+    && tar -C /usr/local \
+        -xzf golang.tar.gz \
+    && rm \
+        golang.tar.gz \
+    && export \
+        PATH=${PATH}:/usr/local/go/bin:/app/go/bin \
+    && git config \
+        --global \
+        --add safe.directory '*' \
+    && mkdir -p \
+        caddy \
+    && curl -Lo caddy/main.go \
+        ${GO_MAIN_FILE} \
     && go mod init caddy \
     && /app/helper/array-helper.sh \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./ \
-    && file /app/go/bin/caddy-$TARGETARCH \
-    && rm -rf /app/go/cache /app/git /tmp /app/caddy /usr/local/go /app/worktree
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./caddy \
+    # Not removing any packages here because apt hard-deps everything so it would fail :)
+    && rm -rf \
+        /tmp \
+        /app/git \
+        /app/worktree \
+        /usr/local/go \
+        /usr/app/caddy \
+        /var/cache/apt \
+        /usr/app/go/cache
 
-FROM --platform=$TARGETPLATFORM docker.io/library/debian:bookworm-slim AS qor-caddy
+FROM --platform=$TARGETPLATFORM $IMAGE_REPOSITORY/debian:$IMAGE_ALPINE_VERSION AS qor-caddy
 WORKDIR /app
 
-ENV DEBIAN_FRONTEND=noninteractive
-ARG CONT_USER=caddy \
-    CONT_SHELL=/bin/sh \
+ARG CONT_SHELL="/bin/sh" \
+    CONT_USER=caddy \
     CONT_UID=1001
 
 ARG TARGETARCH
 
-COPY --from=debian-builder --chmod=0755 /app/go/bin/caddy-$TARGETARCH /app/bin/caddy
-COPY --chmod=0755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+ENV DEBIAN_FRONTEND="noninteractive"
 
-RUN apt-get update; apt-get upgrade -y; apt install -y \
+COPY --from=debian-builder --chmod=0755 /app/go/bin/caddy-$TARGETARCH /app/bin/caddy
+COPY --chmod=755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt install -y \
         ca-certificates \
         openssl \
-    && useradd \
-        --home-dir "/app" \
+    && adduser \
+        --home "/app" \
         --shell "$CONT_SHELL" \
-        --uid "$CONT_UID" \
+        --uid "$CONT_UID"  \
+        --disabled-password \
         --no-create-home \
         "$CONT_USER" \
-    && mkdir -p /var/www/ \
-    && chown -R "$CONT_UID":"$CONT_UID" /var/www /app \
-    && rm -rf /var/cache/apt
+    && mkdir -p \
+        /app/logs \
+        /var/www \
+    && chown -R "$CONT_UID":"$CONT_UID" \
+        /app \
+        /var/www \
+    && rm -rf \
+        /var/cache/apt
 
 USER caddy
 
