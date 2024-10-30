@@ -19,12 +19,12 @@ else
 fi
 
 printf "[array-helper - init] Initializing variables\n"
-FILE_PATH=/app/caddy/main.go
-TEMP_FILE=/app/caddy/temp.go
+FILE_PATH=/usr/app/builder/caddy/main.go
+TEMP_FILE=/usr/app/builder/caddy/temp.go
 PROCESSED=false
 
 printf "[array-helper - init] Creating necessary files\n"
-touch /app/caddy/temp.go
+touch /usr/app/builder/caddy/temp.go
 
 printf "[array-helper - init] Parsing CADDY_MODULES into Array\n"
 read -ra CADDY_MODULES_ARRAY <<< "${CADDY_MODULES}"
