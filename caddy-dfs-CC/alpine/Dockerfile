@@ -59,6 +59,7 @@ RUN apk upgrade --no-cache \
         /app/worktree \
         /usr/local/go \
         /usr/app/caddy \
+        /var/cache/apk \
         /usr/app/go/cache
 
 FROM --platform=$TARGETPLATFORM $IMAGE_REPOSITORY/alpine:$IMAGE_ALPINE_VERSION AS qor-caddy
@@ -96,7 +97,7 @@ RUN apk update \
         /app \
         /srv/www \
     && rm -rf \
-        /var/cache/apk/*
+        /var/cache/apk
 
 USER caddy
 
