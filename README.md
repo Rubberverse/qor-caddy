@@ -25,25 +25,26 @@ Images use following versioning schema -> vX.YZ.HH
 - ZZ includes Minor changes
 - HH includes Patches, Version bumps & Fixes
 
-## ⚙️ Included Modules
+## ⚙️ List of modules included with this build of Caddy
 
-| 🔧 Name + URL | 🔨 Type | 🪛 Short Description |
-|------------|------|-------------------|
-| [Porkbun](https://github.com/caddy-dns/porkbun) | DNS Provider | Provides DNS management capabilites for [Porkbun](https://porkbun.com) |
-| [GoDaddy](https://github.com/caddy-dns/godaddy) | DNS Provider | Provides DNS management capabilites for [GoDaddy](https://godaddy.com) |
-| [Namecheap](https://github.com/caddy-dns/namecheap) | DNS Provider | Provides DNS management capabilites for [Namecheap](https://namecheap.com) |
-| [Cloudflare](https://github.com/caddy-dns/cloudflare) | DNS Provider | Provides DNS management capabilites for [Cloudflare](https://cloudflare.com) |
-| [Vercel](https://github.com/caddy-dns/vercel) | DNS Provider | Provides DNS management capabilites for [Vercel](https://vercel.com) |
-| [DDNSS](https://github.com/caddy-dns/ddnss) | DNS Provider | Provides DNS management capabilities for [DDNSS.de](https://ddnss.de) |
-| [MailInABox](https://github.com/caddy-dns/mailinabox) | DNS Provider | Provides DNS management capabilities for [MailInABox](https://mailinabox.email/) |
-| [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | Security | High-Performance Web Application Firewall for Caddy, experimental |
-| [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer) | Security | Bouncer for [Crowdsec](https://www.crowdsec.net/), an collaborative security engine. |
-| [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Security, Network | Provides extra filtering capabilites for Layer 4 applications with Crowdsec Caddy Bouncer & Improved routing capabilities |
-| [Caddy DynamicDNS](https://github.com/mholt/caddy-dynamicdns) | Utility | Keeps your DNS pointed to your machine |
-| [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Utility | Easily set-up umami analytics on any website, straight from Caddy. [umami.is](https://umami.is) |
-| [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Utility | Checks against locally running cloudflared DNS and updates the IP addresses |
-| [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Utility  | Periodically checks Cloudflare IP ranges and updates them |
-| [Caddy Combine IP Ranges](https://github.com/fvbommel/caddy-combine-ip-ranges) | Utility | Allows combination of `trusted_proxies` directives |
+| 🔧 Name + URL | 🪛 Short Description |
+|------------|-------------------|
+| [Porkbun](https://github.com/caddy-dns/porkbun) | Provides DNS management capabilites for [Porkbun](https://porkbun.com) |
+| [GoDaddy](https://github.com/caddy-dns/godaddy) | Provides DNS management capabilites for [GoDaddy](https://godaddy.com) |
+| [Namecheap](https://github.com/caddy-dns/namecheap) | Provides DNS management capabilites for [Namecheap](https://namecheap.com) |
+| [Cloudflare](https://github.com/caddy-dns/cloudflare) | Provides DNS management capabilites for [Cloudflare](https://cloudflare.com) |
+| [Vercel](https://github.com/caddy-dns/vercel) | Provides DNS management capabilites for [Vercel](https://vercel.com) |
+| [DDNSS](https://github.com/caddy-dns/ddnss) | Provides DNS management capabilities for [DDNSS.de](https://ddnss.de) |
+| [MailInABox](https://github.com/caddy-dns/mailinabox) | Provides DNS management capabilities for [MailInABox](https://mailinabox.email/) |
+| [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | High-Performance Web Application Firewall for Caddy, experimental - ❗ INCOMPATIBLE WITH WEBSOCKETS ❗ |
+| [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer) | Bouncer for [Crowdsec](https://www.crowdsec.net/), an collaborative security engine. Needs a valid Crowdsec installation |
+| [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Provides extra filtering capabilites for Layer 4 applications with Crowdsec Caddy Bouncer & Improved routing capabilities |
+| [Caddy Rate Limit](github.com/mholt/caddy-ratelimit) | Implements rate limiting slightly similar to nginx rate limit in Caddy |
+| [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Easily set-up umami analytics on any website, straight from Caddy, requires a self-hosted or cloud [umami.is](https://umami.is) instance |
+| [Caddy DynamicDNS](https://github.com/mholt/caddy-dynamicdns) | Keeps your DNS pointed to your machine using Caddy |
+| [Caddy Combine IP Ranges](https://github.com/fvbommel/caddy-combine-ip-ranges) | Allows combination of `trusted_proxies` directives |
+| [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Checks against locally running cloudflared DNS and updates the IP addresses |
+| [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Periodically checks Cloudflare IP ranges and updates them |
 
 ## Environmental variables
 
