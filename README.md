@@ -1,9 +1,9 @@
 ## 🦆 Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.2-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.2-brown
+![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.3-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.3-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
-📦 **Currently supported build(s)**: v0.21.1-alpine "Gooseberry", built upon v2.9.0-beta.2
+📦 **Currently supported build(s)**: v0.21.3-alpine "Gooseberry", built upon v2.9.0-beta.3 and v0.20.6 built upon v2.8.4
 
 ♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. 
 
