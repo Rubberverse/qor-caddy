@@ -3,9 +3,9 @@
 ![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.3-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.3-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
-📦 **Currently supported build(s)**: v0.21.3-alpine "Gooseberry", built upon v2.9.0-beta.3 and v0.20.6 built upon v2.8.4
+📦 **Currently supported build(s)**: `v0.21.3-alpine`, `v0.21.3-debian` "Gooseberry", built upon `Caddy v2.9.0-beta.3` and `v0.20.6-alpine`, `v0.20.6-debian` built upon `Caddy v2.8.4`
 
-♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. 
+♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. Stable builds will be kept up-to-date if current Caddy build is still in Beta or RC state.
 
 🛡️ **Security Policy**: Everytime there's a patched CVE that arises on the horizon.
 
