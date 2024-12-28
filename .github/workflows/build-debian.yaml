@@ -1,4 +1,4 @@
-name: Build the Alpine image and push to GHCR
+name: Build the Debian image and push to GHCR
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build & Push Alpine Image to GHCR
+      - name: Build & Push Debian Image to GHCR
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: qor-caddy
