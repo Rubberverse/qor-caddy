@@ -77,6 +77,7 @@ LABEL stage=qor-caddy
 
 COPY --from=alpine-builder --chmod=0755 /app/go/bin/caddy-$TARGETARCH /app/bin/caddy
 COPY --chmod=755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+LABEL org.opencontainers.image.source https://github.com/Rubberverse/qor-caddy
 
 RUN apk update \
     && apk upgrade --no-cache \
