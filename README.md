@@ -13,8 +13,8 @@
 
 | 🐳 Image(s) | 📁 Tag(s) | 📓 Description | 💻 Architecture |
 |----------|--------|-------------|---------------|
-| `docker.io/mrrubberducky/qor-caddy:latest-alpine` | `latest-alpine`, `$VERSION-alpine` | Lower file-size, runs as `caddy` user and uses `alpine:edge` image as it's base | x86_64 |
-| `docker.io/mrrubberducky/qor-caddy:latest-debian` | `latest-debian`, `$VERSION-debian` | Bigger file-size, runs as `caddy` user and uses `debian:bookworm-slim` image as it's base | x86_64 |
+| `ghcr.io/Rubberverse/qor-caddy:latest-alpine` | `latest-alpine`, `$VERSION-alpine` | Lower file-size, runs as `caddy` user and uses `alpine:edge` image as it's base | x86_64 |
+| `ghcr.io/Rubberverse/qor-caddy:latest-debian` | `latest-debian`, `$VERSION-debian` | Bigger file-size, runs as `caddy` user and uses `debian:bookworm-slim` image as it's base | x86_64 |
 
 ❓ `$VERSION`, ex. `v0.21.1-alpine`:
 
