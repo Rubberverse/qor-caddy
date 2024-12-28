@@ -3,7 +3,7 @@
 ![qor-caddy version](https://img.shields.io/badge/Image_Version-v1.2.9-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.3-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
-📦 **Currently supported build(s)**: `latest-alpine`, `v1.2.9-alpine`, "Gooseberry", built upon `Caddy v2.9.0-beta.3`
+📦 **Currently supported build(s)**: `latest-alpine`, `v1.2.10-alpine`, "Gooseberry", built upon `Caddy v2.9.0-beta.3`
 
 ♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. (Previous) Stable build will be kept up-to-date if current Caddy build is still in Beta or RC state.
 
@@ -44,6 +44,7 @@ Images use following versioning schema -> vX.Y.Z
 | [Caddy Combine IP Ranges](https://github.com/fvbommel/caddy-combine-ip-ranges) | Allows combination of `trusted_proxies` directives |
 | [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Checks against locally running cloudflared DNS and updates the IP addresses |
 | [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Periodically checks Cloudflare IP ranges and updates them |
+| [Caddy-Discord](https://github.com/enum-gg/caddy-discord) | OIDC via Caddy using Discord, able to check for Guild and Roles |
 
 ⚠️ - Check relevant GitHub issues in case you experience problems: [GoDaddy](https://github.com/Rubberverse/qor-caddy/issues/15) and [Namecheap](https://github.com/Rubberverse/qor-caddy/issues/16)
 
