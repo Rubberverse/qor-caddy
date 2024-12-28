@@ -1,9 +1,9 @@
 ## 🦆 Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v0.21.3-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.3-brown
+![qor-caddy version](https://img.shields.io/badge/Image_Version-v1.2.9-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.3-brown
 ) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
 
-📦 **Currently supported build(s)**: `latest-alpine`, `v0.21.3-alpine`, `latest-debian`, `v0.21.4-debian` "Gooseberry", built upon `Caddy v2.9.0-beta.3` and `v0.20.6-alpine`, `v0.20.7-debian` built upon `Caddy v2.8.4`
+📦 **Currently supported build(s)**: `latest-alpine`, `v1.2.9-alpine`, "Gooseberry", built upon `Caddy v2.9.0-beta.3`
 
 ♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. (Previous) Stable build will be kept up-to-date if current Caddy build is still in Beta or RC state.
 
@@ -16,14 +16,13 @@
 | `ghcr.io/Rubberverse/qor-caddy:latest-alpine` | `latest-alpine`, `$VERSION-alpine` | Lower file-size, runs as `caddy` user and uses `alpine:edge` image as it's base | x86_64 |
 | `ghcr.io/Rubberverse/qor-caddy:latest-debian` | `latest-debian`, `$VERSION-debian` | Bigger file-size, runs as `caddy` user and uses `debian:bookworm-slim` image as it's base | x86_64 |
 
-❓ `$VERSION`, ex. `v0.21.1-alpine`:
+❓ `$VERSION`, ex. `v1.2.9-alpine`:
 
-Images use following versioning schema -> vX.YZ.HH
+Images use following versioning schema -> vX.Y.Z
 
-- XX includes version type, 0 is considered "beta" or "semi-stable"
-- YY includes Major changes
-- ZZ includes Minor changes
-- HH includes Patches, Version bumps & Fixes
+- X: Image revision
+- Y: Image major changes
+- Z: Image minor changes, version bumps & fixes
 
 ## ⚙️ List of modules included with this build of Caddy
 
