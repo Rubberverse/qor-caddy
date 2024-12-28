@@ -33,7 +33,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build & Push Alpine Image to DH
+      - name: Build & Push Alpine Image to GHCR
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: ghcr.io/rubberverse/qor-caddy
@@ -42,7 +42,7 @@ jobs:
           buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/enum-gg/caddy-discord github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/caddy-dns/godaddy github.com/caddy-dns/namecheap github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/caddy-dns/ddnss github.com/caddy-dns/duckdns github.com/caddy-dns/mailinabox github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2 github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0-beta.3
           tags: alpine-${{ steps.tag_version.outputs.new_tag }}, latest-alpine
           platform: linux/amd64
-          username: ${{ secrets.GHCR_USERNAME }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
       - name: Cancel on failure
         uses: andymckay/cancel-action@0.4
