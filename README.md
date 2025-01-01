@@ -2,7 +2,7 @@
 
 ![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![Caddy Version](https://img.shields.io/badge/Caddy_Version-v2.9.0-brown) ![Docker Pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
-📦 **Currently supported build(s)**: `latest-alpine`, `$VersionTagFromAbove-alpine`, "Gooseberry", built upon `Caddy v2.9.0-beta.3`
+📦 **Currently supported build(s)**: `latest-alpine`, `$VersionTagFromAbove-alpine`, "Gooseberry", built upon `Caddy v2.9.0`
 
 ♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. (Previous) Stable build will be kept up-to-date if current Caddy build is still in Beta or RC state.
 
