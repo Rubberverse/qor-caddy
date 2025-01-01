@@ -1,13 +1,15 @@
 ## 🦆 Rubberverse container images
 
-![qor-caddy version](https://img.shields.io/badge/Image_Version-v1.2.9-purple) ![caddy version](https://img.shields.io/badge/Caddy_Version-v2.9.0_beta.3-brown
-) ![qor-caddy pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy)
+![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![Caddy Version](https://img.shields.io/badge/Caddy_Version-v2.9.0-brown) ![Docker Pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
-📦 **Currently supported build(s)**: `latest-alpine`, `v1.2.10-alpine`, "Gooseberry", built upon `Caddy v2.9.0-beta.3` (Debian images are going to be re-pushed back on new release, use Docker Hub Debian images for now.)
+📦 **Currently supported build(s)**: `latest-alpine`, `v1.2.10-alpine`, "Gooseberry", built upon `Caddy v2.9.0-beta.3`
 
 ♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. (Previous) Stable build will be kept up-to-date if current Caddy build is still in Beta or RC state.
 
 🛡️ **Security Policy**: Everytime there's a patched CVE that arises on the horizon. Unfixable Debian low severity CVEs are not taken into consideration! (or overall CVEs with no fixed versions available of the package yet)
+
+> [!WARNING] 
+> This image won't be published to Docker registry anymore. Please update your installs if you're using my image to point to `ghcr.io/Rubberverse/qor-caddy` instead!
 
 ## Version Tag information
 
