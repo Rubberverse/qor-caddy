@@ -72,6 +72,7 @@ ARG CONT_SHELL="/bin/sh" \
 ARG TARGETARCH
 
 ENV DEBIAN_FRONTEND="noninteractive"
+LABEL org.opencontainers.image.source https://github.com/Rubberverse/qor-caddy
 
 COPY --from=debian-builder --chmod=0755 /app/go/bin/caddy-$TARGETARCH /app/bin/caddy
 COPY --chmod=755 ../scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
