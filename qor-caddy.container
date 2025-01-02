@@ -1,0 +1,46 @@
+# This is a file that can be used with Podman's Quadlet functionality. You need to use Podman +v5.2.1 though.
+# You put it in ~/.config/containers/systemd and then reload systemctl daemon using following command: systemctl --user daemon-reload
+# Then you can start your container by running systemctl --user start qor-caddy
+# I have a SELinux system so that's why every mount is riddled with z, or Z flags, otherwise SELinux kicks in and stops container from being able to write to these directories on host.
+[Unit]
+Description=qor-caddy, an rootless Caddy image with extra modules
+
+[Service]
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+
+[Container]
+Image=ghcr.io/Rubberverse/qor-caddy:latest-alpine
+ContainerName=qor-caddy
+# Normal Environments
+Environment=CONFIG_PATH=/app/configs/Caddyfile
+Environment=CADDY_ENVIRONMENT=prod
+# Configuration file that's in ~/AppData/configs/Caddyfile, mounted to /app/configs/Caddyfile as read-only with Z flag (for SELinux)
+Volume=${HOME}/AppData/configs/Caddyfile:/app/configs/Caddyfile:ro,Z
+# Storage persistence, so container can store it's temp configuration, TLS certificates and logs
+# Create following directories:
+# mkdir -p ~/AppData/persist/caddy_data
+# mkdir -p ~/AppData/persist/caddy_config
+Mount=type=bind,source=/home/YOURUSER/AppData/persist/caddy_data,destination=/app/.local/share/caddy,U=true,Z
+Mount=type=bind,source=/home/YOURUSER/AppData/persist/caddy_config,destination=/app/.config/caddy,U=true,Z
+Volume=CADDY-LOGS:/app/logs:rw,Z,U
+# Auto Updates
+AutoUpdate=registry
+NoNewPrivileges=true
+# For sharing logs to Crowdsec container, another SELinux thing.
+SecurityLabelDisable=true
+# Use pasta networking and expose namespace ports to it via --tcp-ns
+# Other containers use PublishPort= directive.
+# This is mostly tailored towards reverse proxy deployments where Caddy will listen under Proxy Protocol V2 and get proper ClientIP from it.
+Network=pasta:--ipv4-only,-T,8080
+# HTTPS - TCP/UDP
+PublishPort=127.0.0.1:8443:8443/tcp
+PublishPort=127.0.0.1:8443:8443/udp
+# HTTP - TCP
+PublishPort=127.0.0.1:8181:8181/tcp
+# User
+User=caddy
+# Add ,uid=1001,gid=1001 in case it still maps UID and GID wrongly on host.
+UserNS=keep-id
