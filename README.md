@@ -28,7 +28,7 @@ Images use following versioning schema -> vX.Y.Z
 
 ## ⚙️ List of modules included with this build of Caddy
 
-These modules may change at any time depending on my own personal needs. Use vanilla image or build your own if you think this is too bloated!
+These modules may change at any time depending on my own personal needs. Use vanilla image or build your own if you think this is too bloated, or need specific modules that I don't provide!
 
 | 🔧 Name + URL | 🪛 Short Description |
 |------------|-------------------|
@@ -47,6 +47,8 @@ These modules may change at any time depending on my own personal needs. Use van
 | [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Periodically checks Cloudflare IP ranges and updates them |
 
 ## Environmental variables
+
+List of all environmental variables used by `qor-caddy:latest-alpine` and `qor-caddy:latest-debian` container images. 
 
 | 💲 Env | 📓 Description | 🇼🇫 Value |
 |-----|-------------|---------|
@@ -73,7 +75,9 @@ These modules may change at any time depending on my own personal needs. Use van
 
 ## 🛠️ Extended Usage
 
-If you ever used Caddy, it's about the same. You'll mostly be sitting in Caddyfile configuring things and what not. It is however recommended to enable [admin endpoint](https://caddyserver.com/docs/caddyfile/options#admin) as that will allow you to issue commands such as `caddy reload` to the container and many other commands such as `caddy test`.
+If you ever used Caddy, it's about the same. You'll mostly be sitting in Caddyfile configuring things and what not. It is however recommended to enable [admin endpoint](https://caddyserver.com/docs/caddyfile/options#admin) as that will allow you to issue commands such as `caddy reload` to the container and many other commands such as `caddy test`. For AuthCrunch, [read plugin creator's documentation](https://docs.authcrunch.com/).
+
+Any issues with plugins should be reported to respective plugin repository, not to Caddy maintainers. In case of issues with my image, create a GitHub issue here!
 
 ⚠️ **Keep in mind**: Volume mounted configuration files will still need a container restart if you re-created the configuration file during it.
 
