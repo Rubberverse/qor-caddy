@@ -28,11 +28,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Bump version and push tag
+      #  id: tag_version
+      #  uses: mathieudutour/github-tag-action@v6.2
+      #  with:
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build & Push Alpine Image to GHCR
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
@@ -40,7 +40,7 @@ jobs:
           registry: ghcr.io
           dockerfile: caddy-dfs-CC/alpine/Dockerfile
           buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/greenpau/caddy-security github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2 github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0
-          tags: alpine-${{ steps.tag_version.outputs.new_tag }}, latest-alpine
+          tags: alpine-v1.2.12, latest-alpine
           platform: linux/amd64
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
