@@ -28,15 +28,13 @@ Images use following versioning schema -> vX.Y.Z
 
 ## ⚙️ List of modules included with this build of Caddy
 
+These modules may change at any time depending on my own personal needs. Use vanilla image or build your own if you think this is too bloated!
+
 | 🔧 Name + URL | 🪛 Short Description |
 |------------|-------------------|
 | [Porkbun](https://github.com/caddy-dns/porkbun) | Provides DNS management capabilites for [Porkbun](https://porkbun.com) |
-| ⚠️ [GoDaddy](https://github.com/caddy-dns/godaddy) | Provides DNS management capabilites for [GoDaddy](https://godaddy.com) |
-| ⚠️ [Namecheap](https://github.com/caddy-dns/namecheap) | Provides DNS management capabilites for [Namecheap](https://namecheap.com) |
 | [Cloudflare](https://github.com/caddy-dns/cloudflare) | Provides DNS management capabilites for [Cloudflare](https://cloudflare.com) |
 | [Vercel](https://github.com/caddy-dns/vercel) | Provides DNS management capabilites for [Vercel](https://vercel.com) |
-| [DDNSS](https://github.com/caddy-dns/ddnss) | Provides DNS management capabilities for [DDNSS.de](https://ddnss.de) |
-| [MailInABox](https://github.com/caddy-dns/mailinabox) | Provides DNS management capabilities for [MailInABox](https://mailinabox.email/) |
 | [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | High-Performance Web Application Firewall for Caddy, experimental - ❗ INCOMPATIBLE WITH WEBSOCKETS ❗ |
 | [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer) | Bouncer for [Crowdsec](https://www.crowdsec.net/), an collaborative security engine. Needs a valid Crowdsec installation |
 | [AuthCrunch (aka Caddy Security)](https://github.com/greenpau/caddy-security) | Implement authentication for your services easily, authenticate via OIDC and many other implementations |
@@ -47,8 +45,6 @@ Images use following versioning schema -> vX.Y.Z
 | [Caddy Combine IP Ranges](https://github.com/fvbommel/caddy-combine-ip-ranges) | Allows combination of `trusted_proxies` directives |
 | [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Checks against locally running cloudflared DNS and updates the IP addresses |
 | [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Periodically checks Cloudflare IP ranges and updates them |
-
-⚠️ - Check relevant GitHub issues in case you experience problems: [GoDaddy](https://github.com/Rubberverse/qor-caddy/issues/15) and [Namecheap](https://github.com/Rubberverse/qor-caddy/issues/16)
 
 ## Environmental variables
 
