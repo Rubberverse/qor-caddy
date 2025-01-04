@@ -39,7 +39,7 @@ jobs:
           image: qor-caddy
           registry: ghcr.io
           dockerfile: caddy-dfs-CC/alpine/Dockerfile
-          buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2 github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0
+          buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/mholt/caddy-dynamicdns github.com/corazawaf/coraza-caddy/v2@2502703e84440c48f4c044e5a88c0c036315fd40 github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0
           tags: alpine-v1.2.14, latest-alpine
           platform: linux/amd64
           username: ${{ github.actor }}
