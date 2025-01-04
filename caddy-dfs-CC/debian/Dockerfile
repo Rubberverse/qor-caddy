@@ -51,7 +51,7 @@ RUN apt-get update \
         ${GO_MAIN_FILE} \
     && go mod init caddy \
     && /app/helper/array-helper.sh \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./caddy \
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./caddy \
     # Not removing any packages here because apt hard-deps everything so it would fail :)
     && rm -rf \
         /tmp \
