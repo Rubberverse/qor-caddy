@@ -65,6 +65,8 @@ cat $FILE_PATH
 
 printf "\n[array-helper] Pinning Caddy version according to tag, commit or branch\n"
 go get github.com/caddyserver/caddy/v2@${GO_CADDY_VERSION}
+printf "\n[array-helper] Test\n"
+go get github.com/corazawaf/coraza-caddy/v2@2502703e84440c48f4c044e5a88c0c036315fd40
 
 printf "[array-helper] Running go mod tidy to add module requirements and create go.sum\n"
 go mod tidy
