@@ -31,7 +31,7 @@ RUN apt-get update \
         bash \
         curl \
         ca-certificates \
-	openssl=3.0.15-1~deb12u1 \
+	openssl \
     && export \
         GO_VERSION=$(curl https://go.dev/dl/?mode=json | jq -r '.[0].version' ) \
     && curl -Lo golang.tar.gz \
