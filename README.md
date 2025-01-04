@@ -37,7 +37,6 @@ These modules may change at any time depending on my own personal needs. Use van
 | [Vercel](https://github.com/caddy-dns/vercel) | Provides DNS management capabilites for [Vercel](https://vercel.com) |
 | [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | High-Performance Web Application Firewall for Caddy, experimental - ❗ INCOMPATIBLE WITH WEBSOCKETS ❗ |
 | [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer) | Bouncer for [Crowdsec](https://www.crowdsec.net/), an collaborative security engine. Needs a valid Crowdsec installation |
-| [AuthCrunch (aka Caddy Security)](https://github.com/greenpau/caddy-security) | Implement authentication for your services easily, authenticate via OIDC and many other implementations |
 | [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Provides extra filtering capabilites for Layer 4 applications with Crowdsec Caddy Bouncer & Improved routing capabilities |
 | [Caddy Rate Limit](github.com/mholt/caddy-ratelimit) | Implements rate limiting slightly similar to nginx rate limit in Caddy |
 | [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Easily set-up umami analytics on any website, straight from Caddy, requires a self-hosted or cloud [umami.is](https://umami.is) instance |
