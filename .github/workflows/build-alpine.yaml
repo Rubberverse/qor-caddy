@@ -15,8 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     permissions:
+      contents: read
+      actions: write
       packages: write
-      contents: write
     defaults:
       run:
         working-directory: .
@@ -28,11 +29,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
-      #- name: Bump version and push tag
-      #  id: tag_version
-      #  uses: mathieudutour/github-tag-action@v6.2
-      #  with:
-      #    github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build & Push Alpine Image to GHCR
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
@@ -40,10 +36,11 @@ jobs:
           registry: ghcr.io
           dockerfile: caddy-dfs-CC/alpine/Dockerfile
           buildArgs: BUILDPLATFORM=linux/amd64,CADDY_MODULES="github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/porkbun github.com/corazawaf/coraza-caddy/v2 github.com/caddy-dns/cloudflare github.com/caddy-dns/vercel github.com/mholt/caddy-dynamicdns github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/jonaharagon/caddy-umami",GO_CADDY_VERSION=v2.9.0
-          tags: alpine-v1.2.14, latest-alpine
+          tags: alpine-${{ github.event.release.tag_name }}, latest-alpine
           platform: linux/amd64
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ github.token }}
       - name: Cancel on failure
-        uses: andymckay/cancel-action@0.4
+        uses: andymckay/cancel-action@0.5
         if: failure()
+          
