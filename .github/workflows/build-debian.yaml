@@ -40,9 +40,6 @@ jobs:
           platform: linux/amd64
           username: ${{ github.actor }}
           password: ${{ github.token }}
-          
       - name: Cancel on failure
         uses: andymckay/cancel-action@0.4
         if: failure()
-        with:
-          access_token: ${{ github.token }}
