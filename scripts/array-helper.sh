@@ -54,7 +54,7 @@ do
 	PROCESSED=true
     fi
 
-    printf "%b" "[array-helper] Writing module \"$module\" to file\n"
+    printf "%b" "[array-helper] Writing module ${line} to file\n"
     echo "$line" >> $TEMP_FILE 
 done < "$FILE_PATH"
 
