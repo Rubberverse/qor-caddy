@@ -29,14 +29,14 @@ touch /usr/app/builder/caddy/temp.go
 printf "[array-helper - init] Parsing CADDY_MODULES into Array\n"
 read -ra CADDY_MODULES_ARRAY <<< "${CADDY_MODULES}"
 
-printf "[array-helper - debug] Listing variables and file directories\n"
-printf "%b" "FILE_PATH: ${FILE_PATH}\n"
-printf "%b" "TEMP_FILE: ${TEMP_FILE}\n"
-printf "%b" "ARRAY PROCESSED: ${PROCESSED}\n"
-printf "%b" "ARRAY VALUE (first): ${CADDY_MODULES_ARRAY}\n"
-printf "%b" "CADDY_MODULES: ${CADDY_MODULES}\n"
-printf "%b" "CADDY VERSION: ${GO_CADDY_VERSION}\n"
-ls -l /app/caddy
+#printf "[array-helper - debug] Listing variables and file directories\n"
+#printf "%b" "FILE_PATH: ${FILE_PATH}\n"
+#printf "%b" "TEMP_FILE: ${TEMP_FILE}\n"
+#printf "%b" "ARRAY PROCESSED: ${PROCESSED}\n"
+#printf "%b" "ARRAY VALUE (first): ${CADDY_MODULES_ARRAY}\n"
+#printf "%b" "CADDY_MODULES: ${CADDY_MODULES}\n"
+#printf "%b" "CADDY VERSION: ${GO_CADDY_VERSION}\n"
+#ls -l /app/caddy
 
 printf "[array-helper - init] Sanity check\n"
 echo -n "" > $TEMP_FILE
@@ -54,7 +54,6 @@ do
 	PROCESSED=true
     fi
 
-    printf "%b" "[array-helper] Writing module ${line} to file\n"
     echo "$line" >> $TEMP_FILE 
 done < "$FILE_PATH"
 
