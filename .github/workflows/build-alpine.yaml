@@ -17,7 +17,6 @@ jobs:
     permissions:
       contents: read
       actions: write
-      packages: write
     defaults:
       run:
         working-directory: .
@@ -39,7 +38,7 @@ jobs:
           tags: alpine-${{ github.event.release.tag_name }}, latest-alpine
           platform: linux/amd64
           username: ${{ github.actor }}
-          password: ${{ github.token }}
+          password: ${{ secrets.GHCR_TOKEN }}
       - name: Cancel on failure
         uses: andymckay/cancel-action@0.5
         if: failure()
