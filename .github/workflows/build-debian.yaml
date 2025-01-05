@@ -39,7 +39,7 @@ jobs:
           tags: debian-${{ github.event.release.tag_name }}, latest-debian
           platform: linux/amd64
           username: ${{ github.actor }}
-          password: ${{ github.token }}
+          password: ${{ secrets.GHCR_TOKEN }}
       - name: Cancel on failure
         uses: andymckay/cancel-action@0.4
         if: failure()
