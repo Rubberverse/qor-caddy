@@ -1,98 +1,108 @@
-## 🦆 Rubberverse container images
+## 🦆 Rubberverse Container Images
 
 ![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![Caddy Version](https://img.shields.io/badge/Caddy_Version-v2.9.0-brown) ![Docker Pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
-📦 **Currently supported build(s)**: `latest-alpine`, `$VersionTagFromAbove-alpine`, "Gooseberry", built upon `Caddy v2.9.0`
+📦 **Supported Tags**: `latest-alpine`, `$versionTagFromAbove-alpine`, `latest-debian`, `$versionTagFromAbove-debian` "Gooseberry", built upon `Caddy v2.9.0`
 
-♻️ **Update Policy**: On new Beta, Release Canditate and Stable release of Caddy, not building against `master` branch. (Previous) Stable build will be kept up-to-date if current Caddy build is still in Beta or RC state.
+♻️ **Updates**: When there's a new Stable/RC/Beta release of Caddy. Extensions get updated anytime there's a serious update happening on them, usually it's pretty rare. Not building against `master` branch of Caddy, or extensions if it can be avoided. Though sometimes it's a necessity to give users better experience as `master` branch may include fixes that aren't in (dated) release.
 
-🛡️ **Security Policy**: Everytime there's a patched CVE that arises on the horizon. Unfixable Debian low severity CVEs are not taken into consideration! (or overall CVEs with no fixed versions available of the package yet)
+🛡️ **Security**: Trying to monitor my images and fix CVEs that have a patch available, along with keeping the image itself and it's dependencies up-to-date. Aside from that, Dockerfile and image itself should make use of best practices so that should reduce potential issues (hopefully)
 
-> [!WARNING] 
-> This image won't be published to Docker registry anymore. Please update your installs if you're using my image to point to `ghcr.io/Rubberverse/qor-caddy` instead!
+## ⚠️ Docker Hub Registry is deprecated
 
-## Version Tag information
+Update your `docker-compose.yaml` or Quadlet units to make use of GitHub Container Registry instead - `ghcr.io/rubberverse/qor-caddy`.
 
-| 🐳 Image(s) | 📁 Tag(s) | 📓 Description | 💻 Architecture |
-|----------|--------|-------------|---------------|
-| `ghcr.io/rubberverse/qor-caddy:latest-alpine` | `latest-alpine`, `$VERSION-alpine` | Lower file-size, runs as `caddy` user and uses `alpine:edge` image as it's base | x86_64 |
-| `ghcr.io/rubberverse/qor-caddy:latest-debian` | `latest-debian`, `$VERSION-debian` | Bigger file-size, runs as `caddy` user and uses `debian:bookworm-slim` image as it's base | x86_64 |
+## 🔗 Image Tags
 
-❓ `$VERSION`, ex. `v1.2.9-alpine`:
+| Distro       | Tag(s)                           | Architecture | Description                                           |
+|--------------|----------------------------------|--------------|-------------------------------------------------------|
+| Alpine Linux | `latest-alpine`, `v0.0.0-alpine` | `x86_64`     | Small image size, otherwise identical to Debian image |
+| Debian       | `latest-debian`, `v0.0.0-debian` | `x86_64`     | Big image size, otherwise identical to Alpine image   |
 
-Images use following versioning schema -> vX.Y.Z
+We used to have a pretty weird version scheme, now we have SemVer versioning - vX.Y.Z
 
 - X: Image revision
 - Y: Image major changes
-- Z: Image minor changes, version bumps & fixes
+- Z: Image minor changes, version bumps, fixes etc.
 
-## ⚙️ List of modules included with this build of Caddy
+## 💲 Environmental variables
 
-These modules may change at any time depending on my own personal needs. Use vanilla image or build your own if you think this is too bloated, or need specific modules that I don't provide!
+These apply for both Debian and Alpine Linux variants of `qor-caddy` image.
 
-| 🔧 Name + URL | 🪛 Short Description |
-|------------|-------------------|
-| [Porkbun](https://github.com/caddy-dns/porkbun) | Provides DNS management capabilites for [Porkbun](https://porkbun.com) |
-| [Cloudflare](https://github.com/caddy-dns/cloudflare) | Provides DNS management capabilites for [Cloudflare](https://cloudflare.com) |
-| [Vercel](https://github.com/caddy-dns/vercel) | Provides DNS management capabilites for [Vercel](https://vercel.com) |
-| [Coraza WAF for Caddy](https://github.com/corazawaf/coraza-caddy) | High-Performance Web Application Firewall for Caddy, experimental - ❗ INCOMPATIBLE WITH WEBSOCKETS ❗ |
-| [Caddy Crowdsec Bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer) | Bouncer for [Crowdsec](https://www.crowdsec.net/), an collaborative security engine. Needs a valid Crowdsec installation |
-| [Layer4](https://github.com/hslatman/caddy-crowdsec-bouncer/layer4) | Provides extra filtering capabilites for Layer 4 applications with Crowdsec Caddy Bouncer & Improved routing capabilities |
-| [Caddy Rate Limit](github.com/mholt/caddy-ratelimit) | Implements rate limiting slightly similar to nginx rate limit in Caddy |
-| [Caddy Umami](https://github.com/jonaharagon/caddy-umami) | Easily set-up umami analytics on any website, straight from Caddy, requires a self-hosted or cloud [umami.is](https://umami.is) instance |
-| [Caddy DynamicDNS](https://github.com/mholt/caddy-dynamicdns) | Keeps your DNS pointed to your machine using Caddy |
-| [Caddy Combine IP Ranges](https://github.com/fvbommel/caddy-combine-ip-ranges) | Allows combination of `trusted_proxies` directives |
-| [Caddy DNS IP Range](https://github.com/fvbommel/caddy-dns-ip-range) | Checks against locally running cloudflared DNS and updates the IP addresses |
-| [Caddy Cloudflare IPs](https://github.com/WeidiDeng/caddy-cloudflare-ip) | Periodically checks Cloudflare IP ranges and updates them |
+| Env               | Required? | Default Value |
+|-------------------|-----------|--------------|
+| `CONFIG_PATH`     | 🟢 Yes    | `""`         |
+| `CADDY_PROD`      | 🟠 Opt    | `PROD`       |
+| `EXTRA_ARGUMENTS` | 🟠 Opt    | `""`         |
 
-## Environmental variables
+You're expected to mount an `Caddyfile`, or `caddy.json` into any path into the container, you should do `/app/configs/` since it's easier to remember, then point `CONFIG_PATH` to the full path to the configuration file **inside** of the container. Small example can be seen below.
 
-List of all environmental variables used by `qor-caddy:latest-alpine` and `qor-caddy:latest-debian` container images. 
+```ini
+[Container]
+(...)
+Volume=${HOME}/AppData/1_CONFIGS/Caddyfile:/app/configs/Caddyfile
+Environment=CONFIG_PATH=/app/configs/Caddyfile
+```
 
-| 💲 Env | 📓 Description | 🇼🇫 Value |
-|-----|-------------|---------|
-| ❗ `CONFIG_PATH`   | Points Caddy to the configuration file, must be a valid path where the file is present. It is recommended to map a volume with the config file in `/app/configs` | `empty by default`
-| `CADDY_ENVIRONMENT` | Controls what type of environment Caddy is in. If it's in testing, automatic config reload is permitted, if not then it's not. If this value is empty, it will fallback to `PROD` | `PROD` or `TEST` |
-| `EXTRA_ARGUMENTS`   | You can pass here any extra runtime flag/launch parameter to the Caddy binary, useful for some extra specific options when running as `TEST` environment. This variable can be empty if none are desired | `empty by default`
+## Deploying
 
-❗ - Required
+Quadlet unit, only supported on Podman +v5.2.1
 
-## 📂 User-owned directories
+1. Copy [qor-caddy.container](https://github.com/Rubberverse/qor-caddy/blob/main/qor-caddy.container) from this repository and put it in `~/.config/containers/systemd`
+2. Edit it to your own liking, there are comments inside of it to guide you around
+3. Reload systemctl daemon with `systemctl --user daemon-reload`
+4. Deploy the Quadlet unit by starting the service - `systemctl --user start qor-caddy`
+
+Docker Compose:
+
+TODO
+
+## ⚙️ List of third-party Caddy modules
+
+These modules can be removed at any time and for any reason, they're mostly here to just serve a purpose for me. If I happen to switch technologies or something similar, I generally tend to remove things I don't need as it makes it easier to manage.
+
+| GitHub Repository                                                                            | Type                     | Short Description                                              |
+|----------------------------------------------------------------------------------------------|--------------------------|----------------------------------------------------------------|
+| [caddy-dns/porkbun](https://github.com/caddy-dns/porkbun)                                    | DNS Provider             | Manage Porkbun DNS records, useful for ACME DNS challenges     |
+| [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)                              | DNS Provider             | Manage Cloudflare DNS records, ditto                           |
+| [caddy-dns/vercel](https://github.com/caddy-dns/vercel)                                      | DNS Provider             | Manage Vercel DNS records, ditto                               |
+| [corazawaf/coraza-caddy](https://github.com/corazawaf/coraza-caddy)                          | Web Application Firewall | Provides WAF capabilities for Caddy (OWASP Coraza), built against specific commit from master branch | 
+| [hslatman/caddy-crowdsec-bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)        | Security                 | Blocks malicious traffic based on decisions made by [Crowdsec](https://crowdsec.net/), requires Crowdsec |
+| [mholt/caddy-l4](https://github.com/mholt/caddy-l4)                                          | Routing                  | Gives Layer 4 routing capabilities to Caddy                    |
+| [mholt/caddy-ratelimit](github.com/mholt/caddy-ratelimit)                                    | Rate Limit               | Implements rate limiting slightly similar to Nginx rate limit in Caddy |
+| [jonaharagon/caddy-umami](https://github.com/jonaharagon/caddy-umami)                        | Helper                   | Easily implement Umami Analytics on any of your websites straight from Caddy, requires self-hosted or cloud [umami](https://umami.is) instance |
+| [fvbommel/caddy-combine-ip-ranges](https://github.com/fvbommel/caddy-combine-ip-ranges)      | Utility                  | Allows combination of `trusted_proxies` directives |
+| [fvbommel/caddy-dns-ip-range](https://github.com/fvbommel/caddy-dns-ip-range)                | Utility                  | Checks against locally running `cloudflared` DNS and updates the IP addresses |
+| [WeidiDeng/caddy-cloudflare-ip](https://github.com/WeidiDeng/caddy-cloudflare-ip)            | Utility                  | Periodically checks Cloudflare IP ranges and updates them |
+
+Any issues involving third-party modules should be reported to the module's respective repository, not to Caddy maintainers. In case the issue comes from my image, leave an GitHub issue here.
+
+## 📂 Container user owned directories
 
 `caddy` user inside the container owns following directories: 
 
-- `/app` - Home directory for `caddy` user
-- `/srv/www` - for `alpine` based images, you must still set `U=true` in order to fix up permissions inside mounted sites
-- `/var/www` - for `debian` based images, you must still set `U=true` in order to fix up permissions inside mounted sites
+- `/app` - Home directory for `caddy` user.
+- `/app/bin` - Stores `caddy` binary.
+- `/app/configs` - Stores Caddy configuration files, if used.
+- Alpine: `/srv/www`, for serving static files. Need to use `U` in your Volume mount in order to chown your files as container user.
+- Debian: `/var/www`, for serving static files. Need to use `U` in your Volume mount in order to chown your files as container user.
 
-## 🔨 Usage
+## 🛠️ Usage
 
-1. Mount a `Caddyfile`, or `caddy.json` to `/app/configs`
-2. Set `CONFIG_PATH` environmental variable so it points at `/app/configs/Caddyfile`, or `/app/configs/caddy.json`
-3. Run the image
-4. Profit
+If you ever used Caddy, it's about the same. Most of your time will be spent sitting in your `Caddyfile` or `caddy.json`. You'll want to enable admin endpoint and reload your configuration file by issuing `podman exec -t qor-caddy /app/bin/caddy reload -c /app/configs/Caddyfile` instead of restarting your container. [Caddy Docs quick-link](https://caddyserver.com/docs/caddyfile/options#admin)
 
-## 🛠️ Extended Usage
+> [!WARNING]
+> Volume mounted configuration files will still need a container restart if you re-created the configuration file when it was on. So in case something seems fishy, restart your container. You'll know instantly in case config file is wrong ;)
 
-If you ever used Caddy, it's about the same. You'll mostly be sitting in Caddyfile configuring things and what not. It is however recommended to enable [admin endpoint](https://caddyserver.com/docs/caddyfile/options#admin) as that will allow you to issue commands such as `caddy reload` to the container and many other commands such as `caddy test`. For AuthCrunch, [read plugin creator's documentation](https://docs.authcrunch.com/).
+Here's some helpful links to get you head-started with Caddy as your Web Server. On your own time, you can learn even more advanced things that Caddy can do!
 
-Any issues with plugins should be reported to respective plugin repository, not to Caddy maintainers. In case of issues with my image, create a GitHub issue here!
+- [Getting started @ Caddy docs](https://caddyserver.com/docs/getting-started)
+- [Quick-starts @ Caddy docs](https://caddyserver.com/docs/quick-starts)
+- [Caddyfile Reference @ Caddy docs](https://caddyserver.com/docs/caddyfile)
+- [My own Caddyfile, updated rarely so may not always be up-to-date](https://github.com/MrRubberDucky/rubberverse.xyz/blob/main/Generic/Configurations/caddy/Caddyfile)
 
-⚠️ **Keep in mind**: Volume mounted configuration files will still need a container restart if you re-created the configuration file during it.
-
-You can find out the configuration I personally use along with this image at [MrRubberDucky/rubberverse.xyz](https://github.com/MrRubberDucky/rubberverse.xyz/blob/main/Generic/Configurations/caddy/Caddyfile) repository. Just click that hyperlink and it will take you directly to it.
-
-It makes use of following modules in the image: Cloudflare DNS, Crowdsec Caddy Bouncer, Caddy Analytics, Caddy DNS IP Range, Caddy Cloudflare IPs, Caddy Combine IP Ranges and also Caddy-specific features such as environmental variables, log files, admin endpoint, proxy protocol etc.
-
-Consider giving it a look if you're stumped on how to use some of these modules.
-
-## Deployment Methods
-
-- [Rootless Quadlet via Podman, recommended](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#-quadlet-experimental-recommended)
-- [Docker Compose, recommended](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#-with-docker-compose-recommended)
-- [docker run command](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#%EF%B8%8F-manually-without-docker-compose)
-- [Customized image from source (WIP)](https://github.com/Rubberverse/qor-caddy/blob/main/Setup.md#from-source)
+Keep in mind that mine is going to be messy as it makes use of most of the modules listed here, though it may be helpful in case you want to quickly learn how to use a module.
 
 ## 🥰 Contributing
 
-Feel free to do so if you feel like something is wrong, just explain why as I'm still taking jabs at Dockerfile so I might not understand few things still. It might be better to make a issue first though.
+Feel free to contribute if you feel like something is wrong, needs changing or other various reasons. Though I would appreciate it if you created a GitHub issue first to talk about it! (Just so we can be on the same table)
