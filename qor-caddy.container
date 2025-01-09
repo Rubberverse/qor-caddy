@@ -42,5 +42,4 @@ PublishPort=127.0.0.1:8443:8443/udp
 PublishPort=127.0.0.1:8181:8181/tcp
 # User
 User=caddy
-# Add ,uid=1001,gid=1001 in case it still maps UID and GID wrongly on host.
-UserNS=keep-id
+UserNS=auto
