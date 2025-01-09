@@ -1,8 +1,8 @@
 ## 🦆 Rubberverse Container Images
 
-![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![Caddy Version](https://img.shields.io/badge/Caddy_Version-v2.9.0-brown) ![Docker Pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
+![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![Caddy Version](https://img.shields.io/badge/Caddy_Version-v2.9.1-brown) ![Docker Pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
-📦 **Supported Tags**: `latest-alpine`, `$versionTagFromAbove-alpine`, `latest-debian`, `$versionTagFromAbove-debian` "Gooseberry", built upon `Caddy v2.9.0`
+📦 **Supported Tags**: `latest-alpine`, `$versionTagFromAbove-alpine`, `latest-debian`, `$versionTagFromAbove-debian` "Gooseberry"
 
 ♻️ **Updates**: When there's a new Stable/RC/Beta release of Caddy. Extensions get updated anytime there's a serious update happening on them, usually it's pretty rare. Not building against `master` branch of Caddy, or extensions if it can be avoided. Though sometimes it's a necessity to give users better experience as `master` branch may include fixes that aren't in (dated) release.
 
