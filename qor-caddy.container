@@ -25,12 +25,10 @@ Volume=${HOME}/AppData/configs/Caddyfile:/app/configs/Caddyfile:ro,Z
 # mkdir -p ~/AppData/persist/caddy_config
 Mount=type=bind,source=/home/YOURUSER/AppData/persist/caddy_data,destination=/app/.local/share/caddy,U=true,Z
 Mount=type=bind,source=/home/YOURUSER/AppData/persist/caddy_config,destination=/app/.config/caddy,U=true,Z
-Volume=CADDY-LOGS:/app/logs:rw,Z,U
+Volume=CADDY-LOGS:/app/logs:rw,z,U
 # Auto Updates
 AutoUpdate=registry
 NoNewPrivileges=true
-# For sharing logs to Crowdsec container, another SELinux thing.
-SecurityLabelDisable=true
 # Use pasta networking and expose namespace ports to it via --tcp-ns
 # Other containers use PublishPort= directive.
 # This is mostly tailored towards reverse proxy deployments where Caddy will listen under Proxy Protocol V2 and get proper ClientIP from it.
