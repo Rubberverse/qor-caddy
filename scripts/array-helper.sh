@@ -65,7 +65,13 @@ mv $TEMP_FILE $FILE_PATH
 
 printf "\n[array-helper] Pinning Caddy version according to tag, commit or branch\n"
 go get github.com/caddyserver/caddy/v2@${GO_CADDY_VERSION}
-printf "\n[array-helper] Pinning corazawaf/coraza-caddy version to commit 2502703e84440c48f4c044e5a88c0c036315fd40 on main branch\n"
+
+printf "\n[array-helper] Pinning hslatman/caddy-crowdsec-bouncer to commit a681cdc5077b5e591a879709ba853e45c7f56799 on main branch\n"
+go get github.com/hslatman/caddy-crowdsec-bouncer/http@a681cdc5077b5e591a879709ba853e45c7f56799
+go get github.com/hslatman/caddy-crowdsec-bouncer/layer4@a681cdc5077b5e591a879709ba853e45c7f56799
+go get github.com/hslatman/caddy-crowdsec-bouncer/appsec@a681cdc5077b5e591a879709ba853e45c7f56799
+
+printf "\n[array-helper] Pinning corazawaf/coraza-caddy version to commit f1f7ea41bf9113b2b3e7f2c3afe4079e9d811b77 on main branch\n"
 go get github.com/corazawaf/coraza-caddy/v2@f1f7ea41bf9113b2b3e7f2c3afe4079e9d811b77
 
 printf "[array-helper] Running go mod tidy to add module requirements and create go.sum\n"
@@ -75,4 +81,4 @@ printf "[array-helper] Continuing with build process\n"
 
 # https://unix.stackexchange.com/a/403401
 # https://stackoverflow.com/a/30212526
-# v1.0.4 - More than a array-helper at this point...
+# v1.0.5 - More than a array-helper at this point...
