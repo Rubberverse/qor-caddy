@@ -68,7 +68,7 @@ These modules can be removed at any time and for any reason, they're mostly here
 | [caddy-dns/vercel](https://github.com/caddy-dns/vercel)                                      | DNS Provider             | Manage Vercel DNS records, ditto                               |
 | [corazawaf/coraza-caddy](https://github.com/corazawaf/coraza-caddy)                          | Web Application Firewall | Provides WAF capabilities for Caddy (OWASP Coraza), incompatible with websockets 🍰⭐⚠️ | 
 | [hslatman/caddy-crowdsec-bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)        | Security                 | Blocks malicious traffic based on decisions made by [Crowdsec](https://crowdsec.net/), requires locally running Crowdsec agent 🍔 |
-| [hslatman/caddy-crowdsec-bouncer/appsec](https://github.com/hslatman/caddy-crowdsec-bouncer/tree/main/appsec)  | Web Application Firewall | Appsec HTTP handler for Crowdsec Appsec component, requires locally running Crowdsec agent 🍔⚠️             |
+| [hslatman/caddy-crowdsec-bouncer/appsec](https://github.com/hslatman/caddy-crowdsec-bouncer/tree/main/appsec)  | Web Application Firewall | Appsec HTTP handler for Crowdsec Appsec component, requires locally running Crowdsec agent 🍔⭐⚠️             |
 | [mholt/caddy-l4](https://github.com/mholt/caddy-l4)                                          | Routing                  | Gives Layer 4 routing capabilities to Caddy                    |
 | [mholt/caddy-ratelimit](https://github.com/mholt/caddy-ratelimit)                                    | Rate Limit               | Implements rate limiting slightly similar to Nginx rate limit in Caddy |
 | [jonaharagon/caddy-umami](https://github.com/jonaharagon/caddy-umami)                        | Helper                   | Easily implement Umami Analytics on any of your websites straight from Caddy 🍣 |
@@ -78,7 +78,7 @@ These modules can be removed at any time and for any reason, they're mostly here
 
 🍰 - Proxy websocket requests first before Coraza in order to avoid trouble. 
 
-⭐ - Any project relying on non-buffered responses is going to be incompatible due to Coraza being unable to toggle off buffered responses (fix is in progress for this) - maybe safe to say that it touches most NextJS projects that rely on unbuffered responses.
+⭐ - Any project relying on non-buffered responses is going to be incompatible due to Coraza and Appsec buffering responses for apps that require real-time communication. Fix is in progress to be able to turn off buffering for Coraza, for Appsec it seems like it'll stay like this. This means that most NextJS projects relying on real-time communication via ex. websockets will be incompatible and will break your site if you try using Appsec or Coraza WAF on them for the time being.
 
 🍔 - [Appsec component installation](https://docs.crowdsec.net/docs/appsec/installation/), [Crowdsec Agent installation](https://docs.crowdsec.net/docs/getting_started/install_crowdsec/), [Example Quadlet deployment (rootless)](https://github.com/MrRubberDucky/rubberverse.xyz/tree/main/Quadlet/LIVE/Crowdsec), keep in mind that you will need to probably create directories yourself before you can launch it with a non-privileged container user.
 
