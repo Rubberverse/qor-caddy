@@ -84,7 +84,6 @@ RUN apk update \
     && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         ca-certificates \
         openssl \
-        mailcap \
     && adduser \
         --home "/app" \
         --shell "$CONT_SHELL" \
