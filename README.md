@@ -76,7 +76,7 @@ These modules can be removed at any time and for any reason, they're mostly here
 | [fvbommel/caddy-dns-ip-range](https://github.com/fvbommel/caddy-dns-ip-range)                | Utility                  | Checks against locally running `cloudflared` DNS and updates the IP addresses |
 | [WeidiDeng/caddy-cloudflare-ip](https://github.com/WeidiDeng/caddy-cloudflare-ip)            | Utility                  | Periodically checks Cloudflare IP ranges and updates them |
 
-⭐ - **Coraza WAF**: Any project relying on non-buffered responses is going to be incompatible due to Coraza buffering responses. If your project uses websockets, it is recommended to proxy them **before** Coraza WAF, as otherwise it will result in breakage. Relevant Issue Page: [corazawaf/coraza #1120](https://github.com/corazawaf/coraza/issues/1120)
+⭐ - **Coraza WAF**: Any project relying on non-buffered responses is going to be incompatible due to Coraza buffering responses. If your project uses websockets, it is recommended to proxy them **before** Coraza WAF, as otherwise it will result in breakage. Relevant Issue Page: [corazawaf/coraza-caddy #189](https://github.com/corazawaf/coraza-caddy/issues/189), [corazawaf/coraza #1120](https://github.com/corazawaf/coraza/issues/1120)
 
 ⭐ - **Crowdsec Appsec**: Any project relying on non-buffered responses is going to be incompatible due to Appsec buffering responses. Websocket traffic is currently broken and even proxying them before Appsec will still break them. Relevant Issue Page: [hslatman/caddy-crowdsec-bouncer #65](https://github.com/hslatman/caddy-crowdsec-bouncer/issues/65)
 
