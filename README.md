@@ -66,9 +66,9 @@ These modules can be removed at any time and for any reason, they're mostly here
 | [caddy-dns/porkbun](https://github.com/caddy-dns/porkbun)                                    | DNS Provider             | Manage Porkbun DNS records, useful for ACME DNS challenges     |
 | [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)                              | DNS Provider             | Manage Cloudflare DNS records, ditto                           |
 | [caddy-dns/vercel](https://github.com/caddy-dns/vercel)                                      | DNS Provider             | Manage Vercel DNS records, ditto                               |
-| [corazawaf/coraza-caddy](https://github.com/corazawaf/coraza-caddy)                          | Web Application Firewall | Provides WAF capabilities for Caddy (OWASP Coraza), incompatible with websockets 🍰⭐⚠️ | 
+| [corazawaf/coraza-caddy](https://github.com/corazawaf/coraza-caddy)                          | Web Application Firewall | Provides WAF capabilities for Caddy (OWASP Coraza), incompatible with websockets ⭐⚠️ | 
 | [hslatman/caddy-crowdsec-bouncer](https://github.com/hslatman/caddy-crowdsec-bouncer)        | Security                 | Blocks malicious traffic based on decisions made by [Crowdsec](https://crowdsec.net/), requires locally running Crowdsec agent 🍔 |
-| [hslatman/caddy-crowdsec-bouncer/appsec](https://github.com/hslatman/caddy-crowdsec-bouncer/tree/main/appsec)  | Web Application Firewall | Appsec HTTP handler for Crowdsec Appsec component, requires locally running Crowdsec agent 🍰⭐🍔⚠️             |
+| [hslatman/caddy-crowdsec-bouncer/appsec](https://github.com/hslatman/caddy-crowdsec-bouncer/tree/main/appsec)  | Web Application Firewall | Appsec HTTP handler for Crowdsec Appsec component, requires locally running Crowdsec agent ⭐🍔⚠️             |
 | [mholt/caddy-l4](https://github.com/mholt/caddy-l4)                                          | Routing                  | Gives Layer 4 routing capabilities to Caddy                    |
 | [mholt/caddy-ratelimit](https://github.com/mholt/caddy-ratelimit)                                    | Rate Limit               | Implements rate limiting slightly similar to Nginx rate limit in Caddy |
 | [jonaharagon/caddy-umami](https://github.com/jonaharagon/caddy-umami)                        | Helper                   | Easily implement Umami Analytics on any of your websites straight from Caddy 🍣 |
@@ -76,9 +76,9 @@ These modules can be removed at any time and for any reason, they're mostly here
 | [fvbommel/caddy-dns-ip-range](https://github.com/fvbommel/caddy-dns-ip-range)                | Utility                  | Checks against locally running `cloudflared` DNS and updates the IP addresses |
 | [WeidiDeng/caddy-cloudflare-ip](https://github.com/WeidiDeng/caddy-cloudflare-ip)            | Utility                  | Periodically checks Cloudflare IP ranges and updates them |
 
-🍰 - Proxy websocket requests first before Coraza in order to avoid trouble. This may be ineffective with Appsec however.
+⭐ - **Coraza WAF**: Any project relying on non-buffered responses is going to be incompatible due to Coraza buffering responses. If your project uses websockets, it is recommended to proxy them **before** Coraza WAF, as otherwise it will result in breakage. Relevant Issue Page: [corazawaf/coraza #1120](https://github.com/corazawaf/coraza/issues/1120)
 
-⭐ - Any project relying on non-buffered responses is going to be incompatible due to Coraza and Appsec buffering responses for apps that require real-time communication. Fix is in progress to be able to turn off buffering for Coraza, for Appsec it seems like it'll stay like this. This means that most NextJS projects relying on real-time communication via ex. websockets will be incompatible and will break your site if you try using Appsec or Coraza WAF on them for the time being.
+⭐ - **Crowdsec Appsec**: Any project relying on non-buffered responses is going to be incompatible due to Coraza buffering responses. Websocket traffic is currently broken and even proxying them before Appsec will still break them. Relevant Issue Page: [hslatman/caddy-crowdsec-bouncer #65](https://github.com/hslatman/caddy-crowdsec-bouncer/issues/65)
 
 🍔 - [Appsec component installation](https://docs.crowdsec.net/docs/appsec/installation/), [Crowdsec Agent installation](https://docs.crowdsec.net/docs/getting_started/install_crowdsec/), [Example Quadlet deployment (rootless)](https://github.com/MrRubberDucky/rubberverse.xyz/tree/main/Quadlet/LIVE/Crowdsec), keep in mind that you will need to probably create directories yourself before you can launch it with a non-privileged container user.
 
