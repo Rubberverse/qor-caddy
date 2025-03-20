@@ -14,9 +14,10 @@ Update your `docker-compose.yaml` or Quadlet units to make use of GitHub Contain
 
 ## 🔗 Image Tags
 
-| Distro       | Tag(s)                           | Architecture | Description                                           |
-|--------------|----------------------------------|--------------|-------------------------------------------------------|
-| Alpine Linux | `latest-alpine`, `v0.0.0-alpine` | `x86_64`     | Small image size, otherwise identical to Debian image |
+| Distro       | Tag(s)                           | Architecture | Description                                                    |
+|--------------|----------------------------------|--------------|----------------------------------------------------------------|
+| Alpine Linux | `latest-alpine`, `v0.0.0-alpine` | `x86_64`     | Small image size, your typical build of qor-caddy container    |
+| Alpine Linux | `latest-security`, `v0.0.0-security` | `x86_64` | Small image size, comes bundled with `greenpau/caddy-security` |
 
 We used to have a pretty weird version scheme, now we have SemVer versioning - vX.Y.Z
 
