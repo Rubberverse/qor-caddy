@@ -17,7 +17,6 @@ Update your `docker-compose.yaml` or Quadlet units to make use of GitHub Contain
 | Distro       | Tag(s)                           | Architecture | Description                                           |
 |--------------|----------------------------------|--------------|-------------------------------------------------------|
 | Alpine Linux | `latest-alpine`, `v0.0.0-alpine` | `x86_64`     | Small image size, otherwise identical to Debian image |
-| Debian       | `latest-debian`, `v0.0.0-debian` | `x86_64`     | Big image size, otherwise identical to Alpine image   |
 
 We used to have a pretty weird version scheme, now we have SemVer versioning - vX.Y.Z
 
