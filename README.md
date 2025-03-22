@@ -107,9 +107,9 @@ Here's some helpful links to get you head-started with Caddy as your Web Server.
 - [Getting started @ Caddy docs](https://caddyserver.com/docs/getting-started)
 - [Quick-starts @ Caddy docs](https://caddyserver.com/docs/quick-starts)
 - [Caddyfile Reference @ Caddy docs](https://caddyserver.com/docs/caddyfile)
-- [My own Caddyfile, updated rarely so may not always be up-to-date](https://github.com/MrRubberDucky/rubberverse.xyz/blob/main/Generic/Configurations/caddy/Caddyfile)
+- My own Caddyfiles: [WAN](https://github.com/MrRubberDucky/Homelab/blob/main/WAN/Caddy/Caddyfile) and [LAN](https://github.com/MrRubberDucky/Homelab/blob/main/LAN/Caddy/Caddyfile). 
 
-Keep in mind that mine is going to be messy as it makes use of most of the modules listed here, though it may be helpful in case you want to quickly learn how to use a module.
+I make use of plenty of moduels from here so you can take a lookie. Though they're updated once in a while.
 
 ## 🥰 Contributing
 
