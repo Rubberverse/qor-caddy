@@ -2,6 +2,8 @@
 
 ![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![Caddy Version](https://img.shields.io/badge/Caddy_Version-v2.9.1-brown) ![Docker Pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
+Need to find exact version to pull? Check [packages](https://github.com/Rubberverse/qor-caddy/pkgs/container/qor-caddy) on this repository.
+
 📦 **Supported Release Tags** (Built upon latest release of Caddy) `latest-alpine`, `alpine-$versione` "Gooseberry"
 
 🧪 **Supported Beta Tags** (Built upon Beta or RC versions of Caddy) `latest-alpine-beta`, `alpine-$version-beta` "Acai Berry"
