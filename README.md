@@ -2,7 +2,9 @@
 
 ![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![Caddy Version](https://img.shields.io/badge/Caddy_Version-v2.9.1-brown) ![Docker Pulls](https://img.shields.io/docker/pulls/mrrubberducky/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
-📦 **Supported Tags**: `latest-alpine`, `$versionTagFromAbove-alpine`, `latest-debian`, `$versionTagFromAbove-debian` "Gooseberry"
+📦 **Supported Release Tags** (Built upon latest release of Caddy) `latest-alpine`, `alpine-$versione` "Gooseberry"
+
+🧪 **Supported Beta Tags** (Built upon Beta or RC versions of Caddy) `latest-alpine-beta`, `alpine-$version-beta` "Acai Berry"
 
 ♻️ **Updates**: When there's a new Stable/RC/Beta release of Caddy. Extensions get updated anytime there's a serious update happening on them, usually it's pretty rare. Not building against `master` branch of Caddy, or extensions if it can be avoided. Though sometimes it's a necessity to give users better experience as `master` branch may include fixes that aren't in (dated) release.
 
@@ -14,10 +16,12 @@ Update your `docker-compose.yaml` or Quadlet units to make use of GitHub Contain
 
 ## 🔗 Image Tags
 
-| Distro       | Tag(s)                           | Architecture | Description                                                    |
-|--------------|----------------------------------|--------------|----------------------------------------------------------------|
-| Alpine Linux | `latest-alpine`, `v0.0.0-alpine` | `x86_64`     | Small image size, your typical build of qor-caddy container    |
-| Alpine Linux | `latest-security`, `v0.0.0-security` | `x86_64` | Small image size, comes bundled with `greenpau/caddy-security` |
+| Distro | Tag(s)                                                 | Codename     | Architecture  | Description                                                                                                        |
+|--------|--------------------------------------------------------|--------------|---------------|--------------------------------------------------------------------------------------------------------------------|
+| Alpine | `latest-alpine`, `alpine-$versione`                    | Gooseberry   | `x86_64`      | Caddy built upon latest stable release with extra modules outlined in `List of third-party Caddy modules` section. |
+| Alpine | `latest-security`, `security-$version`                 | Barberry     | `x86_64`      | Same as above but additionally includes `greenpau/caddy-security` module.                                          |
+| Alpine | `latest-alpine-beta`, `alpine-$version`                | Acai Berry   | `x86_64`      | Caddy built upon Beta or Release Canditate release, includes same modules as `latest-alpine`.                      |
+| Alpine | `latest-security-beta`, `alpine-security-$version`     | Bunchberry   | `x86_64`      | Same as above but additionally includes `greenpau/caddy-security` module.                                          |
 
 We used to have a pretty weird version scheme, now we have SemVer versioning - vX.Y.Z
 
