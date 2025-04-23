@@ -10,7 +10,7 @@ Not sure what to pull? Check currently available [images](https://github.com/Rub
 
 This is a major rewrite of `qor-caddy` that completely changes how it was used compared to now. Before updating, make sure that **you're ready to adapt to them**.
 
-These changes aren't live yet.
+These changes aren't live yet. Some things are subject to change.
 
 ## Features
 
