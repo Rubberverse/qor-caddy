@@ -1,59 +1,90 @@
-#!/bin/sh
+/app/bin/goawk '
+    # Functions start
+    function fileExists(path) {
+        if ((getline < path) > 0) {
+            close(file)
+            # If it does, return 1
+            return 1
+        }
+        else {
+            close(file)
+            # If it doesnt, return 0
+            return 0
+        }
+    }
+    function showASCII() {
+        print " ██▀███   █    ██  ▄▄▄▄    ▄▄▄▄   ▓█████  ██▀███   ██▒   █▓▓█████  ██▀███    ██████ ▓█████ "
+        print "▓██ ▒ ██▒ ██  ▓██▒▓█████▄ ▓█████▄ ▓█   ▀ ▓██ ▒ ██▒▓██░   █▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ ▓█   ▀ "
+        print "▓██ ░▄█ ▒▓██  ▒██░▒██▒ ▄██▒██▒ ▄██▒███   ▓██ ░▄█ ▒ ▓██  █▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   ▒███   "
+        print "▒██▀▀█▄  ▓▓█  ░██░▒██░█▀  ▒██░█▀  ▒▓█  ▄ ▒██▀▀█▄    ▒██ █░░▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒▒▓█  ▄ "
+        print "░██▓ ▒██▒▒▒█████▓ ░▓█  ▀█▓░▓█  ▀█▓░▒████▒░██▓ ▒██▒   ▒▀█░  ░▒████▒░██▓ ▒██▒▒██████▒▒░▒████▒"
+        print "░ ▒▓ ░▒▓░░▒▓▒ ▒ ▒ ░▒▓███▀▒░▒▓███▀▒░░ ▒░ ░░ ▒▓ ░▒▓░   ░ ▐░  ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░░░ ▒░ ░"
+        print "  ░▒ ░ ▒░░░▒░ ░ ░ ▒░▒   ░ ▒░▒   ░  ░ ░  ░  ░▒ ░ ▒░   ░ ░░   ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░ ░ ░  ░"
+        print "  ░░   ░  ░░░ ░ ░  ░    ░  ░    ░    ░     ░░   ░      ░░     ░     ░░   ░ ░  ░  ░     ░   "
+        print "   ░        ░      ░       ░         ░  ░   ░           ░     ░  ░   ░           ░     ░  ░"
+        print "                        ░       ░                      ░                                   "
+        print "    You are the only person capable of change. Lead your life the way you want it to go.   "
+    }
+    # Caddy launch function - just a simple if/else block
+    function launchCaddy(VAR_ENV, CONFIG_PATH, EXTRA_ARGS) {
+        if (VAR_ENV == 1 || VAR_ENV == 0) {
+            print "[ ✨ Launcher ] Starting Caddy in Production environment"
+            system("/app/bin/caddy start --config CONFIG_PATH EXTRA_ARGS")
+            system("/app/bin/sleep")
+        } else if (VAR_ENV == 2) {
+            print "[ ✨ Launcher ] Starting Caddy in Testing environment"
+            system("/app/bin/caddy start --config CONFIG_PATH --watch EXTRA_ARGS")
+            system("/app/bin/sleep")
+        } else {
+            print "Container init startup error"
+            exit(2)
+        }
+    }
+    BEGIN {
+        # Checks value of CADDY_ENVIRONMENT and in case its wrong, resets it to ERR
+        envValue = tolower(ENVIRON["CADDY_ENVIRONMENT"])
+        if (envValue == "prod") {
+            ENVIRON["VAR_ENV"] = 1
+        } else if (envValue == "test") {
+            ENVIRON["VAR_ENV"] = 2
+        } else {
+            ENVIRON["VAR_ENV"] = "ERR"
+        }
+        # Check if CADDY_ENVIRONMENT is valid or not (ex. prod or test)
+        if (ENVIRON["VAR_ENV"] != "ERR") {
+            print "[ ✨ Pass ] ✅ CADDY_ENVIRONMENT is valid!]"
+        } else {
+            print "[ ⚠️ Warning ] Invalid or blank CADDY_ENVIRONMENT!", "[ ⚠️ Warning Desc ] Container will fallback to Production launch"
+            ENVIRON["VAR_ENV"] = 1
+        }
+        # Check if config file is mounted
+        fileExistsResult = fileExists(ENVIRON["CONFIG_PATH"])
+        if (fileExistsResult) {
+            print "[ ✨ Pass ] ✅ CONFIG_PATH is valid!"
+        } else {
+            print "[ ❌ Error ] CONFIG_PATH is invalid!", "[ Error Desc ] This container doesnt start with a default configuration file", "Users are expected to mount it themselves inside /app/configs directory"
+            exit(1)
+        }
+        # Show ASCII art and other
+        showASCII()
+        print "🗒️ Repository & Guides - https://github.com/rubberverse/qor-caddy"
+        print "⚠️ This container has no shell!", "...which means that you wont be able to run commands from it. Its more secure though!"
+        print ""
+        print "📁 Projects used: Bunster, GoAWK, Caddy, Third-party Caddy modules, Go (programming language)"
+        print "✨ Shoutouts to: Maintainers and community of Bunster, GoAWK, Caddy, Caddy modules and Go!"
+        print ""
+        # Launch Caddy
+        launchCaddy(ENVIRON["VAR_ENV"], ENVIRON["CONFIG_PATH"], ENVIRON["EXTRA_ARGUMENTS"])
+    }
+'
 
-# Colors
-cend='\033[0m'
-darkorange='\033[38;5;208m'
-pink='\033[38;5;197m'
-purple='\033[38;5;135m'
-green='\033[38;5;41m'
-blue='\033[38;5;99m'
-
-printf "%b" "[entrypoint] Entrypoint script is launched\n[entrypoint] You're running as $(whoami)\n[entrypoint] Listing directory ownership\n"
-ls -ld /app
-printf "\n[entrypoint] Continuing...\n"
-
-case "$(echo "$CADDY_ENVIRONMENT" | tr '[:upper:]' '[:lower:]')" in
-    prod) export VAR_ENV=1 ;;
-    test) export VAR_ENV=2 ;;
-    *) export VAR_ENV=ERR ;;
-esac
-
-if test "$VAR_ENV" != ERR; then
-    printf "%b" "[✨ " "$purple" "entrypoint - Pass" "$cend" "] ✅ CADDY_ENVIRONMENT is valid!\n"
+if [[ "$VAR_ENV" == "1" ]]; then
+    /app/bin/caddy run --config "$CONFIG_PATH" "$EXTRA_ARGS"
+    /app/bin/sleep
+elif [[ "${VAR_ENV}" == "2" ]]; then
+    /app/bin/caddy start --config "$CONFIG_PATH" "$EXTRA_ARGS"
+    /app/bin/sleep
 else
-    printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] Invalid value or blank environment for CADDY_ENVIRONMENT\n"
-    printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] Container will fallback to Production launch\n"
-    export $VAR_ENV=1
-fi
-
-if [ -n "$CONFIG_PATH" ] && [ -f "$CONFIG_PATH" ]; then
-    printf "%b" "[✨ " "$purple" "entrypoint - Pass" "$cend" "] ✅ CONFIG_PATH is valid!\n"
-else
-    printf "%b" "[❌ " "$pink" "entrypoint - Error" "$cend" "] No file or path was found in CONFIG_PATH environment variable\n"
-    printf "%b" "[❌ " "$pink" "entrypoint - Error" "$cend" "] This image doesn't ship with default configuration\n"
-    printf "%b" "[❌ " "$pink" "entrypoint - Error" "$cend" "] Users are expected to mount their own configuration and point CONFIG_PATH environmental variable to it's location\n"
-    exit 1
-fi
-
-printf "%b" "$darkorange" " ______        _     _                                             \n(_____ \      | |   | |                                            \n _____) )_   _| |__ | |__  _____  ____ _   _ _____  ____ ___ _____ \n|  __  /| | | |  _ \|  _ \| ___ |/ ___) | | | ___ |/ ___)___) ___ |\n| |  \ \| |_| | |_) ) |_) ) ____| |    \ V /| ____| |  |___ | ____|\n|_|   |_|____/|____/|____/|_____)_|     \_/ |_____)_|  (___/|_____)\n" "$cend";
-printf "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n"
-printf "%b" "🗒️ " "$blue" "Setup Guide " "$cend" "- https://github.com/rubberverse/qor-caddy/Setup.md \n"
-printf "%b" "📁 " "$green" "GitHub Repository " "$cend" "- https://github.com/rubberverse/qor-caddy \n"
-printf "🦆 Third's time the charm\n"
-
-printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] If your container stops abruptly with self-hosted certificates, make sure to put skip_install_trust in your Caddyfile\n"
-printf "%b" "[⚠️ " "$darkorange" "entrypoint - Warning" "$cend" "] Without it, Caddy will attempt to install self-signed certificates to root trust store resulting in unexpected things happening\n"
-
-printf "%b" "[✨ " "$purple" "entrypoint - Info" "$cend" "] You can always reload the Caddy configuration in real time by running podman exec -t containerName /app/bin/caddy reload -c <path to config>\n"
-printf "%b" "[✨ " "$purple" "entrypoint - Info" "$cend" "] It is recommended to enable local admin endpoint, otherwise you won't be able to execute commands such as above.\n"
-
-if [ "$VAR_ENV" = 1 ] || [ "$VAR_ENV" = 0 ]; then
-    printf "%b" "[✨" " $green" "entrypoint" "$cend" "] Starting Caddy\n"
-    printf "%b" "[✨" " $green" "entrypoint" "$cend" "] You're launching in Production environment, Caddy will not listen for config changes\n\n"
-    exec /app/bin/caddy run --config "${CONFIG_PATH}" "${EXTRA_ARGUMENTS}"
-elif test "$VAR_ENV" = 2; then
-    printf "%b" "[✨" " $green" "entrypoint" "$cend" "] Starting Caddy\n"
-    printf "%b" "[✨" " $green" "entrypoint" "$cend" "] You're launching in Testing environment, Caddy will listen for config changes\n\n"
-    /app/bin/caddy start --config "${CONFIG_PATH}" --watch "${EXTRA_ARGUMENTS}"
-    exec tail -f /dev/null
+    /app/bin/caddy run --config "$CONFIG_PATH" "$EXTRA_ARGS"
+    /app/bin/sleep
 fi
