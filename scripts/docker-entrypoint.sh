@@ -25,21 +25,6 @@
         print "                        ░       ░                      ░                                   "
         print "    You are the only person capable of change. Lead your life the way you want it to go.   "
     }
-    # Caddy launch function - just a simple if/else block
-    function launchCaddy(VAR_ENV, CONFIG_PATH, EXTRA_ARGS) {
-        if (VAR_ENV == 1 || VAR_ENV == 0) {
-            print "[ ✨ Launcher ] Starting Caddy in Production environment"
-            system("/app/bin/caddy start --config CONFIG_PATH EXTRA_ARGS")
-            system("/app/bin/sleep")
-        } else if (VAR_ENV == 2) {
-            print "[ ✨ Launcher ] Starting Caddy in Testing environment"
-            system("/app/bin/caddy start --config CONFIG_PATH --watch EXTRA_ARGS")
-            system("/app/bin/sleep")
-        } else {
-            print "Container init startup error"
-            exit(2)
-        }
-    }
     BEGIN {
         # Checks value of CADDY_ENVIRONMENT and in case its wrong, resets it to ERR
         envValue = tolower(ENVIRON["CADDY_ENVIRONMENT"])
@@ -73,8 +58,6 @@
         print "📁 Projects used: Bunster, GoAWK, Caddy, Third-party Caddy modules, Go (programming language)"
         print "✨ Shoutouts to: Maintainers and community of Bunster, GoAWK, Caddy, Caddy modules and Go!"
         print ""
-        # Launch Caddy
-        launchCaddy(ENVIRON["VAR_ENV"], ENVIRON["CONFIG_PATH"], ENVIRON["EXTRA_ARGUMENTS"])
     }
 '
 
