@@ -22,18 +22,19 @@ jobs:
         working-directory: .
         shell: bash
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Use Podman Build and Push Action
+        uses: Frozen-Tapestry/container-action@v1
         with:
-          fetch-depth: '0'
-      - name: Build & Push Alpine Image to GHCR
-        uses: mr-smithers-excellent/docker-build-push@v6
-        with:
-          image: qor-caddy
-          registry: ghcr.io
+          login_registry: ghcr.io
+          login_username: ${{ github.actor }}
+          login_password: ${{ secrets.GHCR_TOKEN }}
+          tags: ghcr.io/rubberverse/qor-caddy:latest ghcr.io/rubberverse/qor-caddy:v1.3.2
           dockerfile: Dockerfile
-          buildArgs: CADDY_MODULES="github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/corazawaf/coraza-caddy/v2 github.com/caddy-dns/cloudflare github.com/hslatman/caddy-crowdsec-bouncer/http github.com/mholt/caddy-l4 github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/mholt/caddy-dynamicdns github.com/jonaharagon/caddy-umami github.com/porech/caddy-maxmind-geolocation",GO_CADDY_VERSION=v2.10.0
-          tags: v1.3.2, latest
-          platform: linux/amd64
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          build_args: CADDY_MODULES=github.com/mholt/caddy-ratelimit\ github.com/fvbommel/caddy-dns-ip-range\ github.com/WeidiDeng/caddy-cloudflare-ip\ github.com/fvbommel/caddy-combine-ip-ranges\ github.com/corazawaf/coraza-caddy/v2\ github.com/caddy-dns/cloudflare\ github.com/hslatman/caddy-crowdsec-bouncer/http\ github.com/mholt/caddy-l4\ github.com/hslatman/caddy-crowdsec-bouncer/layer4\ github.com/mholt/caddy-dynamicdns\ github.com/jonaharagon/caddy-umami\ github.com/porech/caddy-maxmind-geolocation GO_CADDY_VERSION=v2.10.0
+          security: |
+            --security-opt=seccomp-unconfined
+            --security-opt=apparmor=unconfined
+          push: true
