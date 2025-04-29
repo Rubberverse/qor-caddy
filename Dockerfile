@@ -62,16 +62,6 @@ RUN apk update \
 FROM scratch AS qor-caddy
 WORKDIR /app
 
-# Set OCI labels
-LABEL org.opencontainers.image.authors Mr. Rubber Ducky (Simon)
-LABEL org.opencontainers.image.url https://github.com/Rubberverse/qor-caddy
-LABEL org.opencontainers.image.source https://github.com/Rubberverse/qor-caddy
-LABEL org.opencontainers.image.licenses MIT
-LABEL org.opencontainers.image.vendor Rubberverse
-LABEL org.opencontainers.image.source https://github.com/Rubberverse/qor-caddy
-LABEL org.containers.image.title Quackers of Rubberverse - Caddy (qor-caddy)
-LABEL org.containers.image.description Rootless and Distroless Caddy image built with extra modules
-
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 
