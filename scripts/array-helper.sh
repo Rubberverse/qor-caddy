@@ -35,8 +35,6 @@ printf "%b" "\n[DBG] Was Array processed? - ${PROCESSED}\n"
 printf "%b" "\n[DBG] First Value in Array - ${CADDY_MODULES_ARRAY}\n"
 printf "%b" "\n[DBG] Modules: ${CADDY_MODULES}\n"
 printf "%b" "\n[DBG] Caddy Version: ${GO_CADDY_VERSION}\n"
-printf "%b" "\n[DBG] Listing directory contents of /app/caddy\n"
-ls -l /app/caddy
 
 printf "\n[Init] Checking for blank temporary file...\n"
 echo -n "" > $TEMP_FILE
@@ -47,7 +45,7 @@ sed -i -e "s|// plug in Caddy modules here|_ \"github.com/caddyserver/caddy/v2\"
 printf "%b" "\n[array-helper] Appending modules from array to main.go..."
 while IFS= read -r line
 do
-    if [[ $line == *"   _ \"github.com/caddyserver/caddy/v2\""* ]] && [ "$PROCESSED" = false ]; then
+    if [[ $line == *"	_ \"github.com/caddyserver/caddy/v2\""* ]] && [ "$PROCESSED" = false ]; then
         for module in "${CADDY_MODULES_ARRAY[@]}"
             do
                 printf "%b" "\t_ \"$module\"\n" >> $TEMP_FILE
@@ -58,7 +56,7 @@ do
 done < "$FILE_PATH"
 
 printf "[array-helper] Overwriting main.go with temporary file...\n"
-mv $TEMP_FILE $FILE_PATH
+mv -f $TEMP_FILE $FILE_PATH
 
 printf "[DBG] Showing go module file...\n"
 cat $FILE_PATH
