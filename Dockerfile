@@ -56,7 +56,7 @@ RUN apk update \
         /usr/app/caddy \
         /var/cache/apk \
         /usr/app/go/cache \
-    && rm /app/sleep.go /app/entrypoint.go \
+    && rm /app/entrypoint.go \
     && mkdir -p /app/logs
 
 FROM scratch AS qor-caddy
