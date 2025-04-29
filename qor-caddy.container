@@ -12,7 +12,7 @@ Restart=on-failure
 WantedBy=default.target
 
 [Container]
-Image=ghcr.io/Rubberverse/qor-caddy:latest-alpine
+Image=ghcr.io/Rubberverse/qor-caddy:latest
 ContainerName=qor-caddy
 # Normal Environments
 Environment=CONFIG_PATH=/app/configs/Caddyfile
@@ -29,15 +29,6 @@ Volume=CADDY-LOGS:/app/logs:rw,z,U
 # Auto Updates
 AutoUpdate=registry
 NoNewPrivileges=true
-# Use pasta networking and expose namespace ports to it via --tcp-ns
-# Other containers use PublishPort= directive.
-# This is mostly tailored towards reverse proxy deployments where Caddy will listen under Proxy Protocol V2 and get proper ClientIP from it.
-Network=pasta:--ipv4-only,-T,8080
-# HTTPS - TCP/UDP
-PublishPort=127.0.0.1:8443:8443/tcp
-PublishPort=127.0.0.1:8443:8443/udp
-# HTTP - TCP
-PublishPort=127.0.0.1:8181:8181/tcp
-# User
-User=caddy
+Network=host
+User=1001:1001
 UserNS=auto

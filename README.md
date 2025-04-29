@@ -2,7 +2,7 @@
 
 ![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) | [License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
-*"Others stray away from insanity, we embrace it."* - Mr. Rubber Ducky (Simon)
+*"Others stray away from insanity, we embrace it."* - Totally not the owner of this repo
 
 Not sure what to pull? Check currently available [images](https://github.com/Rubberverse/qor-caddy/pkgs/container/qor-caddy).
 
@@ -12,31 +12,20 @@ This is a major rewrite of `qor-caddy` that completely changes how it was used c
 
 ## Features
 
-This update was made in 12 hours. My head hurts but that's aside...
-
-- Uses `scratch` image.
-- Rootless by default and supports any UID:GID combination without using su-exec, or similar.
-- No shell, or any extra utilities that come with distro images.
-- docker-entrypoint.sh as executable, thanks to [Bunster]() project. This eliminates need for an shell.
-- Ready for cross-compilation, no hard-deps on singular architecture.
-- Tightened executable permissions - only read and execute.
-- Includes Caddy modules you love.
-- Final image only weights 63.5MB, this is a reduction of 66.5MB from Alpine image!
-
-💁‍♂️ Final image can weight even less if you only include necessary modules.
-
-## No shell?
-
-Yup, you've read it right. You won't be able to issue any commands directly into the container because... there's no shell. You should allow access locally for your management interface and reload your configuration that way!
-
-Removal of shell and any extra moving part was done from a security standpoint - the less, the better. This increase security at the cost of usability, you give some, you take some scenario.
+- Uses scratch image for runner, meaning there's no shell or any extra utilities
+- Rootless, supports any `UID:GID` combination as long as you fix up the directory and file permissions
+- Ready for cross-compilation, no hard-dependencies on single architecture
+- Lower container size: only 58.9MB as opposed to ~120MB
+- Includes third-party Caddy modules
+- Only read and execute permissions for executables inside the container
+- Doesn't use `xcaddy` (you decide if it's a feature or not)
 
 ## 🔗 Image Tags
 
-| Base    | Tag(s)                         | Arch     | Description                |
-|---------|--------------------------------|----------|----------------------------|
-| scratch | `latest-alpine`, `alpine-$tag` | `x86_64` | Stable branch Caddy builds |
-| scratch | `beta`, `beta-$tag`            | `x86_64` | Beta/RC Caddy builds       |
+| Base    | Tag(s)              | Arch     | Description                |
+|---------|---------------------|----------|----------------------------|
+| scratch | `latest`, `$tag`    | `x86_64` | Stable branch Caddy builds |
+| scratch | `beta`, `beta-$tag` | `x86_64` | Beta/RC Caddy builds       |
 
 > [!WARNING]
 > `security` tag is discontinued. I don't have time to maintain it, sorry!
@@ -49,13 +38,13 @@ Tags follow SemVer versioning
 
 ## 💲 Environmental variables
 
-Required environmental variables are `CONFIG_PATH` and `CADDY_PROD`, rest is optional.
+Required environmental variables are `CONFIG_PATH`, rest is optional.
 
 | Variable          | Default Value        |
 |-------------------|----------------------|
 | `CONFIG_PATH`     | `Empty`              |
-| `CADDY_PROD`      | `Fallback to "prod"` |
-| `EXTRA_ARGUMENTS` | `Empty`              |
+| `DEPLOY_TYPE`     | `Fallback to "prod"` |
+| `EXTRA_ARGS`      | `Empty`              |
 
 `CONFIG_PATH` should point to a full path where `Caddyfile`, or `caddy.json` residues in. We recommend mounting your configuration files in `/app/configs`!
 
@@ -64,7 +53,7 @@ Here's an example `.env` you can use as a base
 ```env
 CONFIG_PATH=/app/configs/Caddyfile
 # Can be prod or test, use prod in production environments!
-CADDY_PROD=prod
+DEPLOY_TYPE=prod
 # Any extra arguments you can pass to caddy run (prod) or caddy start (test), refer to Caddy documentation to know more
 EXTRA_ARGUMENTS=""
 ```
@@ -88,10 +77,6 @@ Quadlet unit, only supported on Podman +v5.2.1
 3. Reload systemctl daemon with `systemctl --user daemon-reload`
 4. Deploy the Quadlet unit by starting the service - `systemctl --user start qor-caddy`
 
-Docker Compose:
-
-TODO
-
 ## ⚙️ List of third-party Caddy modules
 
 These modules can be removed at any time and for any reason, they're mostly here to just serve a purpose for me. If I happen to switch technologies or something similar, I generally tend to remove things I don't need as it makes it easier to manage.
@@ -101,7 +86,7 @@ These modules can be removed at any time and for any reason, they're mostly here
 | caddy-dns/cloudflare             | DNS Provider             | Manage Cloudflare DNS, useful for DNS-01 challenges                           |
 | caddy-dns/dynamicdns             | DynDNS Updater           | Updates Dynamic DNS entries with current host IP address                      |
 | corazawaf/coraza-caddy           | Web application firewall | OWASP Coraza Caddy                                                            |
-| hslatman/caddy-crowdsec-bouncer  | Web application firewall | https://crowdsec.net, includes Appsec and Layer4 sub-modules                  |
+| hslatman/caddy-crowdsec-bouncer  | Web application firewall | https://crowdsec.net, includes Layer4 sub-module                  |
 | mholt/caddy-l4                   | Raw TCP/UDP Routing      | Allows Caddy to route Layer 4 traffic                                         |
 | mholt/caddy-ratelimit            | Traffic Limiting         | Implements rate limiting similar to Nginx rate limit (WIP)                    |
 | jonaharagon/caddy-umami          | Utility                  | Implement Umami Analytics to any website straight from Caddy                  |
@@ -110,9 +95,17 @@ These modules can be removed at any time and for any reason, they're mostly here
 | WeidiDeng/caddy-cloudflare-ip    | Utility / Extension      | Periodically checks Cloudflare IP ranges and updates them                     |
 
 Any issues involving third-party modules should be reported to the module's respective repository, not to Caddy maintainers. In case the issue comes from my image, create an issue about it here!
+
 ## 🛠️ Usage
 
-If you ever used Caddy, it's about the same. Most of your time will be spent sitting in your `Caddyfile` or `caddy.json`. You'll want to enable admin endpoint and reload your configuration file by issuing `podman exec -t qor-caddy /app/bin/caddy reload -c /app/configs/Caddyfile` instead of restarting your container. [Caddy Docs quick-link](https://caddyserver.com/docs/caddyfile/options#admin)
+In case you enabled admin endpoint, you can reload your configuration file with following commands:
+
+- `podman exec -t qor-caddy /app/bin/entrypoint --reload`
+- `podman exec -t qor-caddy /app/bin/caddy reload --config /app/configs/Caddyfile`
+
+This will reload your configuration if you've done any changes to it.
+
+Otherwise, the usage is about the same as average Caddy image. You can read more about admin endpoint [on caddy docs](https://caddyserver.com/docs/caddyfile/options#admin)
 
 > [!WARNING]
 > Volume mounted configuration files will still need a container restart if you re-created the configuration file when it was on. So in case something seems fishy, restart your container. You'll know instantly in case config file is wrong ;)

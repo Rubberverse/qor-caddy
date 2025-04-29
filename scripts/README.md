@@ -1,6 +1,10 @@
-# Helper scripts and Image entrypoint
+# Helper scripts, Go source code and other crap
 
-As of `v0.19`, building process was revamped to not make use of `xcaddy` and instead it uses `main.go` present in [Caddy's repository]() instead. This allows for better control over building than what `xcaddy` could provide us with, even if arguably minimal.
+As of `v0.19`, building process was revamped to not make use of `xcaddy` and instead it uses `main.go` present in Caddy's repository instead. This allows for better control over building than what `xcaddy` could provide us with, even if arguably minimal.
+
+## install-go.sh
+
+Pulls latest Go version from their website and downloads it, extracts and moves it to `/usr/local/bin/go`. It also sets safe.directory in git to a wildcard, meaning 'any', to workaround some problems during building.
 
 ## array-helper.sh
 
@@ -14,9 +18,9 @@ Here's what it does in a nice compact numbered list
 4. Modifies `main.go` to include modules from array
 5. Pins Caddy version using `go get`
 
-## docker-entrypoint.sh
+## entrypoint.go
 
-`docker-entrypoint.sh` is a entrypoint script for our image. It does about your usual, checks validity of some environmental variables and does stuff based on it.
+This is just rewritten `docker-entrypoint.sh` into Go that was also cleaned up along the way. It makes sure that environmental variables are set correctly, cleans them up and sanitizes them then just runs Caddy binary.
 
-Since this whole project ended up becoming somewhat overcomplicated the more I started working on it, the more a need for a entrypoint script became a necessity as various requirements have been introdued and what not.
+Container doesn't have a shell and we need to somehow execute the actual binary after checking for certain things, so this is a way to work around that problem.
 
