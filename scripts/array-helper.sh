@@ -28,7 +28,6 @@ touch /usr/app/builder/caddy/temp.go
 printf "\n[Init] Parsing CADDY_MODULES into array...\n"
 read -ra CADDY_MODULES_ARRAY <<< "${CADDY_MODULES}"
 
-#if [ "${SCRIPT_DEBUG}" = "1" ] ; then
 printf "%b" "\n[DBG] Listing variables and file directories...\n"
 printf "%b" "\n[DBG] File Path: ${FILE_PATH}\n"
 printf "%b" "\n[DBG] Temporary File: ${TEMP_FILE}\n"
