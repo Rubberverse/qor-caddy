@@ -37,7 +37,7 @@ RUN apk update \
         curl \
         bash \
         openssl \
-    && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main && \
+    && apk add --no-cache --repository=${ALPINE_REPO_URL}/${ALPINE_REPO_VERSION}/main \
         ca-certificates \
     && /app/helper/install-go.sh \
     && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -trimpath -o /app/go/bin/entrypoint-${TARGETARCH} /app/entrypoint.go \
