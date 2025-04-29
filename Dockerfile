@@ -75,7 +75,7 @@ LABEL   org.containers.image.description Rootless and Distroless Caddy image bui
 ARG     TARGETARCH=amd64
 
 COPY    --from=alpine-builder --chmod=0505 /app/go/bin/caddy-${TARGETARCH} /app/go/bin/entrypoint-${TARGETARCH} /app/bin
-COPY    --from=alpine-builder /usr/share/ca-certificats /usr/share/ca-certificates
+COPY    --from=alpine-builder /usr/share/ca-certificates /usr/share/ca-certificates
 COPY    --from=alpine-builder /app/logs /app/logs
 
 USER 1001:1001
