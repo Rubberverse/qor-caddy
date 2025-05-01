@@ -86,7 +86,7 @@ These modules can be removed at any time and for any reason, they're mostly here
 | caddy-dns/cloudflare             | DNS Provider             | Manage Cloudflare DNS, useful for DNS-01 challenges                           |
 | corazawaf/coraza-caddy           | Web application firewall | OWASP Coraza Caddy                                                            |
 | hslatman/caddy-crowdsec-bouncer  | Web application firewall | https://crowdsec.net, includes Layer4 sub-module                              |
-| caddy-maxmind-geolocation        | Geo Filtering            | Uses GeoLite2 Country database and filters requests by country                |
+| porech/caddy-maxmind-geolocation | Geo Filtering            | Uses GeoLite2 Country database and filters requests by country                |
 | mholt/caddy-l4                   | Raw TCP/UDP Routing      | Allows Caddy to route Layer 4 traffic                                         |
 | mholt/caddy-ratelimit            | Traffic Limiting         | Implements rate limiting similar to Nginx rate limit (WIP)                    |
 | jonaharagon/caddy-umami          | Utility                  | Implement Umami Analytics to any website straight from Caddy                  |
