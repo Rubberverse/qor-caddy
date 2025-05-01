@@ -2,7 +2,6 @@ ARG     IMAGE_REPOSITORY=public.ecr.aws/docker/library/alpine
 ARG     IMAGE_ALPINE_VERSION=edge
 
 FROM    ${IMAGE_REPOSITORY}:${IMAGE_ALPINE_VERSION} AS alpine-builder
-WORKDIR /usr/app/builder
 
 ARG     CADDY_MODULES
 ARG     GO_CADDY_VERSION
@@ -17,11 +16,12 @@ ARG     CGO_ENABLED=0
 ENV     GOOS=$TARGETOS
 ENV     GOARCH=$TARGETARCH
 ENV     PATH="/usr/bin:/bin:/sbin:/usr/local/go/bin:/usr/local/go:/app/go/bin"
-
 # O:R-X,U:---,A:---
 COPY    --chmod=0500 /scripts/array-helper.sh /app/helper/array-helper.sh
 COPY    --chmod=0500 /scripts/install-go.sh /app/helper/install-go.sh
 COPY    /scripts/entrypoint.go /app
+
+WORKDIR /usr/app/builder
 
 RUN apk update \
     && apk upgrade --no-cache \
@@ -55,7 +55,6 @@ RUN apk update \
     && mkdir -p /app/logs
 
 FROM    scratch AS qor-caddy
-WORKDIR /app
 
 ARG     TARGETOS
 ARG     TARGETARCH
@@ -65,6 +64,7 @@ COPY    --from=alpine-builder --chmod=0505 /app/go/bin/entrypoint-${TARGETARCH} 
 COPY    --from=alpine-builder /usr/share/ca-certificates /usr/share/ca-certificates
 COPY    --from=alpine-builder /app/logs /app/logs
 
+WORKDIR /app
 USER    1001:1001
 
 ENTRYPOINT ["/app/bin/entrypoint"]
