@@ -1,6 +1,6 @@
 ## 🦆 Rubberverse Container Images
 
-![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) | [License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
+![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
 *"Others stray away from insanity, we embrace it."* - Totally not the owner of this repo
 
