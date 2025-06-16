@@ -59,8 +59,9 @@ FROM    scratch AS qor-caddy
 ARG     TARGETOS
 ARG     TARGETARCH
 
-COPY    --from=alpine-builder --chmod=0505 /app/go/bin/caddy-${TARGETARCH} /app/bin/caddy
-COPY    --from=alpine-builder --chmod=0505 /app/go/bin/entrypoint-${TARGETARCH} /app/bin/entrypoint
+# r-xr-xr-x
+COPY    --from=alpine-builder --chmod=0555 /app/go/bin/caddy-${TARGETARCH} /app/bin/caddy
+COPY    --from=alpine-builder --chmod=0555 /app/go/bin/entrypoint-${TARGETARCH} /app/bin/entrypoint
 COPY    --from=alpine-builder /usr/share/ca-certificates /usr/share/ca-certificates
 COPY    --from=alpine-builder /app/logs /app/logs
 
