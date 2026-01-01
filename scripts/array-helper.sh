@@ -63,6 +63,8 @@ cat $FILE_PATH
 
 printf "\n[array-helper] Pinning Caddy version according to tag, commit or branch\n"
 go get github.com/caddyserver/caddy/v2@${GO_CADDY_VERSION}
+printf "\n[array-helper] Forcefully pin bart to version lower, or equal to 0.13.0\n"
+go get github.com/gaissmai/bart@v0.13.0
 printf "\n[array-helper] Pulling caddy-defender\n"
 git clone https://github.com/JasonLovesDoggo/caddy-defender.git caddy-defender
 printf "\n[array-helper] Append local path for caddy-defender\n"
