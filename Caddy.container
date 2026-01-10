@@ -1,0 +1,65 @@
+# This implies following file structure:
+# /opt/containers - main, write-able directory
+# /opt/containers/Configs - Configuration files for containers
+# /opt/containers/Appdata - Application data
+# /opt/containers/Userdata/Sites - User-created sites
+# /opt/containers/Sockets - UNIX sockets set to 006 exposed to reverse proxy
+# /opt/containers/Environments - Environment file(s) with all environmental variables you want Caddy and the runner to make use of
+# It also implies that you may be using an RHEL-based distro with SELinux enabled
+[Unit]
+Description=qor-caddy - Caddy with extra modules running on scratch image
+
+[Install]
+WantedBy=default.target
+
+[Service]
+# None of these should be changed as they will cause issues with container launching
+Restart=on-failure
+PrivateMounts=yes
+PrivateTmp=yes
+PrivateDevices=no
+ProtectSystem=strict
+ProtectProc=noaccess
+ProtectKernelModules=yes
+ProtectClock=yes
+LockPersonality=true
+# Some applications hate it when they can't Write, or Execute in memory. Not the case here though, Caddy doesn't mind nor care about it.
+MemoryDenyWriteExecute=true
+AllowDevices=/dev/null /dev/fuse
+# This effectively limits what our container process and the service itself can access.
+# /usr/local/share/containers needs R/W due to it being temporary storage for Podman
+ReadWritePaths=/run /opt/containers/Configs/Caddy /opt/containers/Appdata/Caddy /opt/containers/Userdata/Sites /opt/containers/Sockets /usr/local/share/containers
+ReadOnlyPaths=/etc /var /usr /bin /sbin /opt/containers/Environments/Caddy
+# If you're going to use /home for your junk then you will have to make /home more specific and not include the user you'll be scapegoating off ex. /home/my_user /home/my_user2 without /home/my_user3
+InaccessiblePaths=/boot /root /home
+KeyringMode=private
+UMask=0077
+# This set of System Calls and Capabilities proves to be quite non-problematic. It's pretty universal and seems to be able to be used across different containers just fine.
+SystemCallFilter=~@debug @reboot @cpu-emulation @obsolete @clock @swap
+CapabilityBoundingSet=~CAP_SYS_BOOT CAP_NET_BROADCAST CAP_SYSLOG CAP_SYS_TIME CAP_SYS_PACCT CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_AUDIT_WRITE CAP_NET_BROADCAST CAP_BPF CAP_SYS_TTY_CONFIG
+# 32MiB memlock
+LimitMEMLOCK=33554432
+
+[Container]
+Image=ghcr.io/rubberverse/qor-caddy:latest
+ContainerName=qor-caddy
+EnvironmentFile=/opt/containers/Environments/CADDY.env
+# Volumes - Configs
+Volume=/opt/containers/Configs/Caddy:/app/configs:ro,Z
+Volume=/opt/containers/Userdata/Sites:/app/www/static:ro,Z
+# Sockets
+Volume=/opt/containers/Sockets:/run/tmp:z
+Volume=CADDY-LOGS:/app/logs:U,z
+# Bind Mount, more reliable than Volume it seems.
+Mount=type=bind,source=/opt/containers/Appdata/Caddy-Data,dst=/app/.local/share/caddy,U=true,Z
+Mount=type=bind,source=/opt/containers/Appdata/Caddy-Config,dst=/app/.config/caddy,U=true,Z
+# Labels
+AutoUpdate=registry
+NoNewPrivileges=true
+DropCapability=all
+# Once you mount all necessary directories, you can run rootfs as ReadOnly :)
+ReadOnly=true
+# Network, can either be bridge veth or for example MACVLAN. Change this to one that's available (podman network ls), create it if there's none.
+Network=macvlan_home:ip=10.99.99.253,dns=45.11.45.11,dns=9.9.9.10
+# Container already runs as rootless user so you can just set a random user namespace for it. (This saves you few SUID/SGID)
+UserNS=auto:size=1101
