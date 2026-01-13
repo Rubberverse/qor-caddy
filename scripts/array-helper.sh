@@ -54,6 +54,8 @@ printf "%b" "\n[array-helper] Overwriting main.go with temporary file...\n"
 mv -f $TEMP_FILE $FILE_PATH
 
 if [[ ${DEBUG} ]]; then
+        cat $TEMP_FILE
+        printf "%b" "\n\n\n"
         cat $FILE_PATH
 fi
 
