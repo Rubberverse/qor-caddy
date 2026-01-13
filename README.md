@@ -12,7 +12,7 @@ Not sure what to pull? Check currently available [images](https://github.com/Rub
 - Easy to spin up your own image
 - No `s6-overlay`, `gosu` or other rootful container init
 - Doesn't use `xcaddy`
-- [Includes third-party Caddy modules](https://github.com/Rubberverse/qor-caddy/main/README.md#list-of-third-party-caddy-modules)
+- [Includes third-party Caddy modules](https://github.com/Rubberverse/qor-caddy?tab=readme-ov-file#list-of-third-party-caddy-modules)
 
 
 ## Structure + dependencies
@@ -128,7 +128,7 @@ I'm a hamburger.
 - github.com/fvbommel/caddy-combine-ip-ranges
 - github.com/corazawaf/coraza-caddy/v2
 - github.com/caddy-dns/cloudflare
-- pkg.jsn.com/caddy-defender
+- pkg.jsn.cam/caddy-defender
 - github.com/mholt/caddy-l4/layer4
 - github.com/porech/caddy-maxmind-geolocation
 
