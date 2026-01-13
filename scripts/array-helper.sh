@@ -50,7 +50,7 @@ do
     echo "$line" >> $TEMP_FILE
 done < "$FILE_PATH"
 
-printf "\n[array-helper] Overwriting main.go with temporary file...\n"
+printf "[array-helper] Overwriting main.go with temporary file...\n"
 mv -f $TEMP_FILE $FILE_PATH
 
 if [[ ${DEBUG} ]]; then
