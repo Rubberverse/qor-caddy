@@ -107,12 +107,10 @@ They may sometimes change, randomly have a module removed or added. Don't depend
 
 ## Using the images via Rootful Podman (recommended)
 
-1. Copy [caddy-rootful.container]() from this repository and paste it in `/etc/containers/systemd/0/Caddy.container`
+1. Copy [Caddy.container](https://github.com/Rubberverse/qor-caddy/blob/main/Caddy.container) from this repository and paste it in `/etc/containers/systemd/0/Caddy.container`
 2. Edit it to your own liking, most is already setup for you.
 3. Reload systemctl daemon with `systemctl daemon-reload`
 4. Start the container `systemctl start Caddy`
-
-1. Copy [qor-caddy.container](https://github.com/Rubberverse/qor-caddy/blob/main/qor-caddy.container) from this repository and put it in `~/.config/containers/systemd`
 
 ## Useful things to know
 
