@@ -32,14 +32,15 @@ RUN apt update \
        tar \
        git \
        curl \
+       bash \
        openssl \
        ca-certificates \
-    && /app/helper/install-go.sh \
+    && /bin/bash -c /app/helper/install-go.sh \
     && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -trimpath -o /app/go/bin/entrypoint-${TARGETARCH} /app/entrypoint.go \
     && mkdir -p caddy \
     && curl -Lo caddy/main.go ${GO_MAIN_FILE} \
     && go mod init caddy \
-    && /app/helper/array-helper.sh \
+    && /bin/bash -c /app/helper/array-helper.sh \
     && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./caddy \
     && apt remove -y \
        jq \
