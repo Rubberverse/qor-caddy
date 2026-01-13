@@ -2,123 +2,137 @@
 
 ![Image Tag](https://img.shields.io/github/v/tag/Rubberverse/qor-caddy) ![License](https://img.shields.io/github/license/Rubberverse/qor-caddy)
 
-*"Others stray away from insanity, we embrace it."* - Totally not the owner of this repo
-
 Not sure what to pull? Check currently available [images](https://github.com/Rubberverse/qor-caddy/pkgs/container/qor-caddy).
 
-## Notice
-
-This is a major rewrite of `qor-caddy` that completely changes how it was used compared to now. Before updating, make sure that **you're ready to adapt to them**.
 
 ## Features
 
-- Uses scratch image for runner, meaning there's no shell or any extra utilities
-- Rootless, supports any `UID:GID` combination as long as you fix up the directory and file permissions
-- Ready for cross-compilation, no hard-dependencies on single architecture
-- Lower container size: only 58.9MB as opposed to ~120MB
-- Includes third-party Caddy modules
-- Only read and execute permissions for executables inside the container
-- Doesn't use `xcaddy` (you decide if it's a feature or not)
+- Debian builder, scratch runner
+- Ready for cross-compilation
+- Easy to spin up your own image
+- No `s6-overlay`, `gosu` or other rootful container init
+- Doesn't use `xcaddy`
+- [Includes third-party Caddy modules](https://github.com/Rubberverse/qor-caddy/main/README.md#list-of-third-party-caddy-modules)
 
-## 🔗 Image Tags
 
-| Base    | Tag(s)              | Arch     | Description                |
-|---------|---------------------|----------|----------------------------|
-| scratch | `latest`, `$tag`    | `x86_64` | Stable branch Caddy builds |
-| scratch | `beta`, `beta-$tag` | `x86_64` | Beta/RC Caddy builds       |
+## Structure + dependencies
 
-> [!WARNING]
-> `security` tag is discontinued. I don't have time to maintain it, sorry!
+Everything inside `/scripts/` is used during build process and it's usage is explained [here](https://github.com/Rubberverse/qor-caddy/tree/main/scripts)
 
-Tags follow SemVer versioning
+- `/.github/workflows/build-release.yaml`
+- `/scripts/array-helper.sh` (dep)
+- `/scripts/install-go.sh` (dep)
+- `/scripts/entrypoint.go` (dep)
+- `Containerfile`
 
-- X: Image revision
-- Y: Image major changes
-- Z: Image minor changes, minor version bumps, fixes etc.
+The usual simple bash entrypoint script was turned to `entrypoint.go`, as scratch runner doesn't have any shell, or anything for that matter. This allows slightly more advanced usage while still being more secure compared to typical image.
 
-## 💲 Environmental variables
 
-Required environmental variables are `CONFIG_PATH`, rest is optional.
+## Runner env variables
 
-| Variable          | Default Value        |
-|-------------------|----------------------|
-| `CONFIG_PATH`     | `Empty`              |
-| `DEPLOY_TYPE`     | `Fallback to "prod"` |
-| `EXTRA_ARGS`      | `Empty`              |
+| Variable          | Default Value        | Required? |
+|-------------------|----------------------|-----------|
+| `CONFIG_PATH`     | `Empty`              | Yes       |
+| `DEPLOY_TYPE`     | `"prod"`             | No        |
+| `EXTRA_ARGS`      | `Empty`              | No        |
 
-`CONFIG_PATH` should point to a full path where `Caddyfile`, or `caddy.json` residues in. We recommend mounting your configuration files in `/app/configs`!
+### Env: `CONFIG_PATH`
 
-Here's an example `.env` you can use as a base
+Needs to point to full path inside the container where `Caddyfile` or `caddy.json` is currently mounted. Example: `CONFIG_PATH=/app/configs/Caddyfile`
 
-```env
-CONFIG_PATH=/app/configs/Caddyfile
-# Can be prod or test, use prod in production environments!
-DEPLOY_TYPE=prod
-# Any extra arguments you can pass to caddy run (prod) or caddy start (test), refer to Caddy documentation to know more
-EXTRA_ARGUMENTS=""
-```
+### Env: `DEPLOY_TYPE`
 
-If using Quadlet, you can use the .env above like so
+Can be `prod` or `dev`. `dev` allows for live configuration reloading, where `prod` doesn't. They also use two distinctive commands that also have different CLI parameters available to them.
 
-```ini
-# SNIPPET
-[Container]
-(...)
-EnvironmentFile=/home/example_user/Environments/.env
-Volume=/home/example_user/Caddyfile:/app/configs/Caddyfile
-```
+### Env: `EXTRA_ARGS`
 
-## Deploying
+Mostly useful if `DEPLOY_TYPE=dev`. Allows specifying extra arguments to pass to Caddy before launching it. 
 
-Quadlet unit, only supported on Podman +v5.2.1
+
+## Build-time env variables
+
+| Variable           | Default Value        															| Required? 				|
+|--------------------|----------------------------------------------------------------------------------|---------------------------|
+| `CADDY_MODULES`    | `""`                 															| Yes 						|
+| `GO_CADDY_VERSION` | `""`                																| Yes 						|
+| `GO_MAIN_FILE`     | `"https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"`	| Yes 						|
+| `CADDY_DEFENDER`   | `""`																				| No        				|
+| `ASN_RANGES`       | `""`																				| Only if CADDY_DEFENDER=1 	|
+| `DEBUG`            | `""`																				| No                        |
+| `TARGETOS`         | Set by builder																	| No						|
+| `TARGETARCH`       | Set by builder																	| No						|
+| `CGO_ENABLED`		 | `"0"`																			| No        				|
+| `PATH`			 | `"/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/go/bin:/usr/local/go:/app/go/bin"`    | No        				|
+
+### Build Arg: `CADDY_MODULES`
+
+Space-seperated list of Caddy modules to build the image with. Pass `0` to this variable if you want to build vanilla Caddy. If you will add more than one module, wrap it in quotation marks. Usage example: `--build-arg=CADDY_MODULES="example.com/org/module1 example.com/org/module2"`
+
+### Build Arg: `GO_CADDY_VERSION`
+
+Pins Caddy to version specified in this variable, otherwise it will just figure it out by itself (and probably download way older version). Usage example: `--build-arg GO_CADDY_VERSION=v2.10.2`
+
+### Build Arg: `GO_MAIN_FILE`
+
+Original `main.go` from Caddy repository. Changing this is not advised unless you wanna host it somewhere else. Needs to be an URL accessible by builder. Usage example: `--build-arg GO_MAIN_FILE="https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"`
+
+### Build Arg: `CADDY_DEFENDER`
+
+Pass any value to this to customize how caddy-defender module is built into the container image. Used in later steps to add TOR relays and ASNs of your own choice. Set it to `1` if you're going to use caddy-defender and want to add extra ASNs. Usage example: `--build-arg CADDY_DEFENDER=1`
+
+### Build Arg: `ASN_RANGES`
+
+Put ASN ranges here that will be able to be blocked using caddy-defender later on. Comma seperated list. Usage example: `--build-arg ASN_RANGES="ASN69,ASN420,ASN1337"`
+
+### Build Arg: `DEBUG`
+
+Prints out values of variables as array-helper.sh script continues, aids with debugging. Doesn't do anything else otherwise. The existence of this value is enough to turn it on so set it to anything. Usage example: `--build arg BUILD_DEBUG=balls`
+
+## Manually building
+
+It's as simple as three steps. Add more build args if you need them, customize ones here if you have specific needs otherwise you'll just build a vanilla Caddy image.
+
+1. `git clone https://github.com/rubberverse/qor-caddy`
+2. `podman build -f Containerfile -t localhost/qor-caddy:latest --build-arg=CADDY_MODULES="0" --build-arg=CADDY_VERSION=v2.10.1`
+3. Voila, you now have your own customized Caddy image.
+
+## Image tags
+
+| Base    | Tag(s)              | Arch     | Description                																	|
+|---------|---------------------|----------|------------------------------------------------------------------------------------------------|
+| scratch | `latest`, `$tag`    | `x86_64` | Stable branch Caddy builds 																	|
+| scratch | `test`              | `x86_64` | Test builds whenever something breaks and I wanna test it quickly. Barely updated, don't use. 	|
+
+They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
+
+## Using the images via Rootful Podman (recommended)
+
+1. Copy [caddy-rootful.container]() from this repository and paste it in `/etc/containers/systemd/0/Caddy.container`
+2. Edit it to your own liking, most is already setup for you.
+3. Reload systemctl daemon with `systemctl daemon-reload`
+4. Start the container `systemctl start Caddy`
 
 1. Copy [qor-caddy.container](https://github.com/Rubberverse/qor-caddy/blob/main/qor-caddy.container) from this repository and put it in `~/.config/containers/systemd`
-2. Edit it to your own liking, there are comments inside of it to guide you around
-3. Reload systemctl daemon with `systemctl --user daemon-reload`
-4. Deploy the Quadlet unit by starting the service - `systemctl --user start qor-caddy`
 
-## ⚙️ List of third-party Caddy modules
+## Useful things to know
 
-These modules can be removed at any time and for any reason, they're mostly here to just serve a purpose for me. If I happen to switch technologies or something similar, I generally tend to remove things I don't need as it makes it easier to manage.
+I'm a hamburger.
 
-| Repo                             | Type                     | Short Desc                                                                    |
-|----------------------------------|--------------------------|-------------------------------------------------------------------------------|
-| caddy-dns/cloudflare             | DNS Provider             | Manage Cloudflare DNS, useful for DNS-01 challenges                           |
-| corazawaf/coraza-caddy           | Web application firewall | OWASP Coraza Caddy                                                            |
-| hslatman/caddy-crowdsec-bouncer  | Web application firewall | https://crowdsec.net, includes Layer4 sub-module                              |
-| porech/caddy-maxmind-geolocation | Geo Filtering            | Uses GeoLite2 Country database and filters requests by country                |
-| mholt/caddy-l4                   | Raw TCP/UDP Routing      | Allows Caddy to route Layer 4 traffic                                         |
-| mholt/caddy-ratelimit            | Traffic Limiting         | Implements rate limiting similar to Nginx rate limit (WIP)                    |
-| jonaharagon/caddy-umami          | Utility                  | Implement Umami Analytics to any website straight from Caddy                  |
-| fvpommel/caddy-combine-ip-ranges | Utility / Extension      | Allows combination of trusted_proxies directives                              |
-| fvpommel/caddy-dns-ip-range      | Utility / Extension      | Checks against locally running cloudflared DNS and updates their IP addresses |
-| WeidiDeng/caddy-cloudflare-ip    | Utility / Extension      | Periodically checks Cloudflare IP ranges and updates them                     |
+## List of third-party Caddy modules
+
+```bash
+- github.com/mholt/caddy-ratelimit
+- github.com/relvacode/caddy-oidc
+- github.com/fvbommel/caddy-dns-ip-range
+- github.com/WeidiDeng/caddy-cloudflare-ip
+- github.com/fvbommel/caddy-combine-ip-ranges
+- github.com/corazawaf/coraza-caddy/v2
+- github.com/caddy-dns/cloudflare
+- pkg.jsn.com/caddy-defender
+- github.com/mholt/caddy-l4/layer4
+- github.com/porech/caddy-maxmind-geolocation
+
+```
 
 Any issues involving third-party modules should be reported to the module's respective repository, not to Caddy maintainers. In case the issue comes from my image, create an issue about it here!
 
-## 🛠️ Usage
-
-In case you enabled admin endpoint, you can reload your configuration file with following commands:
-
-- `podman exec -t qor-caddy /app/bin/entrypoint --reload`
-- `podman exec -t qor-caddy /app/bin/caddy reload --config /app/configs/Caddyfile`
-
-This will reload your configuration if you've done any changes to it.
-
-Otherwise, the usage is about the same as average Caddy image. You can read more about admin endpoint [on caddy docs](https://caddyserver.com/docs/caddyfile/options#admin)
-
-> [!WARNING]
-> Volume mounted configuration files will still need a container restart if you re-created the configuration file when it was on. So in case something seems fishy, restart your container. You'll know instantly in case config file is wrong ;)
-
-Here's some helpful links to get you head-started with Caddy as your Web Server. On your own time, you can learn even more advanced things that Caddy can do!
-
-- [Getting started @ Caddy docs](https://caddyserver.com/docs/getting-started)
-- [Quick-starts @ Caddy docs](https://caddyserver.com/docs/quick-starts)
-- [Caddyfile Reference @ Caddy docs](https://caddyserver.com/docs/caddyfile)
-- My own Caddyfiles: [WAN](https://github.com/MrRubberDucky/Homelab/blob/main/WAN/Caddy/Caddyfile) and [LAN](https://github.com/MrRubberDucky/Homelab/blob/main/LAN/Caddy/Caddyfile). 
-
-I make use of plenty of moduels from here so you can take a lookie. Though they're updated once in a while.
-
-## 🥰 Contributing
-
-Feel free to contribute if you feel like something is wrong, needs changing or other various reasons. Though I would appreciate it if you created a GitHub issue first to talk about it! (Just so we can be on the same table)
