@@ -44,6 +44,7 @@ do
         for module in "${CADDY_MODULES_ARRAY[@]}"
             do
                 printf "%b" "\t_ \"$module\"\n" >> $TEMP_FILE
+                echo "$module"
         done
         PROCESSED=true
     fi
