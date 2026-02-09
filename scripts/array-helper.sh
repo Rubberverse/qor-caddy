@@ -73,7 +73,7 @@ go mod tidy
 
 if [[ ${CADDY_DEFENDER} ]] && [[ ${ASN_RANGES} ]]; then
         cd caddy-defender || exit
-        go run ranges/main.go --fetch-tor --asn "${ASN_RANGES}"
+        go run ranges/main.go --fetch-tor --asn ${ASN_RANGES}
         cd ..
 fi
 
