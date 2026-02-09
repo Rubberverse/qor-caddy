@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 printf "\n[array-helper] Pre-eliminary checking of build arguments...\n"
 
 if ! [ "${CADDY_MODULES}" = "" ]; then
@@ -30,7 +30,7 @@ if [[ ${DEBUG} ]]; then
         printf "%b" "\n[DBG] File Path: ${FILE_PATH}\n"
         printf "%b" "\n[DBG] Temporary File: ${TEMP_FILE}\n"
         printf "%b" "\n[DBG] Was Array processed? - ${PROCESSED}\n"
-        printf "%b" "\n[DBG] First Value in Array - ${CADDY_MODULES_ARRAY}\n"
+        printf "%b" "\n[DBG] First Value in Array - ${CADDY_MODULES_ARRAY[0]}\n"
         printf "%b" "\n[DBG] Modules: ${CADDY_MODULES}\n"
         printf "%b" "\n[DBG] Caddy Version: ${GO_CADDY_VERSION}\n"
 fi
@@ -40,7 +40,7 @@ sed -i -e "s|// plug in Caddy modules here|_ \"github.com/caddyserver/caddy/v2\"
 printf "%b" "\n[array-helper] Appending modules from array to main.go..."
 while IFS= read -r line
 do
-    if [[ $line == *"   _ \"github.com/caddyserver/caddy/v2\""* ]] && [ "$PROCESSED" = false ]; then
+    if [[ $line == *'   _ \"github.com/caddyserver/caddy/v2\"'* ]] && ! $PROCESSED; then
         for module in "${CADDY_MODULES_ARRAY[@]}"
             do
                 printf "%b" "\t_ \"$module\"\n" >> $TEMP_FILE
@@ -48,7 +48,7 @@ do
         done
         PROCESSED=true
     fi
-    echo "$line" >> $TEMP_FILE
+    printf '%s\n' "$line" >> "$TEMP_FILE"
 done < "$FILE_PATH"
 
 printf "%b" "\n[array-helper] Overwriting main.go with temporary file...\n"
@@ -61,7 +61,7 @@ if [[ ${DEBUG} ]]; then
 fi
 
 printf "%b" "\n[array-helper] Pinning Caddy version according to tag, commit or branch\n"
-go get github.com/caddyserver/caddy/v2@${GO_CADDY_VERSION}
+go get github.com/caddyserver/caddy/v2@"${GO_CADDY_VERSION}"
 
 if [[ ${CADDY_DEFENDER} ]]; then
         printf "\n[array-helper] Pulling caddy-defender"
@@ -72,9 +72,9 @@ fi
 printf "%b" "\n[array-helper] Running go mod tidy to add module requirements and create go.sum\n"
 go mod tidy
 
-if [[ ${CADDY_DEFENDER}} ]] && [[ ${ASN_RANGES} ]]; then
-        cd caddy-defender
-        go run ranges/main.go --fetch-tor --asn ${ASN_RANGES}
+if [[ ${CADDY_DEFENDER} ]] && [[ ${ASN_RANGES} ]]; then
+        cd caddy-defender || exit
+        go run ranges/main.go --fetch-tor --asn "${ASN_RANGES}"
         cd ..
 fi
 
@@ -82,4 +82,4 @@ printf "[array-helper] Continuing with build process\n"
 
 # https://unix.stackexchange.com/a/403401
 # https://stackoverflow.com/a/30212526
-# v1.1.0 - Speciality for caddy-defender
+# v1.2 - Bubfix
