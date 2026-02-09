@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 printf "\n[array-helper] Pre-eliminary checking of build arguments...\n"
 
-if ! [ "${CADDY_MODULES}" = "" ]; then
+if [[ -n "${CADDY_MODULES:-}" ]]; then
     printf "\n[VL1] Pass - Non-empty value was supplied for CADDY_MODULES"
 else
     printf "\n[VL1] Empty value supplied for CADDY_MODULES, pass 0 if you want to build vanilla Caddy.\nScript will now exit."
     exit 2
 fi
 
-if ! [ "${GO_CADDY_VERSION}" = "" ] ; then
+if [[ -n "${GO_CADDY_VERSION:-}" ]]; then
     printf "\n[VL2] Pass - Non-empty value was supplied for GO_CADDY_VERSION"
 else
     printf "\n[VL2] Empty value supplied for GO_CADDY_VERSION, pass master if you want to specifically build master branch.\nScript will now exit."
@@ -25,7 +25,7 @@ printf "\nParsing CADDY_MODULES into array...\n"
 read -ra CADDY_MODULES_ARRAY <<< "${CADDY_MODULES}"
 echo -n "" > $TEMP_FILE
 
-if [[ ${DEBUG} ]]; then
+if [[ -n "${DEBUG:-}" ]]; then
         printf "%b" "\n[DBG] Listing variables and file directories...\n"
         printf "%b" "\n[DBG] File Path: ${FILE_PATH}\n"
         printf "%b" "\n[DBG] Temporary File: ${TEMP_FILE}\n"
@@ -35,15 +35,15 @@ if [[ ${DEBUG} ]]; then
         printf "%b" "\n[DBG] Caddy Version: ${GO_CADDY_VERSION}\n"
 fi
 
-sed -i -e "s|// plug in Caddy modules here|_ \"github.com/caddyserver/caddy/v2\"|g" $FILE_PATH
+sed -i -e 's|// plug in Caddy modules here|   _ "github.com/caddyserver/caddy/v2"|' "$FILE_PATH"
 
 printf "%b" "\n[array-helper] Appending modules from array to main.go..."
 while IFS= read -r line
 do
-    if [[ $line == *'   _ \"github.com/caddyserver/caddy/v2\"'* ]] && ! $PROCESSED; then
+    if [[ $line == *'   _ "github.com/caddyserver/caddy/v2"'* ]] && [[ "$PROCESSED" == false ]]; then
         for module in "${CADDY_MODULES_ARRAY[@]}"
             do
-                printf "%b" "\t_ \"$module\"\n" >> $TEMP_FILE
+                printf '\t_ "%s"\n' "$module" >> "$TEMP_FILE"
                 echo "$module"
         done
         PROCESSED=true
@@ -54,10 +54,9 @@ done < "$FILE_PATH"
 printf "%b" "\n[array-helper] Overwriting main.go with temporary file...\n"
 mv -f $TEMP_FILE $FILE_PATH
 
-if [[ ${DEBUG} ]]; then
-        cat $TEMP_FILE
+if [[ -n "${DEBUG:-}" ]]; then
         printf "%b" "\n\n\n"
-        cat $FILE_PATH
+        cat "$FILE_PATH"
 fi
 
 printf "%b" "\n[array-helper] Pinning Caddy version according to tag, commit or branch\n"
