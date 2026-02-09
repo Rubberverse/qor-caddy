@@ -57,4 +57,6 @@ jobs:
           pull: true
           push: true
           file: Containerfile
-          tags: rubberverse/qor-caddy:test-latest,rubberverse/qor-caddy:test
+          tags: |
+            ghcr.io/rubberverse/qor-caddy:latest
+            ghcr.io/rubberverse/qor-caddy:v1.4.1
