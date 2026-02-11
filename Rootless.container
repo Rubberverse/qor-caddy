@@ -1,0 +1,54 @@
+# Podman v5.7.0+ recommended
+[Unit]
+Description=Quackers of Rubberverse - Caddy Web Server
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Restart=on-failure
+SystemCallArchitectures=native
+MemoryDenyWriteExecute=true
+
+[Container]
+Image=ghcr.io/rubberverse/qor-caddy:latest
+ContainerName=qor-caddy
+# Environment
+# You can put virtually anything you want into environment variables and reference them across your Caddyfile
+# I often use it for some things like Cloudflare DNS API tokens, my domain name so I don't have to retype it everytime and other ease-of-access/qol things.
+EnvironmentFile=/home/overseer/Environments/Caddy/.env
+# Volumes
+# Omit 'Sockets' directory if you won't be mounting any UNIX sockets into the container.
+# Change /home/overseer to a home directory of your rootless user, don't use relative paths (~/ or ./) as it will confuse Quadlet generator.
+Volume=/home/overseer/Configs/Caddy:/app/configs:ro,Z
+Volume=/home/overseer/Sites:/app/www/static:ro,Z
+Volume=/home/overseer/Sockets:/run/tmp:z
+# This is not defined as Quadlet .volume as it's clever enough to create one anyways
+# Use this snippet in case you want to mount Caddy logs into other containers (ex. Crowdsec container, Fail2Ban container)
+Volume=CADDY-LOGS:/app/logs:U,z
+# Mounts
+# This is persistent configuration mounts. They store wildcard certificates, last renewal info and many other things.
+# Using a bind mount gave me more persistent result, so I've opted to do it this way. MUST BE MOUNTED!!! Otherwise your certificates won't persist!!!
+Mount=type=bind,source=/home/overseer/Appdata/WebServer-Data,dst=/app/.local/share/caddy,U=true,Z
+Mount=type=bind,source=/home/overseer/Appdata/WebServer-Conf,dst=/app/.config/caddy,U=true,Z
+# Labels
+NoNewPrivileges=true
+DropCapability=all
+# You can run rootfs as read-only, though you will need ot make sure that Caddy's /app/.local, /app/logs and /app/.config directories are mounted.
+ReadOnly=true
+# Network
+# Somewhat seems to be faster when explictly mapped to an IP address, may be placebo though.
+Network=pasta:--ipv4-only
+# 80 - HTTP, 443/TCP - HTTPS, 443/UDP - HTTPS/3
+PublishPort=80:80/tcp
+PublishPort=443:443/tcp
+PublishPort=443:443/udp
+# User
+# You can put any UID/GID you want here, just make sure it exists on your host. Scratch images don't have concept of "users" but will still complain about mis-matched UID/GIDs on the files.
+User=1001:1001
+# We want to be able to access UNIX sockets from other containers.
+# This makes it a bit less secure as namespace will be same as one on host. So, if you won't map UNIX sockets into container, then try following approach instead.
+UserNS=keep-id:uid=1001,gid=1001,size=1002
+# Remove that line above and replace it with this one:
+# UserNS=auto:size=1002
+# size= parameter is important for both commands, as otherwise container will suck out all available SUID/SGIDs out of your host. Yes, even if you have over 1m suid/sgids available, omitting that size= part will sometimes make a container just take everything for itself.
