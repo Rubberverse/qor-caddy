@@ -105,16 +105,27 @@ It's as simple as three steps. Add more build args if you need them, customize o
 
 They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
 
-## Using the images via Rootful Podman (recommended)
+## Using the image via Rootless Podman (Quadlet, Recommended)
 
-1. Copy [Caddy.container](https://github.com/Rubberverse/qor-caddy/blob/main/Caddy.container) from this repository and paste it in `/etc/containers/systemd/0/Caddy.container`
+1. Copy [Rootless.container](https://github.com/Rubberverse/qor-caddy/blob/main/Rootless.container) from this repository and paste it in `~/.config/containers/systemd/user/Caddy.container`
+2. Edit it to your own liking, most is already set-up for you.
+3. Reload systemctl user daemon with `systemctl --user daemon-reload`
+4. Start the container with `systemctl --user start Caddy`
+
+## Using the image via Rootful Podman (Quadlet)
+
+1. Copy [Rootful.container](https://github.com/Rubberverse/qor-caddy/blob/main/Rootful.container) from this repository and paste it in `/etc/containers/systemd/0/Caddy.container`
 2. Edit it to your own liking, most is already setup for you.
 3. Reload systemctl daemon with `systemctl daemon-reload`
 4. Start the container `systemctl start Caddy`
 
 ## Useful things to know
 
-I'm a hamburger.
+I'm a hamburger. (This was made as I wanted to challenge my crappy bash scripting skills)
+
+Bruger. (And also because majority of Caddy images out there don't really provide a standarized directory, so every container was completely different place Caddy web server wrote to.)
+
+Hammed burger. (It works for my use-case and you're generally recommended to use this to build your own image out of this as I change a lot off things sometimes.)
 
 ## List of third-party Caddy modules
 
