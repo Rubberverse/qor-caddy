@@ -49,6 +49,4 @@ User=1001:1001
 # We want to be able to access UNIX sockets from other containers.
 # This makes it a bit less secure as namespace will be same as one on host. So, if you won't map UNIX sockets into container, then try following approach instead.
 UserNS=keep-id:uid=1001,gid=1001,size=1002
-# Remove that line above and replace it with this one:
-# UserNS=auto:size=1002
-# size= parameter is important for both commands, as otherwise container will suck out all available SUID/SGIDs out of your host. Yes, even if you have over 1m suid/sgids available, omitting that size= part will sometimes make a container just take everything for itself.
+# Remove that line above if you won't be doing such.
