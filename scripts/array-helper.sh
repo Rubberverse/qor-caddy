@@ -62,20 +62,24 @@ fi
 printf "%b" "\n[array-helper] Pinning Caddy version according to tag, commit or branch\n"
 go get github.com/caddyserver/caddy/v2@"${GO_CADDY_VERSION}"
 
-if [[ ${CADDY_DEFENDER} ]]; then
+if [[ -n "${CADDY_DEFENDER:-}" ]]; then
         printf "\n[array-helper] Pulling caddy-defender"
         git clone https://github.com/JasonLovesDoggo/caddy-defender.git caddy-defender
         echo 'replace pkg.jsn.cam/caddy-defender => ./caddy-defender' >> go.mod
+
+        if [[ -n "${ASN_RANGES:-}" ]]; then
+            cd caddy-defender || exit
+            go run ranges/main.go --fetch-tor --asn ${ASN_RANGES}
+            cd ..
+        else
+            cd caddy-defender || exit
+            go run ranges/main.go --fetch-tor
+            cd ..
+        fi
 fi
 
 printf "%b" "\n[array-helper] Running go mod tidy to add module requirements and create go.sum\n"
 go mod tidy
-
-if [[ ${CADDY_DEFENDER} ]] && [[ ${ASN_RANGES} ]]; then
-        cd caddy-defender || exit
-        go run ranges/main.go --fetch-tor --asn ${ASN_RANGES}
-        cd ..
-fi
 
 printf "[array-helper] Continuing with build process\n"
 
