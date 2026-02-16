@@ -1,0 +1,13 @@
+# ~/.config/systemd/user
+[Socket]
+BindIPv6Only=both
+# fd/3
+ListenStream=[::]:80
+# fd/4
+ListenStream=[::]:443
+SocketProtocol=ssl
+# fdgram/5
+ListenDatagram=[::]:443
+
+[Install]
+WantedBy=sockets.target
