@@ -1,0 +1,9 @@
+# Snippet
+(bind_https) {
+    bind fd/4 {
+        protocols h1 h2
+    }
+    bind fdgram/5 {
+        protocols h3
+    }
+}
