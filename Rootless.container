@@ -1,4 +1,6 @@
 # Podman v5.7.0+ recommended
+# "Oh this is so messy", that's because there are a lot of comments explaining what to change.
+# Quadlets are pretty simple otherwise. Well, mostly - it becomes annoying when it comes to chaining systemd services to start in proper order.
 [Unit]
 Description=Quackers of Rubberverse - Caddy Web Server
 
@@ -7,17 +9,19 @@ WantedBy=default.target
 
 [Service]
 Restart=on-failure
+# Do not add anymore systemd hardening to this, majority of it will cause this unit to not boot anymore.
+# These are the most sane defaults that work well on rootless user. MemoryDenyWriteExecute= may be silently ignored however.
 SystemCallArchitectures=native
 MemoryDenyWriteExecute=true
 
 [Container]
 Image=ghcr.io/rubberverse/qor-caddy:latest
 ContainerName=qor-caddy
-# Environment
+#------ Environment ------#
 # You can put virtually anything you want into environment variables and reference them across your Caddyfile
 # I often use it for some things like Cloudflare DNS API tokens, my domain name so I don't have to retype it everytime and other ease-of-access/qol things.
 EnvironmentFile=/home/overseer/Environments/Caddy/.env
-# Volumes
+#------ Volumes ------#
 # Omit 'Sockets' directory if you won't be mounting any UNIX sockets into the container.
 # Change /home/overseer to a home directory of your rootless user, don't use relative paths (~/ or ./) as it will confuse Quadlet generator.
 Volume=/home/overseer/Configs/Caddy:/app/configs:ro,Z
@@ -26,32 +30,45 @@ Volume=/home/overseer/Sockets:/run/tmp:z
 # This is not defined as Quadlet .volume as it's clever enough to create one anyways
 # Use this snippet in case you want to mount Caddy logs into other containers (ex. Crowdsec container, Fail2Ban container)
 Volume=CADDY-LOGS:/app/logs:U,z
-# Mounts
+#------ Mounts ------#
 # This is persistent configuration mounts. They store wildcard certificates, last renewal info and many other things.
 # Using a bind mount gave me more persistent result, so I've opted to do it this way. MUST BE MOUNTED!!! Otherwise your certificates won't persist!!!
 Mount=type=bind,source=/home/overseer/Appdata/WebServer-Data,dst=/app/.local/share/caddy,U=true,Z
 Mount=type=bind,source=/home/overseer/Appdata/WebServer-Conf,dst=/app/.config/caddy,U=true,Z
-# Labels
+#------ Labels ------#
 NoNewPrivileges=true
 DropCapability=all
 # You can run rootfs as read-only, though you will need ot make sure that Caddy's /app/.local, /app/logs and /app/.config directories are mounted.
+# In grand scheme of things, it probably doesn't do much. It runs on scratch so even in case of escape, there are no utilities or tools to proceed further.
 ReadOnly=true
-# Network
+#------ Network ------#
 # Somewhat seems to be faster when explictly mapped to an IP address, may be placebo though.
 Network=pasta:--ipv4-only
 # 80 - HTTP, 443/TCP - HTTPS, 443/UDP - HTTPS/3
 PublishPort=80:80/tcp
 PublishPort=443:443/tcp
 PublishPort=443:443/udp
-# Sysctl
+#------ DNS ------#
+# This is to help DNS name resolution inside container
+# Some VPS providers use really sluggish DNS resolvers so this is a way to counter that.
+# DNS=1.1.1.1
+# DNS=1.0.0.1
+# Uncomment two lines above if you want them.
+#------ Sysctl ------#
 # In case you'll run with rootless networking, you need to add a sysctl to the container to permit it creating a listening port below 1000
 # This is some ancient thing that's for some reason still is left on tux land.
 # If you will be using host networking, this sysctl must be applied on host-level (in your ex. /etc/sysctl.d/10-unpriv.conf then applied via sysctl -p /etc/sysctl.d/10-unpriv.conf)
 Sysctl=net.ipv4.ip_unprivileged_port_start=80
-# User
+#------ Resource Limits ------#
+# If you want to learn more, then just look at this article
+# https://web.archive.org/web/20260216125928/https://oneuptime.com/blog/post/2026-02-02-podman-resource-limits/view
+# You can put arguments that don't have a Quadlet directive in PodmanArgs= ex. PodmanArgs=--cpuset-cpus 0-3
+# Maximum memory a container can use
+Memory=512M
+#------ User ------#
 # You can put any UID/GID you want here, just make sure it exists on your host. Scratch images don't have concept of "users" but will still complain about mis-matched UID/GIDs on the files.
 User=1001:1001
 # We want to be able to access UNIX sockets from other containers.
 # This makes it a bit less secure as namespace will be same as one on host. So, if you won't map UNIX sockets into container, then try following approach instead.
 UserNS=keep-id:uid=1001,gid=1001,size=1002
-# Remove that line above if you won't be doing such.
+# Remove that line above if you won't be doing such. Don't set this to :auto as otherwise it will pull SUIDs / SGIDs from `containers` user (it chowns everything as root inside container as a result)
