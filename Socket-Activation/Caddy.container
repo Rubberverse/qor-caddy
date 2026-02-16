@@ -1,0 +1,47 @@
+# ~/.config/containers/systemd
+[Unit]
+Description=Quackers of Rubberverse - Caddy Web Server
+# %h is a specifier for "user's home directory"
+# https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#Specifiers
+AssertPathIsDirectory=%h/Configs/Caddy
+AssertPathExists=%h/Configs/Caddy/Caddyfile
+# Make Caddy.socket the dependency service
+Requires=Caddy.socket
+After=Caddy.socket
+
+[Install]
+WantedBy=default.target
+
+[Service]
+SystemCallArchitectures=native
+MemoryDenyWriteExecute=true
+# You could put --force at the end but it will make Caddy crash when config is invalid in my experience.
+ExecReload=podman exec qor-caddy /app/bin/caddy reload --config /app/configs/Caddyfile --address unix//run/admin.sock
+
+[Container]
+Image=ghcr.io/rubberverse/qor-caddy:latest
+ContainerName=qor-caddy
+# Environment
+EnvironmentFile=%h/Environments/Caddy/.env
+# Volumes
+Volume=%h/Configs/Caddy:/app/configs:ro,Z
+Volume=CADDY-LOGS:/app/logs:U,z
+# Mounts
+Mount=type=bind,source=%h/Appdata/WebServer-Data,dst=/app/.local/share/caddy,U=true,Z
+Mount=type=bind,source=%h/Appdata/WebServer-Conf,dst=/app/.config/caddy,U=true,Z
+# Labels
+NoNewPrivileges=true
+DropCapability=all
+ReadOnly=true
+# SD_NOTIFY
+# https://www.man7.org/linux/man-pages/man3/sd_notify.3.html
+Notify=true
+# Network + Sysctl
+Network=Caddy.network
+Sysctl=net.ipv4.ip_unprivileged_port_start=80
+DNS=1.1.1.1
+DNS=1.0.0.1
+# Resource Limits
+Memory=512M
+# User
+User=1002:1002
