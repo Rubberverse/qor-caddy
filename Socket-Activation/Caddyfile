@@ -1,0 +1,82 @@
+# Example Socket-activation Caddyfile
+
+#--- Start of Global block ---#
+{
+    # We don't bind HTTP here, it's done in Site block.
+    # 2nd socket in caddy.socket - this is the HTTPS1/2 fd/4 socket (TCP)
+    default_bind fd/4 {
+                protocols h1 h2
+    }
+    # 3rd socket in caddy.socket - This is the HTTPS/3 fdgram socket (UDP)
+    default_bind fdgram/5 {
+                protocols h3
+    }
+    admin unix//run/admin.sock
+    auto_https disable_redirects
+    # Plugin ordering
+    order coraza_waf first
+    order defender before basic_auth
+    order rate_limit after defender
+    # Logging
+    log default {
+        output stdout
+        level INFO
+        format json
+    }
+}
+#--- End of Global block ---#
+
+#--- Start of Site block ---#
+# We'll be re-using https tcp/udp socket bind as a snippet.
+import /app/configs/Snippets/References
+
+# Redirect any http://* requests to https:// domain
+# This binds HTTP (:80/tcp) socket to it
+http:// {
+   bind fd/3 {
+      protocols h1
+   }
+   redir https://{host}{uri}
+}
+
+# Request wildcard certificate
+# This binds fd/4 and fdgram/5 (HTTPS/1.1, HTTPS/2, HTTPS/3) sockets to it
+# https:// in front of domain name is important, otherwise Caddy will try to bind HTTP socket to it.
+https://*.example.com {
+   import bind_https
+}
+
+# Example: Redirecting example.com and www.example.com
+https://example.com https://www.example.com {
+   # Define host matcher
+   @main host example.com
+   @mwww host www.example.com
+    # Then just handle it like so
+    handle @main {
+        import bind_https
+          # If you wanna mess around, you can set redirects here too.
+          handle_path /patreon {
+                redir https://www.patreon.com 308
+          }
+          # Then the final redirect
+          redir https://blog.example.com{uri} 308
+    }
+    # Similarly for www.example.com
+    # If you want to avoid duplication, you can probably just redirect this one to example.com
+    handle @mwww {
+      import bind_https
+        # If you wanna mess around, you can set redirects here too.
+        handle_path /patreon {
+            redir https://www.patreon.com 308
+        }
+        # Then the final redirect
+        redir https://blog.example.com{uri} 308
+    }
+}
+
+# Normal site block example
+https://blog.example.com {
+    import bind_https
+    respond "I'm a very real blog!" 200
+}
+#--- End of Site block ---#
