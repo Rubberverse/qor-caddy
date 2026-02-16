@@ -41,7 +41,7 @@ RUN apt update \
     && curl -Lo caddy/main.go ${GO_MAIN_FILE} \
     && go mod init caddy \
     && /bin/bash -c /app/helper/array-helper.sh \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -tags=memoize_builders -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./caddy \
+    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -trimpath -o /app/go/bin/caddy-${TARGETARCH} ./caddy \
     && apt remove -y \
        jq \
        git \
