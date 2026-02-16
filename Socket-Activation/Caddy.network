@@ -1,0 +1,4 @@
+# ~/.config/containers/systemd/Caddy.network
+[Network]
+NetworkName=Caddy
+NetworkDeleteOnStop=true
