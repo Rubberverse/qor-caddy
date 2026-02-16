@@ -5,7 +5,6 @@ BindIPv6Only=both
 ListenStream=[::]:80
 # fd/4
 ListenStream=[::]:443
-SocketProtocol=ssl
 # fdgram/5
 ListenDatagram=[::]:443
 
