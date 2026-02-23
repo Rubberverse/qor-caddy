@@ -105,14 +105,31 @@ It's as simple as three steps. Add more build args if you need them, customize o
 
 They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
 
-## Using the image via Rootless Podman (Quadlet, Recommended)
+## Using the image
+
+There are three ways you can use this image, each depending on what you need.
+
+- Socket Activation gives most performance on rootless setups and gives you real IPs, this increases complexity of both Caddyfile and service by a bit.
+- Normal rootless setup is slower compared to socket activation and no real IPs since all traffic gets NAT'ed.
+- Rootful setup where everything works by default but has security drawbacks + probably better if used with MACVLAN or IPVLAN network.
+
+### Rootless Podman - Quadlet /w Socket Activation
+
+1. Copy [Caddy.container](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddy.container) and [Caddy.network](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddy.network) from this repository and paste it in `~/.config/containers/systemd/user`
+2. Edit it to your own liking, most is already set-up for you so you just need to create directories it wants.
+3. Copy [Caddy.socket](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddy.socket) from this repository and paste it in `~/.config/systemd/user`
+4. Rework your [Caddyfile](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddyfile) to be similar to the example provided (click on the name), binds **are** important.
+5. Reload systemctl user daemon with `systemctl --user daemon-reload`
+6. Start the container with `systemctl --user start Caddy.socket`
+
+### Rootless Podman - Quadlet
 
 1. Copy [Rootless.container](https://github.com/Rubberverse/qor-caddy/blob/main/Rootless.container) from this repository and paste it in `~/.config/containers/systemd/user/Caddy.container`
 2. Edit it to your own liking, most is already set-up for you.
 3. Reload systemctl user daemon with `systemctl --user daemon-reload`
 4. Start the container with `systemctl --user start Caddy`
 
-## Using the image via Rootful Podman (Quadlet)
+### Rootful Podman - Quadlet
 
 1. Copy [Rootful.container](https://github.com/Rubberverse/qor-caddy/blob/main/Rootful.container) from this repository and paste it in `/etc/containers/systemd/0/Caddy.container`
 2. Edit it to your own liking, most is already setup for you.
