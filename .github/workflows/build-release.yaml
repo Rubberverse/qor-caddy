@@ -58,4 +58,4 @@ jobs:
           file: Containerfile
           tags: |
             ghcr.io/rubberverse/qor-caddy:latest
-            ghcr.io/rubberverse/qor-caddy:v1.4.2
+            ghcr.io/rubberverse/qor-caddy:v1.5.0
