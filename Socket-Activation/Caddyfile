@@ -4,8 +4,9 @@
 {
     admin unix//run/admin.sock
     auto_https disable_redirects
-    # Plugin ordering
     order coraza_waf first
+    order crowdsec after coraza_waf
+    order appsec after crowdsec
     order defender before basic_auth
     order rate_limit after defender
     # Logging
@@ -37,32 +38,20 @@ https://*.example.com {
    import bind_https
 }
 
-# Example: Redirecting example.com and www.example.com
-https://example.com https://www.example.com {
-   # Define host matcher
-   @main host example.com
-   @mwww host www.example.com
-    # Then just handle it like so
-    handle @main {
-        import bind_https
-          # If you wanna mess around, you can set redirects here too.
-          handle_path /patreon {
-                redir https://www.patreon.com 308
-          }
-          # Then the final redirect
-          redir https://blog.example.com{uri} 308
-    }
-    # Similarly for www.example.com
-    # If you want to avoid duplication, you can probably just redirect this one to example.com
-    handle @mwww {
-      import bind_https
-        # If you wanna mess around, you can set redirects here too.
-        handle_path /patreon {
-            redir https://www.patreon.com 308
-        }
-        # Then the final redirect
-        redir https://blog.example.com{uri} 308
-    }
+https://example.com {
+  import bind_https
+  handle_path /example {
+    respond "Example path handling." 200
+  }
+  handle_path /youtube {
+    redir https://www.youtube.com/watch?v=dQw4w9WgXcQ 308
+  }
+  redir blog.example.com{uri} 308
+}
+
+https://www.example.com {
+   import bind_https
+   redir https://example.com{uri} 308
 }
 
 # Normal site block example
