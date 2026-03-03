@@ -2,15 +2,6 @@
 
 #--- Start of Global block ---#
 {
-    # We don't bind HTTP here, it's done in Site block.
-    # 2nd socket in caddy.socket - this is the HTTPS1/2 fd/4 socket (TCP)
-    default_bind fd/4 {
-                protocols h1 h2
-    }
-    # 3rd socket in caddy.socket - This is the HTTPS/3 fdgram socket (UDP)
-    default_bind fdgram/5 {
-                protocols h3
-    }
     admin unix//run/admin.sock
     auto_https disable_redirects
     # Plugin ordering
