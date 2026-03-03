@@ -150,14 +150,16 @@ Hammed burger. (It works for my use-case and you're generally recommended to use
 - github.com/mholt/caddy-ratelimit
 - github.com/relvacode/caddy-oidc
 - github.com/fvbommel/caddy-dns-ip-range
+- pkg.jsn.cam/caddy-defender (with tor ranges)
 - github.com/WeidiDeng/caddy-cloudflare-ip
 - github.com/fvbommel/caddy-combine-ip-ranges
 - github.com/corazawaf/coraza-caddy/v2
 - github.com/caddy-dns/cloudflare
-- pkg.jsn.cam/caddy-defender
-- github.com/mholt/caddy-l4/layer4
+- github.com/hslatman/caddy-crowdsec-bouncer/http
+- github.com/hslatman/caddy-crowdsec-bouncer/appsec
+- github.com/hslatman/caddy-crowdsec-bouncer/layer4
+- github.com/mholt/caddy-l4/layer4 
 - github.com/porech/caddy-maxmind-geolocation
-
 ```
 
 Any issues involving third-party modules should be reported to the module's respective repository, not to Caddy maintainers. In case the issue comes from my image, create an issue about it here!
