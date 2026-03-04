@@ -148,7 +148,6 @@ Hammed burger. (It works for my use-case and you're generally recommended to use
 
 ```bash
 - github.com/mholt/caddy-ratelimit
-- github.com/relvacode/caddy-oidc
 - github.com/fvbommel/caddy-dns-ip-range
 - pkg.jsn.cam/caddy-defender (with tor ranges)
 - github.com/WeidiDeng/caddy-cloudflare-ip
