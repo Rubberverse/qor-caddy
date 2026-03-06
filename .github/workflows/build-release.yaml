@@ -50,7 +50,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             CADDY_MODULES=github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range pkg.jsn.cam/caddy-defender github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/corazawaf/coraza-caddy/v2 github.com/caddy-dns/cloudflare github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/appsec github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/mholt/caddy-l4/layer4 github.com/porech/caddy-maxmind-geolocation
-            GO_CADDY_VERSION=v2.11.1
+            GO_CADDY_VERSION=v2.11.2
             CADDY_DEFENDER=1
             DEBUG=1
           pull: true
@@ -58,4 +58,4 @@ jobs:
           file: Containerfile
           tags: |
             ghcr.io/rubberverse/qor-caddy:latest
-            ghcr.io/rubberverse/qor-caddy:v1.5.1
+            ghcr.io/rubberverse/qor-caddy:v1.5.2
