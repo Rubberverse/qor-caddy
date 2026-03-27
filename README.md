@@ -27,8 +27,10 @@ Everything inside `/scripts/` is used during build process and it's usage is exp
 
 The usual simple bash entrypoint script was turned to `entrypoint.go`, as scratch runner doesn't have any shell, or anything for that matter. This allows slightly more advanced usage while still being more secure compared to typical image.
 
+## Runner env variables (only if built with `entrypoint.go`)
 
-## Runner env variables
+> [!NOTE]
+> Any version tagged by short SHA256 commit hash no longer uses `entrypoint.go`
 
 | Variable          | Default Value        | Required? |
 |-------------------|----------------------|-----------|
