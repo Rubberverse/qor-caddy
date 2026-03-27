@@ -7,6 +7,7 @@ on:
     paths-ignore:
       - '**.md'
       - '.github/workflows/**.yaml'
+      - 'Socket-Activation/**'
   workflow_dispatch:
 
 jobs:
@@ -37,6 +38,10 @@ jobs:
           driver-opts: |
             image=ghcr.io/amitie10g/buildkit:master
 
+      - name: SHA256 commit (short)
+        id: commit
+        uses: prompt/actions-commit-hash@v3
+
       - name: Login to ghcr.io
         uses: docker/login-action@v3
         with:
@@ -58,4 +63,4 @@ jobs:
           file: Containerfile
           tags: |
             ghcr.io/rubberverse/qor-caddy:latest
-            ghcr.io/rubberverse/qor-caddy:v1.5.2
+            ghcr.io/rubberverse/qor-caddy:${{ steps.commit.outputs.short }}
