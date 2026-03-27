@@ -21,7 +21,6 @@ ENV     DEBIAN_FRONTEND=noninteractive
 # O:R-X,U:---,A:---
 COPY    --chmod=0500 /scripts/array-helper.sh /app/helper/array-helper.sh
 COPY    --chmod=0500 /scripts/install-go.sh /app/helper/install-go.sh
-COPY    /scripts/entrypoint.go /app
 
 WORKDIR /usr/app/builder
 
@@ -36,7 +35,6 @@ RUN apt update \
        openssl \
        ca-certificates \
     && /bin/bash -c /app/helper/install-go.sh \
-    && GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -trimpath -o /app/go/bin/entrypoint-${TARGETARCH} /app/entrypoint.go \
     && mkdir -p caddy \
     && curl -Lo caddy/main.go ${GO_MAIN_FILE} \
     && go mod init caddy \
@@ -68,10 +66,9 @@ ARG     TARGETARCH
 
 # r-xr-xr-x
 COPY    --from=builder --chmod=0555 /app/go/bin/caddy-${TARGETARCH} /app/bin/caddy
-COPY    --from=builder --chmod=0555 /app/go/bin/entrypoint-${TARGETARCH} /app/bin/entrypoint
 COPY    --from=builder /app/logs /app/logs
 
 WORKDIR /app
 USER    1100:1100
 
-ENTRYPOINT ["/app/bin/entrypoint"]
+ENTRYPOINT ["/app/bin/caddy"]
