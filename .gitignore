@@ -1,5 +1,4 @@
 .git
-README.MD
-USAGE.MD
-BUILDING.MD
+.github/*
 LICENSE
+Old.Containerfile
