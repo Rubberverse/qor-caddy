@@ -56,7 +56,6 @@ RUN apt update \
         /usr/app/caddy \
         /var/cache/apt \
         /usr/app/go/cache \
-    && rm /app/entrypoint.go \
     && mkdir -p /app/logs
 
 FROM    scratch AS qor-caddy
