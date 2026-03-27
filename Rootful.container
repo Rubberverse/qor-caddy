@@ -42,6 +42,7 @@ LimitMEMLOCK=33554432
 [Container]
 Image=ghcr.io/rubberverse/qor-caddy:latest
 ContainerName=qor-caddy
+Exec=run --config /app/configs/Caddyfile
 EnvironmentFile=/opt/containers/Environments/CADDY.env
 Volume=/opt/containers/Configs/Caddy:/app/configs:ro,Z
 Volume=/opt/containers/Userdata/Sites:/app/www/static:ro,Z
