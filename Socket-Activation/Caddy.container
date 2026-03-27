@@ -21,6 +21,7 @@ ExecReload=podman exec qor-caddy /app/bin/caddy reload --config /app/configs/Cad
 [Container]
 Image=ghcr.io/rubberverse/qor-caddy:latest
 ContainerName=qor-caddy
+Exec=run --config /app/configs/Caddyfile
 # Environment
 EnvironmentFile=%h/Environments/Caddy/.env
 # Volumes
