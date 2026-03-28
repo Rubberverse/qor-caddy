@@ -6,7 +6,7 @@ As of `v0.19`, building process was revamped to not make use of `xcaddy` and ins
 
 ## install-go.sh
 
-Pulls latest version of Go for your architecture from [go.dev](https://go.dev) + sets git `safe.directory` to `*`, which means 'any location is considered safe'. Worksaround a problem during go pull / build where git operations fail as it doesn't see build-time directories as trusted.
+Pulls latest version of Go for your architecture from [go.dev](https://go.dev) + sets git `safe.directory` to `*`, which means 'any location is considered safe'. Works around a problem during go pull / build where git operations fail as it doesn't see build-time directories as trusted.
 
 For now, this only runs in Debian-based runners, and may fail pulling some architectures. If one isn't available from go.dev, then it will fail. Needs a bit of normalization to make it work better.
 
