@@ -28,6 +28,8 @@ Same script can be used to build "vanilla" Caddy without any extra third-party m
 6. Runs `go mod tidy` to add module requirements and generate `go.sum`
 7. **IF** `$CADDY_DEFENDER=1`: Fetches TOR relays and optionally ASN ranges of your choice for `caddy-defender` and saves them.
 
+Requires: `go`, `git`, `bash` (needs to be manually installed on debian-slim images iirc?), `sed` (included by default)
+
 ## entrypoint.go
 
 Rewritten version of `docker-entrypoint.sh` in Go. It checks environment variables, cleans them up, sanitizes them then just runs the Caddy binary. It's no longer used in the images and only left here as an example. You need to build it statically and then copy it over to your final image.
