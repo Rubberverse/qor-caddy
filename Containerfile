@@ -25,7 +25,7 @@ COPY    --chmod=0500 /scripts/install-go.sh /app/helper/install-go.sh
 WORKDIR /usr/app/builder
 
 RUN apt update \
-    && apt upgrade \
+    && apt upgrade -y \
     && apt install --no-install-recommends -y \
        jq \
        tar \
