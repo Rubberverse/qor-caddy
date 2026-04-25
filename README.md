@@ -145,6 +145,14 @@ Hammed burger. (It works for my use-case and you're generally recommended to use
 
 This will be maintained for as long as `rubberverse.xyz` is alive. So far this repository been going strong for two years.
 
+## Where's `docker-compose.yaml`?
+
+Long time ago, I've moved away from Docker to Podman. Initially, I've went the `compose.yaml` route. It was a bit hit or miss, `podman-compose` wasn't 1:1 with the spec and it was overall pretty miserable... that is, until Quadlet system was introduced and I feel in love with it.
+
+As you can probably guess, I've forgotten majority of good conventions, and how to make a good `docker-compose.yaml`, which is why I didn't include it here. Another reason is that I see Docker as generally insecure, daemon always runs with root rights regardless of what you do unlike Podman where there's no daemon and you can run it fully non-root.
+
+You're free to throw up your own compose file, though you won't find it here due to reasons outlined above.
+
 ## List of third-party Caddy modules
 
 ```bash
