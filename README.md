@@ -22,10 +22,7 @@ Everything inside `/scripts/` is used during build process and it's usage is exp
 - `/.github/workflows/build-release.yaml`
 - `/scripts/array-helper.sh` (dep)
 - `/scripts/install-go.sh` (dep)
-- `/scripts/entrypoint.go` (dep)
 - `Containerfile`
-
-The usual simple bash entrypoint script was turned to `entrypoint.go`, as scratch runner doesn't have any shell, or anything for that matter. This allows slightly more advanced usage while still being more secure compared to typical image.
 
 ## Runner env variables (only if built with `entrypoint.go`)
 
@@ -146,12 +143,14 @@ Bruger. (And also because majority of Caddy images out there don't really provid
 
 Hammed burger. (It works for my use-case and you're generally recommended to use this to build your own image out of this as I change a lot off things sometimes.)
 
+This will be maintained for as long as `rubberverse.xyz` is alive. So far this repository been going strong for two years.
+
 ## List of third-party Caddy modules
 
 ```bash
 - github.com/mholt/caddy-ratelimit
 - github.com/fvbommel/caddy-dns-ip-range
-- pkg.jsn.cam/caddy-defender (with tor ranges)
+- pkg.jsn.cam/caddy-defender
 - github.com/WeidiDeng/caddy-cloudflare-ip
 - github.com/fvbommel/caddy-combine-ip-ranges
 - github.com/corazawaf/coraza-caddy/v2
@@ -159,7 +158,7 @@ Hammed burger. (It works for my use-case and you're generally recommended to use
 - github.com/hslatman/caddy-crowdsec-bouncer/http
 - github.com/hslatman/caddy-crowdsec-bouncer/appsec
 - github.com/hslatman/caddy-crowdsec-bouncer/layer4
-- github.com/mholt/caddy-l4/layer4 
+- github.com/mholt/caddy-l4/layer4
 - github.com/porech/caddy-maxmind-geolocation
 ```
 
