@@ -158,7 +158,6 @@ You're free to throw up your own compose file, though you won't find it here due
 ```bash
 - github.com/mholt/caddy-ratelimit
 - github.com/fvbommel/caddy-dns-ip-range
-- pkg.jsn.cam/caddy-defender
 - github.com/WeidiDeng/caddy-cloudflare-ip
 - github.com/fvbommel/caddy-combine-ip-ranges
 - github.com/corazawaf/coraza-caddy/v2
