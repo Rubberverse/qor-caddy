@@ -100,7 +100,6 @@ It's as simple as three steps. Add more build args if you need them, customize o
 | Base    | Tag(s)              | Arch     | Description                																	|
 |---------|---------------------|----------|------------------------------------------------------------------------------------------------|
 | scratch | `latest`, `$tag`    | `x86_64` | Stable branch Caddy builds 																	|
-| scratch | `test`              | `x86_64` | Test builds whenever something breaks and I wanna test it quickly. Barely updated, don't use. 	|
 
 They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
 
