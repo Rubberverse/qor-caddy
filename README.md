@@ -99,9 +99,10 @@ It's as simple as three steps. Add more build args if you need them, customize o
 
 | Base    | Tag(s)              | Arch     | Description                																	|
 |---------|---------------------|----------|------------------------------------------------------------------------------------------------|
-| scratch | `latest`, `$tag`    | `x86_64` | Stable branch Caddy builds 																	|
+| scratch | `latest`, `$tag`    | `x86_64`, `arm64` | Stable branch Caddy builds 																	|
 
 They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
+`arm64` builds are experimental but they've always worked in my experience. Try it.
 
 ## Using the image
 
