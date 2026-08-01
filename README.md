@@ -166,7 +166,6 @@ You're free to throw up your own compose file, though you won't find it here due
 - github.com/hslatman/caddy-crowdsec-bouncer/appsec
 - github.com/hslatman/caddy-crowdsec-bouncer/layer4
 - github.com/mholt/caddy-l4/layer4
-- github.com/porech/caddy-maxmind-geolocation
 ```
 
 Any issues involving third-party modules should be reported to the module's respective repository, not to Caddy maintainers. In case the issue comes from my image, create an issue about it here!
