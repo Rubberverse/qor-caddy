@@ -1,88 +1,60 @@
 #!/usr/bin/env bash
-printf "\n[array-helper] Pre-eliminary checking of build arguments...\n"
+# Version: 2.0
+# References:
+# https://stackoverflow.com/a/44606194
+# https://stackoverflow.com/a/30212526
+# https://unix.stackexchange.com/a/403401
 
-if [[ -n "${CADDY_MODULES:-}" ]]; then
-    printf "\n[VL1] Pass - Non-empty value was supplied for CADDY_MODULES"
-else
-    printf "\n[VL1] Empty value supplied for CADDY_MODULES, pass 0 if you want to build vanilla Caddy.\nScript will now exit."
-    exit 2
-fi
+# Functions
+prepare_defender() {
+    git clone https://github.com/JasonLovesDoggo/caddy-defender.git caddy-defender
+    echo 'replace pkg.jsn.cam/caddy-defender => ./caddy-defender' >> go.mod
+    cd caddy-defender || exit
+    go run ranges/main.go --fetch-tor
+    cd ..
+}
 
-if [[ -n "${GO_CADDY_VERSION:-}" ]]; then
-    printf "\n[VL2] Pass - Non-empty value was supplied for GO_CADDY_VERSION"
-else
-    printf "\n[VL2] Empty value supplied for GO_CADDY_VERSION, pass master if you want to specifically build master branch.\nScript will now exit."
-    exit 2
-fi
+echo "${CADDY_MODULES}"
 
-FILE_PATH=/usr/app/builder/caddy/main.go
-TEMP_FILE=/usr/app/builder/caddy/temp.go
+# Actual script
+# +x causes some weird fuckery and it starts always amounting to true for some reason?
+[ -z "${CADDY_MODULES:-}" ] && export CADDY_MODULES="none"
+[ -z "${CADDY_VERSION:-}" ] && export CADDY_VERSION=master
+
+BUILD=/usr/app/builder/caddy
+PFILE="${BUILD}/main.go"
+TFILE="${BUILD}/temp.go"
 PROCESSED=false
 
-touch /usr/app/builder/caddy/temp.go
+sed -i -e 's|// plug in Caddy modules here|   _ "github.com/caddyserver/caddy/v2"|' "$PFILE"
 
-printf "\nParsing CADDY_MODULES into array...\n"
-read -ra CADDY_MODULES_ARRAY <<< "${CADDY_MODULES}"
-echo -n "" > $TEMP_FILE
-
-if [[ -n "${DEBUG:-}" ]]; then
-        printf "%b" "\n[DBG] Listing variables and file directories...\n"
-        printf "%b" "\n[DBG] File Path: ${FILE_PATH}\n"
-        printf "%b" "\n[DBG] Temporary File: ${TEMP_FILE}\n"
-        printf "%b" "\n[DBG] Was Array processed? - ${PROCESSED}\n"
-        printf "%b" "\n[DBG] First Value in Array - ${CADDY_MODULES_ARRAY[0]}\n"
-        printf "%b" "\n[DBG] Modules: ${CADDY_MODULES}\n"
-        printf "%b" "\n[DBG] Caddy Version: ${GO_CADDY_VERSION}\n"
-fi
-
-sed -i -e 's|// plug in Caddy modules here|   _ "github.com/caddyserver/caddy/v2"|' "$FILE_PATH"
-
-printf "%b" "\n[array-helper] Appending modules from array to main.go..."
-while IFS= read -r line
-do
-    if [[ $line == *'   _ "github.com/caddyserver/caddy/v2"'* ]] && [[ "$PROCESSED" == false ]]; then
-        for module in "${CADDY_MODULES_ARRAY[@]}"
+if [ "${CADDY_MODULES}" != "none" ]; then
+    touch "${TFILE}"
+    read -ra CADDY_MODULES_ARRAY <<< "${CADDY_MODULES}"
+    echo -n "" > "${TFILE}"
+    # while done loop combined into for loop to process all elements of array
+        while IFS= read -r LINE
             do
-                printf '\t_ "%s"\n' "$module" >> "$TEMP_FILE"
-                echo "$module"
-        done
-        PROCESSED=true
-    fi
-    printf '%s\n' "$line" >> "$TEMP_FILE"
-done < "$FILE_PATH"
-
-printf "%b" "\n[array-helper] Overwriting main.go with temporary file...\n"
-mv -f $TEMP_FILE $FILE_PATH
-
-if [[ -n "${DEBUG:-}" ]]; then
-        printf "%b" "\n\n\n"
-        cat "$FILE_PATH"
+                if [[ "${LINE}" == *'   _ "github.com/caddyserver/caddy/v2"'* ]] && [[ "${PROCESSED}" == false ]]; then
+                    for MODULE in "${CADDY_MODULES_ARRAY[@]}"
+                        do
+                            printf '\t_ "%s"\n' "$MODULE" >> "$TFILE"
+                            echo "$MODULE"
+                        done
+                    PROCESSED=true
+                fi
+            printf '%s\n' "$LINE" >> "$TFILE"
+        done < "${PFILE}"
+    # Overwrite main.go with temporary file
+    mv -f "${TFILE}" "${PFILE}"
 fi
 
-printf "%b" "\n[array-helper] Pinning Caddy version according to tag, commit or branch\n"
-go get github.com/caddyserver/caddy/v2@"${GO_CADDY_VERSION}"
+# Pinning Caddy version to tag, commit or branch
+go get github.com/caddyserver/caddy/v2@"${CADDY_VERSION}"
+cat "${PFILE}"
 
-if [[ -n "${CADDY_DEFENDER:-}" ]]; then
-        printf "\n[array-helper] Pulling caddy-defender"
-        git clone https://github.com/JasonLovesDoggo/caddy-defender.git caddy-defender
-        echo 'replace pkg.jsn.cam/caddy-defender => ./caddy-defender' >> go.mod
+# Special module configurations
+if [ -z "${CADDY_DEFENDER:-}" ]; then echo "CADDY_DEFENDER is not set, skipping."; else prepare_defender; fi
 
-        if [[ -n "${ASN_RANGES:-}" ]]; then
-            cd caddy-defender || exit
-            go run ranges/main.go --fetch-tor --asn ${ASN_RANGES}
-            cd ..
-        else
-            cd caddy-defender || exit
-            go run ranges/main.go --fetch-tor
-            cd ..
-        fi
-fi
-
-printf "%b" "\n[array-helper] Running go mod tidy to add module requirements and create go.sum\n"
+go mod init caddy
 go mod tidy
-
-printf "[array-helper] Continuing with build process\n"
-
-# https://unix.stackexchange.com/a/403401
-# https://stackoverflow.com/a/30212526
-# v1.2 - Bubfix
