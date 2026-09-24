@@ -49,18 +49,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build and push to ghcr.io
+      - name: Build and push Caddy image with third-party modules
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           build-args: |
-            CADDY_MODULES=github.com/mholt/caddy-ratelimit github.com/fvbommel/caddy-dns-ip-range github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/corazawaf/coraza-caddy/v2 github.com/caddy-dns/cloudflare github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/appsec github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/mholt/caddy-l4/layer4
-            GO_CADDY_VERSION=v2.11.4
-            CADDY_DEFENDER=0
-            DEBUG=1
+            CADDY_MODULES=github.com/mholt/caddy-ratelimit github.com/WeidiDeng/caddy-cloudflare-ip github.com/fvbommel/caddy-combine-ip-ranges github.com/caddy-dns/cloudflare github.com/hslatman/caddy-crowdsec-bouncer/http github.com/hslatman/caddy-crowdsec-bouncer/appsec github.com/hslatman/caddy-crowdsec-bouncer/layer4 github.com/mholt/caddy-l4/layer4 github.com/davidscarth/caddy-geoip
+            CADDY_VERSION=v2.11.4
           pull: true
           push: true
           file: Containerfile
           tags: |
             ghcr.io/rubberverse/qor-caddy:latest
             ghcr.io/rubberverse/qor-caddy:${{ steps.commit.outputs.short }}
+
+      - name: Build and push vanilla Caddy image without third-party modules
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64
+          build-args: |
+            CADDY_VERSION=v2.11.4
+          pull: true
+          push: true
+          file: Containerfile
+          tags: |
+            ghcr.io/rubberverse/qor-caddy:latest-vanilla
+            ghcr.io/rubberverse/qor-caddy:vanilla-${{ steps.commit.outputs.short }}
