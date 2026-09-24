@@ -4,136 +4,76 @@
 
 Not sure what to pull? Check currently available [images](https://github.com/Rubberverse/qor-caddy/pkgs/container/qor-caddy).
 
-
 ## Features
 
-- Debian builder, scratch runner
-- Ready for cross-compilation
-- Easy to spin up your own image
-- No `s6-overlay`, `gosu` or other rootful container init
-- Doesn't use `xcaddy`
+- Scratch runner
+- Rootless container user with UID and GID of `1100`
+- No container rootful init such as `su-exec`, `gosu` or `s6-overlay`
+- Build process does not make use of [xcaddy](), instead it uses a [homemade bash script]()
 - [Includes third-party Caddy modules](https://github.com/Rubberverse/qor-caddy?tab=readme-ov-file#list-of-third-party-caddy-modules)
+- Easy to spin up your own image, just pass two build time arguments (or one!)
 
+## Image tags
 
-## Structure + dependencies
+| Base    | Tag(s)                                 | Arch     | Description                																	 |
+|---------|----------------------------------------|----------|--------------------------------------------------------------|
+| scratch | `latest`, `ShortSHA256Commit`          | `x86_64` | Stable branch Caddy builds /w third-party modules 			     |
+| scratch | `latest-vanilla`, `ShortSHA256Commit`  | `x86_64` | Stable branch Caddy builds without third-party modules       |
 
-Everything inside `/scripts/` is used during build process and it's usage is explained [here](https://github.com/Rubberverse/qor-caddy/tree/main/scripts)
+They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
 
-- `/.github/workflows/build-release.yaml`
-- `/scripts/array-helper.sh` (dep)
-- `/scripts/install-go.sh` (dep)
-- `Containerfile`
+## Usage
 
-## Runner env variables (only if built with `entrypoint.go`)
+//TODO
 
-> [!NOTE]
-> Any version tagged by short SHA256 commit hash no longer uses `entrypoint.go`
+## Structure, dependencies and technicalities
 
-| Variable          | Default Value        | Required? |
-|-------------------|----------------------|-----------|
-| `CONFIG_PATH`     | `Empty`              | Yes       |
-| `DEPLOY_TYPE`     | `"prod"`             | No        |
-| `EXTRA_ARGS`      | `Empty`              | No        |
+Debian Trixie is used as a builder. Reason for it being that Debian already includes everything one may need in it's apt repositories, I'm very familiar with Debian and for some projects - glibc is just faster that musl libc.
 
-### Env: `CONFIG_PATH`
+Everything inside `/scripts/` is used during build process, excluding the markdown README.
 
-Needs to point to full path inside the container where `Caddyfile` or `caddy.json` is currently mounted. Example: `CONFIG_PATH=/app/configs/Caddyfile`
+- `/scripts/array-helper.sh`
 
-### Env: `DEPLOY_TYPE`
+Array Helper script checks `${CADDY_MODULES}` and `${CADDY_VERSION}` and sets them back to default values in case they're blank. These default values are `none` for `${CADDY_MODULES}` and `master` for `${CADDY_VERSION}`.
 
-Can be `prod` or `dev`. `dev` allows for live configuration reloading, where `prod` doesn't. They also use two distinctive commands that also have different CLI parameters available to them.
+In case `${CADDY_MODULES}` seems valid - it just needs to be value that's not `"none"` - it will proceed with reading it into an array `CADDY_MODULES_ARRAY` which is then iterated over in a `while` loop and all modules are temporarily written to `/usr/app/builder/caddy/temp.go`. After it's done, it will overwrite `main.go` with `temp.go`.
 
-### Env: `EXTRA_ARGS`
+Then it pins Caddy version with `go get`, checks if a variable exists for `${CADDY_DEFENDER}` as that module needs it's own special configuration in case you want TOR relays included into it, and then runs `go mood init caddy` and `go mod tidy`.
 
-Mostly useful if `DEPLOY_TYPE=dev`. Allows specifying extra arguments to pass to Caddy before launching it. 
-
+In simpler terms, it does some sanity checking, sets some environment variables and then modifies a temporary file that's afterwards forcefully overwrites the main file and does the rest of the preparation to actually build Caddy out.
 
 ## Build-time env variables
 
 | Variable           | Default Value        															| Required? 				|
 |--------------------|----------------------------------------------------------------------------------|---------------------------|
-| `CADDY_MODULES`    | `""`                 															| Yes 						|
-| `GO_CADDY_VERSION` | `""`                																| Yes 						|
+| `CADDY_MODULES`    | `"none"`                 															| Yes 						|
+| `CADDY_VERSION` | `"master"`                																| Yes 						|
 | `GO_MAIN_FILE`     | `"https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"`	| Yes 						|
 | `CADDY_DEFENDER`   | `""`																				| No        				|
-| `ASN_RANGES`       | `""`																				| Only if CADDY_DEFENDER=1 	|
-| `DEBUG`            | `""`																				| No                        |
-| `TARGETOS`         | Set by builder																	| No						|
-| `TARGETARCH`       | Set by builder																	| No						|
-| `CGO_ENABLED`		 | `"0"`																			| No        				|
-| `PATH`			 | `"/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/go/bin:/usr/local/go:/app/go/bin"`    | No        				|
 
 ### Build Arg: `CADDY_MODULES`
 
 Space-seperated list of Caddy modules to build the image with. Pass `0` to this variable if you want to build vanilla Caddy. If you will add more than one module, wrap it in quotation marks. Usage example: `--build-arg=CADDY_MODULES="example.com/org/module1 example.com/org/module2"`
 
-### Build Arg: `GO_CADDY_VERSION`
+### Build Arg: `CADDY_VERSION`
 
 Pins Caddy to version specified in this variable, otherwise it will just figure it out by itself (and probably download way older version). Usage example: `--build-arg GO_CADDY_VERSION=v2.10.2`
 
 ### Build Arg: `GO_MAIN_FILE`
 
-Original `main.go` from Caddy repository. Changing this is not advised unless you wanna host it somewhere else. Needs to be an URL accessible by builder. Usage example: `--build-arg GO_MAIN_FILE="https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"`
+Original `main.go` from Caddy repository. Changing this is **not advised** unless you wanna host it somewhere else. Needs to be an URL accessible by builder. Usage example: `--build-arg GO_MAIN_FILE="https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"`
 
 ### Build Arg: `CADDY_DEFENDER`
 
 Pass any value to this to customize how caddy-defender module is built into the container image. Used in later steps to add TOR relays and ASNs of your own choice. Set it to `1` if you're going to use caddy-defender and want to add extra ASNs. Usage example: `--build-arg CADDY_DEFENDER=1`
 
-### Build Arg: `ASN_RANGES`
-
-Put ASN ranges here that will be able to be blocked using caddy-defender later on. Comma seperated list. Usage example: `--build-arg ASN_RANGES="ASN69,ASN420,ASN1337"`
-
-### Build Arg: `DEBUG`
-
-Prints out values of variables as array-helper.sh script continues, aids with debugging. Doesn't do anything else otherwise. The existence of this value is enough to turn it on so set it to anything. Usage example: `--build arg BUILD_DEBUG=balls`
-
 ## Manually building
 
-It's as simple as three steps. Add more build args if you need them, customize ones here if you have specific needs otherwise you'll just build a vanilla Caddy image.
+It's as simple as doing three easy steps.
 
 1. `git clone https://github.com/rubberverse/qor-caddy`
-2. `podman build -f Containerfile -t localhost/qor-caddy:latest --build-arg=CADDY_MODULES="0" --build-arg=CADDY_VERSION=v2.10.1`
+2. `podman build -f Containerfile -t localhost/qor-caddy:latest --build-arg=CADDY_MOODULES="github.com/caddy-dns/cloudflare github.com/corazawaf/coraza-caddy/v2"`
 3. Voila, you now have your own customized Caddy image.
-
-## Image tags
-
-| Base    | Tag(s)              | Arch     | Description                																	|
-|---------|---------------------|----------|------------------------------------------------------------------------------------------------|
-| scratch | `latest`, `$tag`    | `x86_64`, `arm64` | Stable branch Caddy builds 																	|
-
-They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
-`arm64` builds are experimental but they've always worked in my experience. Try it.
-
-## Using the image
-
-There are three ways you can use this image, each depending on what you need.
-
-- Socket Activation gives most performance on rootless setups and gives you real IPs, this increases complexity of both Caddyfile and service by a bit.
-- Normal rootless setup is slower compared to socket activation and no real IPs since all traffic gets NAT'ed.
-- Rootful setup where everything works by default but has security drawbacks + probably better if used with MACVLAN or IPVLAN network.
-
-### Rootless Podman - Quadlet /w Socket Activation
-
-1. Copy [Caddy.container](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddy.container) and [Caddy.network](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddy.network) from this repository and paste it in `~/.config/containers/systemd/user`
-2. Edit it to your own liking, most is already set-up for you so you just need to create directories it wants.
-3. Copy [Caddy.socket](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddy.socket) from this repository and paste it in `~/.config/systemd/user`
-4. Rework your [Caddyfile](https://github.com/Rubberverse/qor-caddy/blob/main/Socket-Activation/Caddyfile) to be similar to the example provided (click on the name), binds **are** important.
-5. Reload systemctl user daemon with `systemctl --user daemon-reload`
-6. Start the container with `systemctl --user start Caddy.socket`
-
-### Rootless Podman - Quadlet
-
-1. Copy [Rootless.container](https://github.com/Rubberverse/qor-caddy/blob/main/Rootless.container) from this repository and paste it in `~/.config/containers/systemd/user/Caddy.container`
-2. Edit it to your own liking, most is already set-up for you.
-3. Reload systemctl user daemon with `systemctl --user daemon-reload`
-4. Start the container with `systemctl --user start Caddy`
-
-### Rootful Podman - Quadlet
-
-1. Copy [Rootful.container](https://github.com/Rubberverse/qor-caddy/blob/main/Rootful.container) from this repository and paste it in `/etc/containers/systemd/0/Caddy.container`
-2. Edit it to your own liking, most is already setup for you.
-3. Reload systemctl daemon with `systemctl daemon-reload`
-4. Start the container `systemctl start Caddy`
 
 ## Useful things to know
 
@@ -169,4 +109,3 @@ You're free to throw up your own compose file, though you won't find it here due
 ```
 
 Any issues involving third-party modules should be reported to the module's respective repository, not to Caddy maintainers. In case the issue comes from my image, create an issue about it here!
-
