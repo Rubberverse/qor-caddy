@@ -66,7 +66,7 @@ In simpler terms, it does some sanity checking, sets some environment variables 
 
 ### Build Arg: `CADDY_MODULES`
 
-Space-seperated list of Caddy modules to build the image with. Pass `0` to this variable if you want to build vanilla Caddy. If you will add more than one module, wrap it in quotation marks. Usage example: `--build-arg=CADDY_MODULES="example.com/org/module1 example.com/org/module2"`
+Space-separated list of Caddy modules to build the image with. If you will add more than one module, wrap it in quotation marks. Usage example: `--build-arg=CADDY_MODULES="example.com/org/module1 example.com/org/module2"`
 
 ### Build Arg: `CADDY_VERSION`
 
@@ -74,11 +74,11 @@ Pins Caddy to version specified in this variable, otherwise it will just figure 
 
 ### Build Arg: `GO_MAIN_FILE`
 
-Original `main.go` from Caddy repository. Changing this is **not advised** unless you wanna host it somewhere else. Needs to be an URL accessible by builder. Usage example: `--build-arg GO_MAIN_FILE="https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"`
+Original `main.go` from Caddy repository. Changing this is **not advised** unless you wanna host it somewhere else. Needs to be an URL that's accessible by builder. Usage example: `--build-arg GO_MAIN_FILE="https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"`
 
 ### Build Arg: `CADDY_DEFENDER`
 
-Pass any value to this to customize how caddy-defender module is built into the container image. Used in later steps to add TOR relays and ASNs of your own choice. Set it to `1` if you're going to use caddy-defender and want to add extra ASNs. Usage example: `--build-arg CADDY_DEFENDER=1`
+Pass any value to this to add `caddy-defender` to the final image. Usage example: `--build-arg CADDY_DEFENDER=1`
 
 ## Manually building
 
