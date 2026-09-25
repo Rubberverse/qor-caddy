@@ -26,6 +26,19 @@ They may sometimes change, randomly have a module removed or added. Don't depend
 
 //TODO
 
+I mean you can just pull it and use it like normal Caddy image. The binary is in `/app/bin/caddy` and `/app/configs/Caddyfile` is where it expects configuration by default. You can override container's `CMD` with `Exec=` in quadlet configuration. There is no need to add any capabilities, in fact you should drop them all by default with this image.
+
+Caddy will create it's own configuration files inside `/app/.local` and `/app/.config`, logs should be written to `/app/logs` to keep consistency with the rest of the image and because rootless container user actually owns this directory and has read-write-execute rights on it.
+
+`/app/templates/browse.html` is where the `file_server browse` template residues in. To use it, just pass the template as argument to any `file_server` directive. You can learn more about it in following repository: https://github.com/glowinthedark/caddy-file-server-browse-extension
+
+```Caddyfile
+    file_server {
+        (...)
+        browse /app/templates/browse.html
+    }
+```
+
 ## Structure, dependencies and technicalities
 
 Debian Trixie is used as a builder. Reason for it being that Debian already includes everything one may need in it's apt repositories, I'm very familiar with Debian and for some projects - glibc is just faster that musl libc.
@@ -96,16 +109,16 @@ You're free to throw up your own compose file, though you won't find it here due
 ## List of third-party Caddy modules
 
 ```bash
+- github.com/glowinthedark/caddy-file-server-browse-extension
 - github.com/mholt/caddy-ratelimit
-- github.com/fvbommel/caddy-dns-ip-range
 - github.com/WeidiDeng/caddy-cloudflare-ip
 - github.com/fvbommel/caddy-combine-ip-ranges
-- github.com/corazawaf/coraza-caddy/v2
 - github.com/caddy-dns/cloudflare
 - github.com/hslatman/caddy-crowdsec-bouncer/http
 - github.com/hslatman/caddy-crowdsec-bouncer/appsec
 - github.com/hslatman/caddy-crowdsec-bouncer/layer4
 - github.com/mholt/caddy-l4/layer4
+- github.com/davidscarth/caddy-geoip
 ```
 
 Any issues involving third-party modules should be reported to the module's respective repository, not to Caddy maintainers. In case the issue comes from my image, create an issue about it here!
