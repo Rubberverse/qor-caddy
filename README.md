@@ -51,9 +51,7 @@ Array Helper script checks `${CADDY_MODULES}` and `${CADDY_VERSION}` and sets th
 
 In case `${CADDY_MODULES}` seems valid - it just needs to be value that's not `"none"` - it will proceed with reading it into an array `CADDY_MODULES_ARRAY` which is then iterated over in a `while` loop and all modules are temporarily written to `/usr/app/builder/caddy/temp.go`. After it's done, it will overwrite `main.go` with `temp.go`.
 
-Then it pins Caddy version with `go get`, checks if a variable exists for `${CADDY_DEFENDER}` as that module needs it's own special configuration in case you want TOR relays included into it, and then runs `go mood init caddy` and `go mod tidy`.
-
-In simpler terms, it does some sanity checking, sets some environment variables and then modifies a temporary file that's afterwards forcefully overwrites the main file and does the rest of the preparation to actually build Caddy out.
+Then it pins Caddy version with `go get`, checks if a variable exists for `${CADDY_DEFENDER}` as that module needs it's own special configuration in case you want TOR relays included into it, and then runs `go mod init caddy` and `go mod tidy`.
 
 ## Build-time env variables
 
@@ -98,15 +96,45 @@ Hammed burger. (It works for my use-case and you're generally recommended to use
 
 This will be maintained for as long as `rubberverse.xyz` is alive. So far this repository been going strong for two years.
 
-## Where's `docker-compose.yaml`?
+## FAQ
+
+In case you wanna know something.
+
+### LLM ("AI") Usage
+
+Copilot and self-hosted Gemma4 model were used long time ago to convert a bash script into Go but I have long since retired it. It was pointless in grand scheme of things and only bloated the final image up. Ever since then, I no longer use LLMs to help me out with anything.
+
+### LLM ("AI") Policy
+
+Don't make slop pull requests or issues. I don't care if your English is broken or you can't really explain it why, just write it in your own words to the best of your extend.
+
+### Why no multi-architecture builds?
+
+Because I suck at multi-arch builds and I can never figure out how to do it reliably.
+My current attempts always yielded working `arm64` and `x86_64` image but the rest of the architectures refused to work.
+There was also another problem I ran into while experimenting with it, while I could get the binaries to successfully compile to correct architecture, it still wrote `x86_64` image layer to the final image. That caused it to throw a cryptic linker error when one attempted to run it on appropriate device.
+
+They ran fine under QEMU but never on actual devices which is why I've opted to play it safe and no longer build `arm64`, `armv7`, `armv6` etc. architecture images since I have no proper way of testing them to see if they work. If you still have ideas on how to implement it then I would appreciate any help with this.
+
+### Can you automatically fix directory permissions?
+
+No. Doing so would require starting init as root then forking off to rootless user which is about as secure as closing a door, locking it but leaving the key out in the open for anybody to come and pick it up. Little bit of convenience for worse security is not something I'm willing to do. If you're using Podman, just pass `U` flag to `Volume=` in order to have it automatically chown directory to correct user.
+
+If you're on Docker, chown the directories to `1100:1100`. Docker by default does not do randomized user namespaces to my knowledge so it maps `1:1`. If you already have an user that has UID and GID of `1100:1100` then run the container as `nobody:nobody` or `65534:65534` and then chown the directory to `65534:65534`. You may need to additionally mount over `/app/logs` to fix the permissions if doing it this way.
+
+### Where docker compose?
 
 Long time ago, I've moved away from Docker to Podman. Initially, I've went the `compose.yaml` route. It was a bit hit or miss, `podman-compose` wasn't 1:1 with the spec and it was overall pretty miserable... that is, until Quadlet system was introduced and I feel in love with it.
 
-As you can probably guess, I've forgotten majority of good conventions, and how to make a good `docker-compose.yaml`, which is why I didn't include it here. Another reason is that I see Docker as generally insecure, daemon always runs with root rights regardless of what you do unlike Podman where there's no daemon and you can run it fully non-root.
+As you can probably guess, I've forgotten majority of good conventions and how to make a good `docker-compose.yaml`, which is why I didn't include it here.
 
-You're free to throw up your own compose file, though you won't find it here due to reasons outlined above.
+If you ever throw up one then consider pushing a PR here, I'll accept it with open hands.
 
-## List of third-party Caddy modules
+### Helm chart? (Kubernetes)
+
+I've never used Kubernetes so you'll have to teach me in issues if you want one. Either that or just make a PR with it and a short explanation on how it works.
+
+### List of third-party Caddy modules
 
 ```bash
 - github.com/glowinthedark/caddy-file-server-browse-extension
