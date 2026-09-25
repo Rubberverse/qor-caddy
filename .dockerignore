@@ -5,4 +5,5 @@
 *.network
 LICENSE
 Socket-Activation/*
+_Retired/*
 Old.Containerfile
