@@ -15,10 +15,10 @@ Not sure what to pull? Check currently available [images](https://github.com/Rub
 
 ## Image tags
 
-| Base    | Tag(s)                                 | Arch     | Description                																	 |
+| Base    | Tag(s)                                 | Arch     | Description                									 |
 |---------|----------------------------------------|----------|--------------------------------------------------------------|
-| scratch | `latest`, `ShortSHA256Commit`          | `x86_64` | Stable branch Caddy builds /w third-party modules 			     |
-| scratch | `latest-vanilla`, `ShortSHA256Commit`  | `x86_64` | Stable branch Caddy builds without third-party modules       |
+| scratch | `latest`, `ShortSHA256Commit`          | `x86_64` | Stable branch Caddy builds /w third-party modules 			 |
+| scratch | `latest-vanilla`, `ShortSHA256Commit`  | `x86_64` | Stable branch vanilla Caddy build (no 3p modules)            |
 
 They may sometimes change, randomly have a module removed or added. Don't depend too much for them, you're recommended to instead `git clone` this and spin up your own image.
 
