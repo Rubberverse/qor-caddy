@@ -20,7 +20,7 @@ WORKDIR /usr/app/builder
 RUN     apt update \
         && apt upgrade -y \
         && apt install --no-install-recommends -y \
-            jq tar git curl bash golang-go openssl ca-certificates \
+            git curl bash golang-go openssl ca-certificates \
         && git config --global --add safe.directory '*' \
         && mkdir -p caddy \
         && curl -Lo caddy/main.go ${GO_MAIN_FILE} \
@@ -29,7 +29,7 @@ RUN     apt update \
         && mkdir -p /app/logs /app/templates \
         && curl -Lo /app/templates/browse.html https://raw.githubusercontent.com/glowinthedark/caddy-file-server-browse-extension/refs/heads/master/browse.html \
         && apt remove -y \
-            jq git curl golang-go openssl ca-certificates \
+            git curl golang-go openssl ca-certificates \
         && apt autoremove -y \
         && rm -rf /tmp /etc/apt /app/git /app/worktree /usr/local/go /usr/app/caddy /var/cache/apt /usr/app/go/cache /usr/app/builder/golang.tar.gz
 
