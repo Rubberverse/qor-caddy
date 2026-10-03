@@ -31,7 +31,7 @@ RUN     apt update \
         && apt remove -y \
             git curl golang-go openssl ca-certificates \
         && apt autoremove -y \
-        && rm -rf /tmp /etc/apt /usr/local/go /usr/app/caddy /var/cache/apt /usr/app/go/cache
+        && rm -rf /tmp /etc/apt /usr/local/go /var/cache/apt /usr/app/go/cache
 
 #       Runner image
 FROM    scratch AS qor-caddy
