@@ -46,4 +46,4 @@ WORKDIR /app
 USER    1100:1100
 
 ENTRYPOINT ["/app/bin/caddy"]
-CMD        ["-c /app/configs/Caddyfile"]
+CMD        ["run --config /app/configs/Caddyfile"]
